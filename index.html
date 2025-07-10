@@ -1,15 +1,93 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RNA-seq Pipeline Overview</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 40px;
+      background-color: #fdfdfd;
+      color: #111;
+      line-height: 1.6;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    p {
+      max-width: 900px;
+      margin: 10px auto;
+    }
+
+    ul, ol {
+      max-width: 900px;
+      margin: 10px auto;
+      padding-left: 30px;
+    }
+
+    .section {
+      max-width: 900px;
+      margin: 40px auto;
+    }
+
+    code {
+      background-color: #f4f4f4;
+      color: #c7254e;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+    }
+
+    pre {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-left: 5px solid #ccc;
+      overflow-x: auto;
+      max-width: 900px;
+      margin: 20px auto;
+      font-family: Consolas, monospace;
+    }
+
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .metadata {
+      max-width: 900px;
+      margin: 0 auto 20px auto;
+      text-align: center;
+      font-size: 1.1em;
+    }
+	.section.features {
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 900px;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="metadata">
   <p><strong>🧬Author:</strong> Akhilesh Kaushal</p>
   <p><strong>Version:</strong> 1.0</p>
 
-  <div class="section">
+  <div class="section features">
     <h2>📌 Overview</h2>
     <p>
       This pipeline provides a comprehensive framework for transcriptomic differential expression and enrichment analysis using RNA-Seq count data. At its core, it leverages DESeq2 and limma to perform robust statistical modeling, followed by GO and pathway enrichment analysis using clusterProfiler and fgsea. Interactive plots are generated via EnhancedVolcano, pheatmap, and pathview. All parameters and sample groupings are configured via a centralized JSON configuration file, which ensures reproducibility and easy customization for different comparison groups or experimental designs.
     </p>
   </div>
 
-  <div class="section">
+  <div class="section features">
     <h2>🚀 Features</h2>
     <ul>
       <li>Reads configuration from a structured JSON file</li>
@@ -24,7 +102,7 @@
     </ul>
   </div>
 
-  <div class="section">
+  <div class="section features">
     <h2>🛠 Tools & Libraries Used</h2>
     <ul>
       <li><code>R</code>, <code>Rscript</code>, <code>DESeq2</code>, <code>limma</code>, <code>edgeR</code> for statistical modeling</li>
@@ -35,7 +113,7 @@
     </ul>
   </div>
 
-  <div class="section">
+  <div class="section features">
     <h2>📂 Input Requirements</h2>
     <ul>
       <li>A tab-delimited RNA-seq count matrix (samples as columns, genes as rows)</li>
@@ -44,7 +122,7 @@
     </ul>
   </div>
 
-  <div class="section">
+  <div class="section features">
     <h2>📤 Output Summary</h2>
     <ul>
       <li>CSV files for DE results (<code>DESeq2</code> and <code>limma</code>)</li>
@@ -57,7 +135,7 @@
     </ul>
   </div>
 
-  <div class="section">
+  <div class="section features">
     <h2>📘 Next Sections</h2>
     <ol>
       <li><strong>Structure:</strong> Project and module layout</li>
@@ -70,7 +148,7 @@
 </body>
 </html>
 
-
+<div class="section features">
 <pre>
 RNAseqPipeline/
 ├── main.R                         # Master script
@@ -97,6 +175,7 @@ RNAseqPipeline/
 
 <h2>📂 Output Directory (per comparison)</h2>
 
+<div class="section features">
 <pre>
 outputs/
 ├── GroupA_vs_GroupB/
@@ -111,15 +190,11 @@ outputs/
 │   └── *_log.txt
 </pre>
 
+<div class="section features">
 <h2>🌐 GitHub Repository</h2>
 <p>All scripts, configuration files, and modules are versioned and hosted on GitHub:</p>
 <p><a href="https://github.com/akhilesh-kaushal/rnaseq-pipeline" target="_blank">🔗 github.com/akhilesh-kaushal/rnaseq-pipeline</a></p>
 
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Installation - RNA-seq Pipeline</title>
@@ -129,6 +204,7 @@ outputs/
 
 <h1>📦 Installation Guide</h1>
 <h2>🔧 Prerequisites</h2>
+<div class="section features">
 <p>Before running the pipeline, ensure the following software are installed:</p>
 <ul>
   <li>R (≥ 4.0)</li>
@@ -142,6 +218,7 @@ cd rnaseq-pipeline
 </code></pre>
 
 <h2>📦 Install Required R Packages</h2>
+<div class="section features">
 <p>Open R or RStudio and run the following:</p>
 
 <pre><code># Install BiocManager (if not already installed)
@@ -181,8 +258,6 @@ rnaseq-pipeline/
 </body>
 </html>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Running the RNA-seq Pipeline</title>
@@ -250,8 +325,6 @@ outputs/
 </body>
 </html>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>RNA-seq Visualization</title>
@@ -322,8 +395,6 @@ pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
 </body>
 </html>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>RNA-seq Enrichment Analysis</title>
@@ -399,8 +470,6 @@ pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
 </body>
 </html>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>KEGG Pathway Overlay</title>
@@ -475,8 +544,6 @@ pathview(gene.data = gene_list,
 </body>
 </html>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Pipeline Output Summary</title>
@@ -570,11 +637,6 @@ pathview(gene.data = gene_list,
   <li>All paths are relative to <code>base_output_path</code> in the config JSON</li>
 </ul>
 
-
-
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Transcriptomic Analysis: Diamond-Blackfan Anemia (DBA)</title>
@@ -585,12 +647,12 @@ pathview(gene.data = gene_list,
 
 <h1>🧬 Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)</h1>
 
-<div class="section">
+<div class="section features">
   <h2>📘 Background</h2>
   <p>Diamond-Blackfan Anemia (DBA) is a congenital bone marrow failure disorder caused by mutations in ribosomal protein genes such as <strong>RPS19</strong>, <strong>RPL5</strong>, and <strong>RPL11</strong>. Patients typically exhibit macrocytic anemia, physical anomalies, and increased cancer risk.</p>
 </div>
 
-<div class="section">
+<div class="section features">
   <h2>🧪 Sample Setup</h2>
   <table>
     <tr><th>Group</th><th>Samples</th><th>Description</th></tr>
@@ -607,7 +669,7 @@ pathview(gene.data = gene_list,
 </code></pre>
 </div>
 
-<div class="section">
+<div class="section features">
   <h2>🧬 Differential Expression Results</h2>
   <table>
     <tr><th>Gene</th><th>log2FC</th><th>padj</th><th>Role</th></tr>
@@ -618,7 +680,7 @@ pathview(gene.data = gene_list,
   </table>
 </div>
 
-<div class="section">
+<div class="section features">
   <h2>🧠 Enrichment Results</h2>
 
   <h3>ORA Top Terms</h3>
@@ -637,13 +699,13 @@ pathview(gene.data = gene_list,
   </ul>
 </div>
 
-<div class="section">
+<div class="section features">
   <h2>🧬 KEGG Pathview Example</h2>
   <p><strong>Pathway Visualized:</strong> hsa04115 — p53 Signaling Pathway</p>
   <img src="https://www.genome.jp/kegg/pathway/hsa/hsa04115.png" alt="KEGG p53 Pathway" style="max-width: 100%;">
 </div>
 
-<div class="section">
+<div class="section features">
   <h2>📖 Biological Interpretation</h2>
   <ul>
     <li>Loss of <strong>RPS19/RPL11</strong> function impairs ribosome synthesis in progenitors.</li>
