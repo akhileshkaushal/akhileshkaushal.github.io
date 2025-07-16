@@ -1,23 +1,40 @@
 [
   {
+    "id": "rna-seq",
     "name": "RNAseq-Pipeline",
     "description": "End-to-end RNA-seq analysis using DESeq2, STAR, Salmon, and GSEA.",
     "version": "1.2.0",
-    "link": "https://github.com/akhileshkaushal/RNAseq-Pipeline",
-    "tags": ["RNA-seq", "Transcriptomics", "DESeq2"]
+    "link": "pipeline.html?id=rna-seq",
+    "tags": ["RNA-seq", "Transcriptomics", "DESeq2"],
+    "details": {
+      "steps": [
+        "Quality control with FastQC and MultiQC",
+        "Alignment with STAR or quantification with Salmon",
+        "Transcript quantification and count matrix generation",
+        "Differential expression with DESeq2",
+        "Pathway enrichment (GSEA, ORA)"
+      ],
+      "repo": "https://github.com/akhileshkaushal/RNAseq-Pipeline",
+      "usage": "bash run_pipeline.sh --config config.yaml"
+    }
   },
   {
+    "id": "methylation",
     "name": "Methylation-Pipeline",
-    "description": "EPIC array normalization, probe QC, and differential methylation analysis.",
+    "description": "EPIC array normalization and differential methylation analysis.",
     "version": "0.9.1",
-    "link": "https://github.com/akhileshkaushal/methylation-pipeline",
-    "tags": ["Methylation", "EPIC Array", "Illumina"]
-  },
-  {
-    "name": "HiPlex Demultiplexer",
-    "description": "Demultiplexing HiPlex antibody-tagged reads with dual-index parsing logic.",
-    "version": "1.0.0",
-    "link": "#",
-    "tags": ["HiPlex", "Cut&Tag", "Demultiplexing"]
+    "link": "pipeline.html?id=methylation",
+    "tags": ["Methylation", "EPIC Array", "Illumina"],
+    "details": {
+      "steps": [
+        "Preprocessing of IDATs",
+        "Probe filtering and QC",
+        "Normalization (BMIQ / SWAN)",
+        "Differential methylation with limma",
+        "Pathway enrichment"
+      ],
+      "repo": "https://github.com/akhileshkaushal/methylation-pipeline",
+      "usage": "Rscript run_pipeline.R config.yml"
+    }
   }
 ]

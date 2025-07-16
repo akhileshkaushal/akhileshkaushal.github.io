@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pipeline Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/pipeline.js" defer></script>
+  <style>
+    body { padding: 40px; font-family: 'Segoe UI', sans-serif; background: #f9f9f9; }
+    .tag { background-color: #e0f7fa; color: #00796b; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; margin-right: 6px; }
+    .back-link { font-size: 0.9rem; color: #004466; text-decoration: none; }
+    .section { margin-bottom: 2rem; }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="index.html">&larr; Back to Pipelines</a>
+
+  <div class="container mt-4">
+    <h1 id="pipeline-name">Loading...</h1>
+    <p id="pipeline-tags"></p>
+
+    <div class="section" id="pipeline-description"></div>
+
+    <div class="section">
+      <h3>Steps Included</h3>
+      <ul id="pipeline-steps"></ul>
+    </div>
+
+    <div class="section">
+      <h3>Repository & Version</h3>
+      <p><a id="pipeline-repo" href="#" target="_blank">GitHub Repo</a></p>
+      <p><strong id="pipeline-version"></strong></p>
+    </div>
+
+    <div class="section">
+      <h3>Usage</h3>
+      <pre><code id="pipeline-usage"></code></pre>
+    </div>
+  </div>
+
+</body>
+</html>
