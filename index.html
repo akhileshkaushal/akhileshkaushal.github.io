@@ -13,12 +13,20 @@
   .bg-soft-gray    { background-color: #f4f4f4; color: #333; }
   .bg-soft-purple  { background-color: #f3e8fd; color: #4b3869; }
 
-  .pipeline-card-custom {
-    border-radius: 10px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-    padding: 20px;
-    height: 100%;
+  <style>
+  .pipeline-card-custom a {
+    font-weight: 600;
+    text-decoration: underline;
+    color: inherit;
+    transition: color 0.2s ease;
   }
+
+  .pipeline-card-custom a:hover {
+    color: #0077cc;
+    text-decoration: underline;
+  }
+</style>
+
 
   .tag-badge {
     background: #ddd;
@@ -58,15 +66,20 @@
         card.className = "col";
 
         card.innerHTML = `
-          <div class="pipeline-card-custom ${bgClass}">
-            <h5><a href="${p.link}" target="_blank" style="text-decoration: none; color: inherit;">${p.name}</a></h5>
-            <p>${p.description}</p>
-            <div style="margin-bottom: 8px;">
-              ${(p.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
-            </div>
-            <small><strong>Version:</strong> ${p.version}</small>
-          </div>
-        `;
+  <div class="pipeline-card-custom ${bgClass}">
+    <h5>
+      <a href="${p.link}" target="_blank" style="text-decoration: underline; font-weight: 600;">
+        ${p.name} <span style="font-size: 0.85em;">🔗</span>
+      </a>
+    </h5>
+    <p>${p.description}</p>
+    <div style="margin-bottom: 8px;">
+      ${(p.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
+    </div>
+    <small><strong>Version:</strong> ${p.version}</small>
+  </div>
+`;
+
         container.appendChild(card);
       });
     })
