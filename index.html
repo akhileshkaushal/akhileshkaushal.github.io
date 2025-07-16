@@ -1,723 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>RNA-seq Pipeline Overview</title>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      margin: 40px;
-      background-color: #fdfdfd;
-      color: #111;
-      line-height: 1.6;
-    }
-
-    h1, h2 {
-      text-align: center;
-      color: #2c3e50;
-    }
-
-    p {
-      max-width: 900px;
-      margin: 10px auto;
-    }
-
-    ul, ol {
-      max-width: 900px;
-      margin: 10px auto;
-      padding-left: 30px;
-    }
-
-    .section {
-      max-width: 900px;
-      margin: 40px auto;
-    }
-
-    code {
-      background-color: #f4f4f4;
-      color: #c7254e;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: Consolas, monospace;
-    }
-
-    pre {
-      background-color: #f9f9f9;
-      padding: 15px;
-      border-left: 5px solid #ccc;
-      overflow-x: auto;
-      max-width: 900px;
-      margin: 20px auto;
-      font-family: Consolas, monospace;
-    }
-
-    a {
-      color: #2980b9;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .metadata {
-      max-width: 900px;
-      margin: 0 auto 20px auto;
-      text-align: center;
-      font-size: 1.1em;
-    }
-	.section.features {
-    text-align: left;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 900px;
+<!-- Add to <head> -->
+<style>
+  .tag {
+    display: inline-block;
+    background-color: #e0f7fa;
+    color: #00796b;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    border-radius: 12px;
+    margin-right: 5px;
+    margin-top: 5px;
   }
-  </style>
-</head>
-<body>
+  .filter-btn {
+    margin: 5px;
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .filter-btn.active {
+    background-color: #004466;
+    color: white;
+  }
+</style>
 
-  <div class="metadata">
-  <p><strong>🧬Author:</strong> Akhilesh Kaushal</p>
-  <p><strong>Version:</strong> 1.0</p>
+<!-- Inside <body> -->
+<div class="container" id="pipelines">
+  <h1 class="mt-4 mb-3">My Bioinformatics Pipelines</h1>
 
-  <div class="section features">
-    <h2>📌 Overview</h2>
-    <p>
-      This pipeline provides a comprehensive framework for transcriptomic differential expression and enrichment analysis using RNA-Seq count data. At its core, it leverages DESeq2 and limma to perform robust statistical modeling, followed by GO and pathway enrichment analysis using clusterProfiler and fgsea. Interactive plots are generated via EnhancedVolcano, pheatmap, and pathview. All parameters and sample groupings are configured via a centralized JSON configuration file, which ensures reproducibility and easy customization for different comparison groups or experimental designs.
-    </p>
+  <div id="filter-bar" class="mb-4">
+    <!-- Buttons will be injected here -->
   </div>
 
-  <div class="section features">
-    <h2>🚀 Features</h2>
-    <ul>
-      <li>Reads configuration from a structured JSON file</li>
-      <li>Supports multiple comparisons across groups</li>
-      <li>Handles sex as a covariate when mixed genders are present</li>
-      <li>Performs DE analysis using both <code>DESeq2</code> and <code>limma-voom</code></li>
-      <li>Generates enhanced volcano plots and heatmaps</li>
-      <li>Saves DEGs (up/down-regulated), RANK files for GSEA</li>
-      <li>Performs batch <code>ORA</code> and <code>GSEA</code> using custom GMT files</li>
-      <li>Pathview visualizations of KEGG pathways with mapped log2 fold changes</li>
-      <li>Extensive logging and modular design for future extension</li>
-    </ul>
+  <div class="row row-cols-1 row-cols-md-3 g-4" id="pipeline-container">
+    <!-- Cards will be injected here -->
   </div>
+</div>
 
-  <div class="section features">
-    <h2>🛠 Tools & Libraries Used</h2>
-    <ul>
-      <li><code>R</code>, <code>Rscript</code>, <code>DESeq2</code>, <code>limma</code>, <code>edgeR</code> for statistical modeling</li>
-      <li><code>EnhancedVolcano</code>, <code>pheatmap</code> for visualization</li>
-      <li><code>clusterProfiler</code>, <code>fgsea</code> for enrichment analysis</li>
-      <li><code>pathview</code> for KEGG visualizations</li>
-      <li><code>jsonlite</code>, <code>openxlsx</code>, <code>dplyr</code> for data processing</li>
-    </ul>
-  </div>
+<!-- Before </body> -->
+<script>
+  let pipelines = [];
+  let selectedTag = 'All';
 
-  <div class="section features">
-    <h2>📂 Input Requirements</h2>
-    <ul>
-      <li>A tab-delimited RNA-seq count matrix (samples as columns, genes as rows)</li>
-      <li>A <code>comparisons.json</code> configuration file specifying group comparisons</li>
-      <li>Optional: GSEA/ORA config file (<code>gsea_config.json</code>) and pathway <code>.gmt</code> files</li>
-    </ul>
-  </div>
+  fetch('pipelines.json')
+    .then(response => response.json())
+    .then(data => {
+      pipelines = data;
+      const allTags = new Set(data.flatMap(p => p.tags || []));
+      renderFilterBar(['All', ...Array.from(allTags).sort()]);
+      renderPipelines();
+    });
 
-  <div class="section features">
-    <h2>📤 Output Summary</h2>
-    <ul>
-      <li>CSV files for DE results (<code>DESeq2</code> and <code>limma</code>)</li>
-      <li>Gene lists: upregulated and downregulated</li>
-      <li>Rank files for enrichment analysis</li>
-      <li>Plots: volcano, heatmap, GSEA dotplots</li>
-      <li>ORA/GSEA results in Excel format</li>
-      <li>Pathview PNG pathway diagrams</li>
-      <li>Log files for each comparison</li>
-    </ul>
-  </div>
+  function renderFilterBar(tags) {
+    const filterBar = document.getElementById('filter-bar');
+    tags.forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn';
+      btn.textContent = tag;
+      btn.onclick = () => {
+        selectedTag = tag;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderPipelines();
+      };
+      if (tag === 'All') btn.classList.add('active');
+      filterBar.appendChild(btn);
+    });
+  }
 
-  <div class="section features">
-    <h2>📘 Next Sections</h2>
-    <ol>
-      <li><strong>Structure:</strong> Project and module layout</li>
-      <li><strong>Installation:</strong> How to set up the environment</li>
-      <li><strong>Execution:</strong> How to run the pipeline</li>
-      <li><strong>Outputs:</strong> Description of generated files</li>
-    </ol>
-  </div>
+  function renderPipelines() {
+    const container = document.getElementById('pipeline-container');
+    container.innerHTML = '';
 
-</body>
-</html>
+    const filtered = selectedTag === 'All'
+      ? pipelines
+      : pipelines.filter(p => (p.tags || []).includes(selectedTag));
 
-<div class="section features">
-<pre>
-RNAseqPipeline/
-├── main.R                         # Master script
-├── comparisons.json              # Comparison config
-├── gsea_config.json              # ORA/GSEA config
-├── /analysis
-│   ├── gene_analysis.R           # DESeq2 + limma models
-│   ├── enrichment_ora_batch.R    # Batch ORA
-│   ├── enrichment_gsea_batch.R   # Batch GSEA
-├── /visualization
-│   ├── plot_generation.R         # Volcano and heatmap
-│   ├── pathway_visualization.R   # KEGG Pathview plots
-├── /config
-│   └── load_config.R             # JSON config loader
-├── /io
-│   └── read_data.R               # Count matrix loader
-├── /utils
-│   ├── helpers.R                 # Utility functions
-│   └── logging.R                 # Logger
-├── /logs                         # Per-comparison logs
-├── /outputs                      # All analysis results
-└── README.md                     # Overview + instructions
-</pre>
-
-<h2>📂 Output Directory (per comparison)</h2>
-
-<div class="section features">
-<pre>
-outputs/
-├── GroupA_vs_GroupB/
-│   ├── *_deseq2_results.csv
-│   ├── *_limma_results.csv
-│   ├── *_upregulated_genes.csv
-│   ├── *_downregulated_genes.csv
-│   ├── *_ranked_genes.rnk
-│   ├── *_volcano_plot.tiff
-│   ├── *_heatmap.png
-│   ├── *.png (pathview KEGG plots)
-│   └── *_log.txt
-</pre>
-
-<div class="section features">
-<h2>🌐 GitHub Repository</h2>
-<p>All scripts, configuration files, and modules are versioned and hosted on GitHub:</p>
-<p><a href="https://github.com/akhilesh-kaushal/rnaseq-pipeline" target="_blank">🔗 github.com/akhilesh-kaushal/rnaseq-pipeline</a></p>
-
-<head>
-  <meta charset="UTF-8">
-  <title>Installation - RNA-seq Pipeline</title>
-  
-</head>
-<body>
-
-<h1>📦 Installation Guide</h1>
-<h2>🔧 Prerequisites</h2>
-<div class="section features">
-<p>Before running the pipeline, ensure the following software are installed:</p>
-<ul>
-  <li>R (≥ 4.0)</li>
-  <li>Rtools (for Windows users)</li>
-  <li>Git (for cloning the repository)</li>
-</ul>
-
-<h2>📁 Clone the Repository</h2>
-<pre><code>git clone https://github.com/akhilesh-kaushal/rnaseq-pipeline.git
-cd rnaseq-pipeline
-</code></pre>
-
-<h2>📦 Install Required R Packages</h2>
-<div class="section features">
-<p>Open R or RStudio and run the following:</p>
-
-<pre><code># Install BiocManager (if not already installed)
-install.packages("BiocManager")
-
-# Core packages
-BiocManager::install(c(
-  "DESeq2", "limma", "EnhancedVolcano", "pheatmap", 
-  "clusterProfiler", "org.Hs.eg.db", "pathview", "fgsea", 
-  "enrichplot", "openxlsx", "ggrepel"
-))
-
-# CRAN dependencies
-install.packages(c("jsonlite", "ggplot2", "dplyr", "tibble", "tools", "rmarkdown"))
-</code></pre>
-
-<h2>⚙️ Project Directory Setup</h2>
-<ul>
-  <li>Create a directory to store comparison outputs (e.g., <code>outputs/</code>)</li>
-  <li>Edit <code>comparisons.json</code> and <code>gsea_config.json</code> to define your experimental groups</li>
-  <li>Ensure your HTSeq or featureCounts matrix is correctly formatted</li>
-</ul>
-
-<h2>🧪 Example Directory</h2>
-<pre>
-rnaseq-pipeline/
-├── main.R
-├── comparisons.json
-├── gsea_config.json
-├── outputs/
-│   └── [comparison-specific subfolders]
-</pre>
-
-<h2>✅ You're Ready to Go!</h2>
-<p>Proceed to <code>execution.html</code> to learn how to run your first analysis.</p>
-
-</body>
-</html>
-
-<head>
-  <meta charset="UTF-8">
-  <title>Running the RNA-seq Pipeline</title>
-  
-</head>
-<body>
-
-<h1>🚀 Running the RNA-seq Pipeline</h1>
-<h2>🎯 Main Entry Script: <code>main.R</code></h2>
-<p>This script orchestrates all modules – data loading, differential expression (DE), visualization, and enrichment.</p>
-
-<h2>📝 Step 1: Configure the Comparison JSON</h2>
-<p>Edit <code>comparisons.json</code> with your sample groups:</p>
-<pre><code>{
-  "counts_file": "path/to/count_matrix.tsv",
-  "base_output_path": "outputs",
-  "comparisons": [
-    {
-      "name": "Case_vs_Control",
-      "group1": ["Sample_1", "Sample_2"],
-      "group2": ["Sample_3", "Sample_4"],
-      "sex_groups": ["M", "M", "F", "F"]
+    if (filtered.length === 0) {
+      container.innerHTML = '<p>No pipelines found for this tag.</p>';
+      return;
     }
-  ]
-}
-</code></pre>
 
-<h2>📊 Step 2: Launch the Pipeline</h2>
-<pre><code># In terminal or R console
-Rscript main.R
-</code></pre>
-
-<h2>⚙️ What Happens Internally</h2>
-<ul>
-  <li>🔹 Loads configuration from <code>comparisons.json</code></li>
-  <li>🔹 Reads count matrix and filters low-expression genes</li>
-  <li>🔹 For each comparison:
-    <ul>
-      <li>Runs <code>DESeq2</code> and <code>limma</code></li>
-      <li>Saves DE tables, rank files</li>
-      <li>Generates volcano plot and heatmap</li>
-      <li>Optionally performs KEGG Pathview and GSEA/ORA</li>
-    </ul>
-  </li>
-</ul>
-
-<h2>📁 Outputs Generated</h2>
-<pre>
-outputs/
-└── Case_vs_Control/
-    ├── Case_vs_Control_deseq2_results.csv
-    ├── Case_vs_Control_limma_results.csv
-    ├── Case_vs_Control_volcano_plot.tiff
-    ├── Case_vs_Control_heatmap.png
-    ├── Case_vs_Control_ranked_genes.rnk
-    ├── Pathview images (.png)
-</pre>
-
-<h2>🧼 Cleaning and Re-running</h2>
-<p>Simply delete the folder inside <code>outputs/</code> for a specific comparison and rerun the pipeline to regenerate results.</p>
-
-<h2>✅ Next: Visualizations</h2>
-<p>Continue to <code>visualization.html</code> for detailed rendering and interpretation of plots.</p>
-
-</body>
-</html>
-
-<head>
-  <meta charset="UTF-8">
-  <title>RNA-seq Visualization</title>
-  
-</head>
-<body>
-
-<h1>🎨 RNA-seq Visualization Module</h1>
-
-<h2>🔬 Purpose</h2>
-<p>This module generates plots for easier interpretation of transcriptomic changes across conditions:</p>
-<ul>
-  <li>Volcano plot – significance vs fold-change</li>
-  <li>Heatmap – top differentially expressed genes</li>
-  <li>Pathview KEGG pathway overlays</li>
-</ul>
-
-<h2>📊 Volcano Plot (DESeq2)</h2>
-<p>Uses <code>EnhancedVolcano</code> to highlight up/down-regulated genes.</p>
-
-<pre><code>EnhancedVolcano(res_df,
-  lab = rownames(res_df),
-  x = 'log2FoldChange',
-  y = 'padj',
-  pCutoff = 0.25,
-  FCcutoff = 0.3,
-  title = 'Volcano: Case_vs_Control',
-  legendPosition = 'none'
-)
-</code></pre>
-
-<h3>Example Output</h3>
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt... (truncated base64)" alt="Dummy Volcano Plot"/>
-
-<h2>🧊 Heatmap of Top DEGs</h2>
-<p>Top 50 up/down genes selected by log2FoldChange and plotted using <code>pheatmap()</code>.</p>
-
-<pre><code>heatmap_data <- counts_matrix[top_genes, samples]
-pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
-</code></pre>
-
-<h3>Example Output</h3>
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt... (truncated base64)" alt="Dummy Heatmap"/>
-
-<h2>🧬 KEGG Pathview</h2>
-<p>Uses <code>pathview</code> to overlay gene expression onto KEGG pathways. Requires internet or local XML files.</p>
-
-<pre><code>pathview(
-  gene.data = gene_list,
-  pathway.id = "hsa04610",
-  species = "hsa",
-  out.suffix = "Case_vs_Control"
-)
-</code></pre>
-
-<h3>Example Output</h3>
-<p>Check your <code>outputs/</code> directory for <code>.png</code> Pathview diagrams.</p>
-
-<h2>💡 Notes</h2>
-<ul>
-  <li>Plots are saved as TIFF/PNG under each comparison folder</li>
-  <li>Volcano/Heatmap require sufficient DEGs to render</li>
-</ul>
-
-<h2>📦 Next: ORA & GSEA</h2>
-<p>Continue to <code>enrichment.html</code> to learn about pathway-level enrichment results.</p>
-
-</body>
-</html>
-
-<head>
-  <meta charset="UTF-8">
-  <title>RNA-seq Enrichment Analysis</title>
-  
-</head>
-<body>
-
-<h1>🧠 Functional Enrichment Analysis</h1>
-<h2>🎯 Overview</h2>
-<p>This module analyzes biological meaning behind differentially expressed genes using:</p>
-<ul>
-  <li><strong>ORA</strong> (Over Representation Analysis) via <code>clusterProfiler::enricher()</code></li>
-  <li><strong>GSEA</strong> (Gene Set Enrichment Analysis) via <code>fgsea::fgsea()</code></li>
-</ul>
-
-<h2>🔎 ORA: Over Representation Analysis</h2>
-<p>ORA identifies significantly enriched pathways in up/down gene sets using GMT files.</p>
-
-<pre><code>result <- enricher(
-  gene = gene_list,
-  TERM2GENE = gmt_df,
-  pvalueCutoff = 0.05,
-  qvalueCutoff = 0.2
-)
-</code></pre>
-
-<h3>Dotplot Example</h3>
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt..." alt="Dummy ORA Dotplot"/>
-
-<h2>⚡ GSEA: Gene Set Enrichment Analysis</h2>
-<p>Ranks genes by log2FoldChange and tests for enrichment of ranked genes in each pathway.</p>
-
-<pre><code>fgseaRes <- fgsea(
-  pathways = gmt_list,
-  stats = ranked_genes,
-  minSize = 50,
-  maxSize = 500
-)
-</code></pre>
-
-<h3>Random Walk Plot (Enrichment Plot)</h3>
-<p>For top enriched gene sets (based on NES and padj), the enrichment curve is plotted.</p>
-
-<pre><code>plotEnrichment(pathways[[1]], ranked_genes) + ggtitle("Pathway Enrichment")
-</code></pre>
-
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt..." alt="Dummy Enrichment Curve"/>
-
-<h2>📁 Output Files</h2>
-<ul>
-  <li><code>ORA_results.xlsx</code>: Sheet per gene set & direction (e.g., KEGG_HYPER)</li>
-  <li><code>*_dotplot.tiff</code>: Top 15 enriched terms</li>
-  <li><code>gsea_results.csv</code>: Pathway NES, p-values</li>
-</ul>
-
-<h2>🧩 Inputs</h2>
-<ul>
-  <li><code>ranked_genes.rnk</code> for GSEA</li>
-  <li><code>upregulated_genes.csv</code> / <code>downregulated_genes.csv</code> for ORA</li>
-  <li>Gene set collections in <code>.gmt</code> format (KEGG, GO BP, Hallmarks, etc.)</li>
-</ul>
-
-<h2>⚠️ Tips</h2>
-<ul>
-  <li>Use curated gene sets relevant to your study</li>
-  <li>Review NES, padj, and pathway size carefully</li>
-  <li>Ensure gene names match the GMT format (SYMBOL or ENTREZ)</li>
-</ul>
-
-<h2>📦 Next: KEGG Pathway Overlay</h2>
-<p>Continue to <code>pathway.html</code> to learn about visualizing DE genes on KEGG diagrams using <code>pathview</code>.</p>
-
-</body>
-</html>
-
-<head>
-  <meta charset="UTF-8">
-  <title>KEGG Pathway Overlay</title>
-  
-</head>
-<body>
-
-<h1>🧬 KEGG Pathway Overlay</h1>
-<h2>📌 Overview</h2>
-<p>This module uses the <code>pathview</code> R package to overlay differential expression results onto KEGG pathways.</p>
-
-<h2>⚙️ Workflow</h2>
-<ol>
-  <li>Filter DEGs using log2FC and FDR thresholds</li>
-  <li>Map SYMBOL ➜ ENTREZ using <code>org.Hs.eg.db</code></li>
-  <li>Match with KEGG pathway IDs</li>
-  <li>Generate visual overlays with <code>pathview()</code></li>
-</ol>
-
-<h2>🧪 Code Example</h2>
-
-<pre><code>library(pathview)
-library(clusterProfiler)
-library(org.Hs.eg.db)
-
-# Convert SYMBOL to ENTREZ
-entrez_map <- bitr(gene_symbols, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = org.Hs.eg.db)
-
-# Build gene list with log2FC values
-res_df <- read.csv("group_deseq2_results.csv", row.names = 1)
-mapped <- intersect(entrez_map$SYMBOL, rownames(res_df))
-gene_list <- res_df[mapped, "log2FoldChange"]
-names(gene_list) <- entrez_map$ENTREZID[match(mapped, entrez_map$SYMBOL)]
-
-# Generate Pathview for KEGG ID
-pathview(gene.data = gene_list,
-         pathway.id = "hsa04610",
-         species = "hsa",
-         out.suffix = "group_hsa04610")
-</code></pre>
-
-<h2>📂 Output Files</h2>
-<ul>
-  <li><code>*.png</code>: KEGG pathway overlays with gene expression color scale</li>
-  <li><code>*_unmapped_symbols.csv</code>: Unmatched genes (optional)</li>
-</ul>
-
-<h2>🧭 Example Pathways</h2>
-<ul>
-  <li><strong>hsa04610</strong> – Complement & coagulation cascades</li>
-  <li><strong>hsa04611</strong> – Platelet activation</li>
-  <li><strong>hsa04060</strong> – Cytokine-cytokine receptor interaction</li>
-  <li><strong>hsa05200</strong> – Pathways in cancer</li>
-</ul>
-
-<h2>📸 Output Example</h2>
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt..." alt="Dummy Pathview Output"/>
-
-<h2>🧠 Notes</h2>
-<ul>
-  <li>Gene ID format must match pathway data – SYMBOL ➜ ENTREZ recommended</li>
-  <li>Supports pathway caching or pre-download for offline use</li>
-  <li>Color gradient = expression values (log2FC)</li>
-</ul>
-
-<h2>📘 Related Docs</h2>
-<ul>
-  <li><code>enrichment.html</code> – ORA and GSEA analysis steps</li>
-  <li><code>analysis.html</code> – Differential expression model</li>
-</ul>
-
-</body>
-</html>
-
-<head>
-  <meta charset="UTF-8">
-  <title>Pipeline Output Summary</title>
-  
-</head>
-<body>
-
-<h1>📦 Output Summary</h1>
-<h2>🗂 Directory Structure</h2>
-
-<pre><code>Analysis/
-├── logs/
-│   ├── Group1_vs_Group2_log.txt
-├── Group1_vs_Group2/
-│   ├── Group1_vs_Group2_deseq2_results.csv
-│   ├── Group1_vs_Group2_limma_results.csv
-│   ├── Group1_vs_Group2_upregulated_genes.csv
-│   ├── Group1_vs_Group2_downregulated_genes.csv
-│   ├── Group1_vs_Group2_ranked_genes.rnk
-│   ├── Group1_vs_Group2_volcano_plot.tiff
-│   ├── Group1_vs_Group2_heatmap.png
-│   ├── Group1_vs_Group2_KEGG/
-│   │   ├── hsa04610.Group1_vs_Group2_hsa04610.png
-│   │   └── ...
-│   ├── Group1_vs_Group2_unmapped_symbols.csv
-│   └── Group1_vs_Group2_ORA_results.xlsx
-</code></pre>
-
-<h2>📄 Output File Descriptions</h2>
-
-<table>
-  <thead>
-    <tr>
-      <th>File</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>_deseq2_results.csv</code></td>
-      <td>DESeq2 output with log2FC, p-value, padj for all genes</td>
-    </tr>
-    <tr>
-      <td><code>_limma_results.csv</code></td>
-      <td>Limma analysis results with moderated t-statistics</td>
-    </tr>
-    <tr>
-      <td><code>_upregulated_genes.csv</code></td>
-      <td>Genes with log2FC > 0.3 and padj < 0.25</td>
-    </tr>
-    <tr>
-      <td><code>_downregulated_genes.csv</code></td>
-      <td>Genes with log2FC < -0.3 and padj < 0.25</td>
-    </tr>
-    <tr>
-      <td><code>_ranked_genes.rnk</code></td>
-      <td>Sorted list of genes with log2FC values for GSEA</td>
-    </tr>
-    <tr>
-      <td><code>_volcano_plot.tiff</code></td>
-      <td>Volcano plot highlighting DEGs and key genes</td>
-    </tr>
-    <tr>
-      <td><code>_heatmap.png</code></td>
-      <td>Clustered heatmap of top 50 up/down DEGs</td>
-    </tr>
-    <tr>
-      <td><code>_ORA_results.xlsx</code></td>
-      <td>Enrichment results for multiple GMT gene sets</td>
-    </tr>
-    <tr>
-      <td><code>_KEGG/*.png</code></td>
-      <td>Pathview KEGG overlays (gene expression mapped)</td>
-    </tr>
-    <tr>
-      <td><code>_unmapped_symbols.csv</code></td>
-      <td>Symbols that could not be mapped to ENTREZ IDs</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2>📋 Log Files</h2>
-<ul>
-  <li>Each comparison logs processing steps, errors, and diagnostic messages</li>
-  <li>Useful for debugging and reproducibility</li>
-</ul>
-
-<h2>📌 Notes</h2>
-<ul>
-  <li>All output is organized by comparison group</li>
-  <li>All paths are relative to <code>base_output_path</code> in the config JSON</li>
-</ul>
-
-<head>
-  <meta charset="UTF-8">
-  <title>Transcriptomic Analysis: Diamond-Blackfan Anemia (DBA)</title>
-  
-</head>
-<body>
-
-
-<h1>🧬 Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)</h1>
-
-<div class="section features">
-  <h2>📘 Background</h2>
-  <p>Diamond-Blackfan Anemia (DBA) is a congenital bone marrow failure disorder caused by mutations in ribosomal protein genes such as <strong>RPS19</strong>, <strong>RPL5</strong>, and <strong>RPL11</strong>. Patients typically exhibit macrocytic anemia, physical anomalies, and increased cancer risk.</p>
-</div>
-
-<div class="section features">
-  <h2>🧪 Sample Setup</h2>
-  <table>
-    <tr><th>Group</th><th>Samples</th><th>Description</th></tr>
-    <tr><td>DBA Patients</td><td>DBA_01 to DBA_06</td><td>Confirmed DBA with RPS19 mutation</td></tr>
-    <tr><td>Healthy Controls</td><td>CTRL_01 to CTRL_06</td><td>Age-matched healthy donors</td></tr>
-  </table>
-
-  <pre><code>{
-  "name": "DBA_vs_Control",
-  "group1": ["DBA_01", "DBA_02", "DBA_03", "DBA_04", "DBA_05", "DBA_06"],
-  "group2": ["CTRL_01", "CTRL_02", "CTRL_03", "CTRL_04", "CTRL_05", "CTRL_06"],
-  "sex_groups": ["F", "F", "F", "M", "M", "M", "F", "F", "M", "M", "F", "M"]
-}
-</code></pre>
-</div>
-
-<div class="section features">
-  <h2>🧬 Differential Expression Results</h2>
-  <table>
-    <tr><th>Gene</th><th>log2FC</th><th>padj</th><th>Role</th></tr>
-    <tr><td>RPL11</td><td>-1.5</td><td>0.001</td><td>Ribosomal protein; mutated in DBA</td></tr>
-    <tr><td>CDKN1A (p21)</td><td>+2.2</td><td>0.0005</td><td>p53 target; cell cycle arrest</td></tr>
-    <tr><td>TP53</td><td>+1.7</td><td>0.004</td><td>Master tumor suppressor</td></tr>
-    <tr><td>IL6</td><td>+2.0</td><td>0.002</td><td>Inflammatory cytokine</td></tr>
-  </table>
-</div>
-
-<div class="section features">
-  <h2>🧠 Enrichment Results</h2>
-
-  <h3>ORA Top Terms</h3>
-  <table>
-    <tr><th>Gene Set</th><th>p.adjust</th><th>Category</th></tr>
-    <tr><td>GO:0006364 Ribosome biogenesis</td><td>0.0001</td><td>GO BP</td></tr>
-    <tr><td>REACTOME_p53_pathway</td><td>0.001</td><td>Reactome</td></tr>
-    <tr><td>HALLMARK_INFLAMMATORY_RESPONSE</td><td>0.003</td><td>MSigDB</td></tr>
-  </table>
-
-  <h3>GSEA Highlights</h3>
-  <ul>
-    <li><strong>p53 Signaling Pathway</strong>: NES = +2.1, padj = 0.002</li>
-    <li><strong>Ribosome Pathway</strong>: NES = -2.4, padj = 0.0008</li>
-    <li><strong>TNF Signaling via NFκB</strong>: NES = +1.9, padj = 0.01</li>
-  </ul>
-</div>
-
-<div class="section features">
-  <h2>🧬 KEGG Pathview Example</h2>
-  <p><strong>Pathway Visualized:</strong> hsa04115 — p53 Signaling Pathway</p>
-  <img src="https://www.genome.jp/kegg/pathway/hsa/hsa04115.png" alt="KEGG p53 Pathway" style="max-width: 100%;">
-</div>
-
-<div class="section features">
-  <h2>📖 Biological Interpretation</h2>
-  <ul>
-    <li>Loss of <strong>RPS19/RPL11</strong> function impairs ribosome synthesis in progenitors.</li>
-    <li>p53-mediated transcription of <code>CDKN1A</code> leads to cell cycle arrest and apoptosis.</li>
-    <li>Upregulation of <strong>inflammatory pathways</strong> may contribute to secondary immune effects.</li>
-    <li>Distinct transcriptional clustering validates biological differentiation of cases vs. controls.</li>
-  </ul>
-</div>
-
-</body>
-</html>
-
-
-
-
+    filtered.forEach(p => {
+      const card = document.createElement('div');
+      card.className = "col";
+      const tagsHTML = (p.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+      card.innerHTML = `
+        <div class="pipeline-card h-100">
+          <h5><a href="${p.link}" target="_blank">${p.name}</a></h5>
+          <p>${p.description}</p>
+          <div>${tagsHTML}</div>
+          <span class="version-badge">Version: ${p.version}</span>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+</script>
