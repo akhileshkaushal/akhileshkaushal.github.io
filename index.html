@@ -4,89 +4,102 @@
   <meta charset="UTF-8">
   <title>Akhilesh Kaushal – Pipelines</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Add to <head> -->
-<style>
-  .bg-soft-blue    { background-color: #e8f4fd; color: #003366; }
-  .bg-soft-green   { background-color: #eafaf1; color: #1e4620; }
-  .bg-soft-yellow  { background-color: #fff9e6; color: #665c00; }
-  .bg-soft-gray    { background-color: #f4f4f4; color: #333; }
-  .bg-soft-purple  { background-color: #f3e8fd; color: #4b3869; }
 
+  <!-- Custom Styling -->
   <style>
-  .pipeline-card-custom a {
-    font-weight: 600;
-    text-decoration: underline;
-    color: inherit;
-    transition: color 0.2s ease;
-  }
+    .bg-soft-blue    { background-color: #e8f4fd; color: #003366; }
+    .bg-soft-green   { background-color: #eafaf1; color: #1e4620; }
+    .bg-soft-yellow  { background-color: #fff9e6; color: #665c00; }
+    .bg-soft-gray    { background-color: #f4f4f4; color: #333; }
+    .bg-soft-purple  { background-color: #f3e8fd; color: #4b3869; }
 
-  .pipeline-card-custom a:hover {
-    color: #0077cc;
-    text-decoration: underline;
-  }
-</style>
+    .pipeline-card-custom {
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      padding: 20px;
+      height: 100%;
+    }
 
+    .pipeline-card-custom a {
+      font-weight: 600;
+      text-decoration: underline;
+      color: inherit;
+      transition: color 0.2s ease;
+    }
 
-  .tag-badge {
-    background: #ddd;
-    border-radius: 10px;
-    padding: 2px 8px;
-    font-size: 0.75rem;
-    margin-right: 5px;
-  }
-</style>
+    .pipeline-card-custom a:hover {
+      color: #0077cc;
+    }
 
-<!-- Inside <body> -->
-<div class="container" id="pipelines">
-  <h1 class="mt-4 mb-3">My Bioinformatics Pipelines</h1>
+    .tag-badge {
+      background: #ddd;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      margin-right: 5px;
+    }
+  </style>
+</head>
 
-  <div id="filter-bar" class="mb-4">
-    <!-- Buttons will be injected here -->
-  </div>
+<body>
 
-  <div class="row row-cols-1 row-cols-md-3 g-4" id="pipeline-container">
-    <!-- Cards will be injected here -->
-  </div>
-</div>
+  <!-- Injected header (WordPress link) will be loaded here -->
+  
+  <div class="container" id="pipelines">
+    <h1 class="mt-4 mb-3">My Bioinformatics Pipelines</h1>
 
-<script>
-  fetch('pipelines.json')
-    .then(response => response.json())
-    .then(data => {
-      const container = document.getElementById('pipeline-container');
-      const bgClasses = [
-        'bg-soft-blue', 'bg-soft-green', 'bg-soft-yellow',
-        'bg-soft-purple', 'bg-soft-gray'
-      ];
-
-      data.forEach((p, i) => {
-        const bgClass = bgClasses[i % bgClasses.length];
-        const card = document.createElement('div');
-        card.className = "col";
-
-        card.innerHTML = `
-  <div class="pipeline-card-custom ${bgClass}">
-    <h5>
-      <a href="${p.link}" target="_blank" style="text-decoration: underline; font-weight: 600;">
-        ${p.name} <span style="font-size: 0.85em;">🔗</span>
-      </a>
-    </h5>
-    <p>${p.description}</p>
-    <div style="margin-bottom: 8px;">
-      ${(p.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
+    <div id="filter-bar" class="mb-4">
+      <!-- Buttons will be injected here -->
     </div>
-    <small><strong>Version:</strong> ${p.version}</small>
-  </div>
-`;
 
-        container.appendChild(card);
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="pipeline-container">
+      <!-- Cards will be injected here -->
+    </div>
+  </div>
+
+  <!-- Dynamic pipeline rendering -->
+  <script>
+    fetch('pipelines.json')
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('pipeline-container');
+        const bgClasses = [
+          'bg-soft-blue', 'bg-soft-green', 'bg-soft-yellow',
+          'bg-soft-purple', 'bg-soft-gray'
+        ];
+
+        data.forEach((p, i) => {
+          const bgClass = bgClasses[i % bgClasses.length];
+          const card = document.createElement('div');
+          card.className = "col";
+
+          card.innerHTML = `
+            <div class="pipeline-card-custom ${bgClass}">
+              <h5>
+                <a href="${p.link}" target="_blank">
+                  ${p.name} <span style="font-size: 0.85em;">🔗</span>
+                </a>
+              </h5>
+              <p>${p.description}</p>
+              <div style="margin-bottom: 8px;">
+                ${(p.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
+              </div>
+              <small><strong>Version:</strong> ${p.version}</small>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
+        console.error(err);
       });
-    })
-    .catch(err => {
-      document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
-      console.error(err);
-    });
-</script>
-<script src="js/load-header.js"></script>
+  </script>
+
+  <!-- Shared header loader -->
+  <script src="js/load-header.js"></script>
+</body>
 </html>
