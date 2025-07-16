@@ -44,69 +44,39 @@
     <!-- Cards will be injected here -->
   </div>
 </div>
-
- <!-- Add just before </body> -->
-
-<!-- Before </body> -->
 <script>
-  let pipelines = [];
-  let selectedTag = 'All';
-
   fetch('pipelines.json')
     .then(response => response.json())
     .then(data => {
-      pipelines = data;
-      const allTags = new Set(data.flatMap(p => p.tags || []));
-      renderFilterBar(['All', ...Array.from(allTags).sort()]);
-      renderPipelines();
+      const container = document.getElementById('pipeline-container');
+      const bgClasses = ['bg-primary', 'bg-success', 'bg-warning', 'bg-info', 'bg-secondary'];
+      data.forEach((p, i) => {
+        const card = document.createElement('div');
+        card.className = "col";
+
+        const bgClass = bgClasses[i % bgClasses.length];
+
+        card.innerHTML = `
+          <div class="card text-white ${bgClass} h-100 shadow">
+            <div class="card-body">
+              <h5 class="card-title"><a href="${p.link}" class="text-white text-decoration-underline" target="_blank">${p.name}</a></h5>
+              <p class="card-text">${p.description}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+              <div>${(p.tags || []).map(tag => `<span class="badge bg-light text-dark me-1">${tag}</span>`).join('')}</div>
+              <small class="text-white">v${p.version}</small>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    })
+    .catch(err => {
+      document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
+      console.error(err);
     });
-
-  function renderFilterBar(tags) {
-    const filterBar = document.getElementById('filter-bar');
-    tags.forEach(tag => {
-      const btn = document.createElement('button');
-      btn.className = 'filter-btn';
-      btn.textContent = tag;
-      btn.onclick = () => {
-        selectedTag = tag;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderPipelines();
-      };
-      if (tag === 'All') btn.classList.add('active');
-      filterBar.appendChild(btn);
-    });
-  }
-
-  function renderPipelines() {
-    const container = document.getElementById('pipeline-container');
-    container.innerHTML = '';
-
-    const filtered = selectedTag === 'All'
-      ? pipelines
-      : pipelines.filter(p => (p.tags || []).includes(selectedTag));
-
-    if (filtered.length === 0) {
-      container.innerHTML = '<p>No pipelines found for this tag.</p>';
-      return;
-    }
-
-    filtered.forEach(p => {
-      const card = document.createElement('div');
-      card.className = "col";
-      const tagsHTML = (p.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
-      card.innerHTML = `
-        <div class="pipeline-card h-100">
-          <h5><a href="${p.link}" target="_blank">${p.name}</a></h5>
-          <p>${p.description}</p>
-          <div>${tagsHTML}</div>
-          <span class="version-badge">Version: ${p.version}</span>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  }
 </script>
+
 <script src="js/load-header.js"></script>
 
 </html>
