@@ -1,0 +1,23 @@
+[
+  {
+    "name": "RNAseq-Pipeline",
+    "description": "End-to-end RNA-seq analysis using DESeq2, STAR, Salmon, and GSEA.",
+    "version": "1.2.0",
+    "link": "https://github.com/akhileshkaushal/RNAseq-Pipeline",
+    "tags": ["RNA-seq", "Transcriptomics", "DESeq2"]
+  },
+  {
+    "name": "Methylation-Pipeline",
+    "description": "EPIC array normalization, probe QC, and differential methylation analysis.",
+    "version": "0.9.1",
+    "link": "https://github.com/akhileshkaushal/methylation-pipeline",
+    "tags": ["Methylation", "EPIC Array", "Illumina"]
+  },
+  {
+    "name": "HiPlex Demultiplexer",
+    "description": "Demultiplexing HiPlex antibody-tagged reads with dual-index parsing logic.",
+    "version": "1.0.0",
+    "link": "#",
+    "tags": ["HiPlex", "Cut&Tag", "Demultiplexing"]
+  }
+]

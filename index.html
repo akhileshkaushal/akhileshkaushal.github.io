@@ -1,100 +1,75 @@
-<!-- Add to <head> -->
-<style>
-  .tag {
-    display: inline-block;
-    background-color: #e0f7fa;
-    color: #00796b;
-    padding: 2px 8px;
-    font-size: 0.75rem;
-    border-radius: 12px;
-    margin-right: 5px;
-    margin-top: 5px;
-  }
-  .filter-btn {
-    margin: 5px;
-    padding: 5px 10px;
-    font-size: 0.85rem;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  .filter-btn.active {
-    background-color: #004466;
-    color: white;
-  }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Akhilesh Kaushal – Pipelines</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: 'Segoe UI', sans-serif;
+      padding-top: 60px;
+    }
+    .navbar {
+      background-color: #004466;
+    }
+    .navbar-brand, .nav-link {
+      color: #fff !important;
+    }
+    .pipeline-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 30px;
+      transition: transform 0.2s;
+    }
+    .pipeline-card:hover {
+      transform: translateY(-5px);
+    }
+    .version-badge {
+      font-size: 0.85em;
+      background: #e6f2ff;
+      color: #005580;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
 
-<!-- Inside <body> -->
+  <!-- Inside <body> -->
 <div class="container" id="pipelines">
-  <h1 class="mt-4 mb-3">My Bioinformatics Pipelines</h1>
-
-  <div id="filter-bar" class="mb-4">
-    <!-- Buttons will be injected here -->
-  </div>
-
+  <h1 class="mt-4 mb-4">My Bioinformatics Pipelines</h1>
   <div class="row row-cols-1 row-cols-md-3 g-4" id="pipeline-container">
     <!-- Cards will be injected here -->
   </div>
 </div>
 
-<!-- Before </body> -->
-<script>
-  let pipelines = [];
-  let selectedTag = 'All';
+<!-- Add just before </body> -->
 
+<script>
   fetch('pipelines.json')
     .then(response => response.json())
     .then(data => {
-      pipelines = data;
-      const allTags = new Set(data.flatMap(p => p.tags || []));
-      renderFilterBar(['All', ...Array.from(allTags).sort()]);
-      renderPipelines();
+      const container = document.getElementById('pipeline-container');
+      data.forEach(p => {
+        const card = document.createElement('div');
+        card.className = "col";
+        card.innerHTML = `
+          <div class="pipeline-card h-100">
+            <h5><a href="${p.link}" target="_blank">${p.name}</a></h5>
+            <p>${p.description}</p>
+            <span class="version-badge">Version: ${p.version}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    })
+    .catch(err => {
+      document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
+      console.error(err);
     });
-
-  function renderFilterBar(tags) {
-    const filterBar = document.getElementById('filter-bar');
-    tags.forEach(tag => {
-      const btn = document.createElement('button');
-      btn.className = 'filter-btn';
-      btn.textContent = tag;
-      btn.onclick = () => {
-        selectedTag = tag;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderPipelines();
-      };
-      if (tag === 'All') btn.classList.add('active');
-      filterBar.appendChild(btn);
-    });
-  }
-
-  function renderPipelines() {
-    const container = document.getElementById('pipeline-container');
-    container.innerHTML = '';
-
-    const filtered = selectedTag === 'All'
-      ? pipelines
-      : pipelines.filter(p => (p.tags || []).includes(selectedTag));
-
-    if (filtered.length === 0) {
-      container.innerHTML = '<p>No pipelines found for this tag.</p>';
-      return;
-    }
-
-    filtered.forEach(p => {
-      const card = document.createElement('div');
-      card.className = "col";
-      const tagsHTML = (p.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
-      card.innerHTML = `
-        <div class="pipeline-card h-100">
-          <h5><a href="${p.link}" target="_blank">${p.name}</a></h5>
-          <p>${p.description}</p>
-          <div>${tagsHTML}</div>
-          <span class="version-badge">Version: ${p.version}</span>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  }
 </script>
+</html>
