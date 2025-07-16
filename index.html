@@ -49,27 +49,64 @@
 
 <!-- Add just before </body> -->
 
+<!-- Before </body> -->
 <script>
+  let pipelines = [];
+  let selectedTag = 'All';
+
   fetch('pipelines.json')
     .then(response => response.json())
     .then(data => {
-      const container = document.getElementById('pipeline-container');
-      data.forEach(p => {
-        const card = document.createElement('div');
-        card.className = "col";
-        card.innerHTML = `
-          <div class="pipeline-card h-100">
-            <h5><a href="${p.link}" target="_blank">${p.name}</a></h5>
-            <p>${p.description}</p>
-            <span class="version-badge">Version: ${p.version}</span>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    })
-    .catch(err => {
-      document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
-      console.error(err);
+      pipelines = data;
+      const allTags = new Set(data.flatMap(p => p.tags || []));
+      renderFilterBar(['All', ...Array.from(allTags).sort()]);
+      renderPipelines();
     });
+
+  function renderFilterBar(tags) {
+    const filterBar = document.getElementById('filter-bar');
+    tags.forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn';
+      btn.textContent = tag;
+      btn.onclick = () => {
+        selectedTag = tag;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderPipelines();
+      };
+      if (tag === 'All') btn.classList.add('active');
+      filterBar.appendChild(btn);
+    });
+  }
+
+  function renderPipelines() {
+    const container = document.getElementById('pipeline-container');
+    container.innerHTML = '';
+
+    const filtered = selectedTag === 'All'
+      ? pipelines
+      : pipelines.filter(p => (p.tags || []).includes(selectedTag));
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<p>No pipelines found for this tag.</p>';
+      return;
+    }
+
+    filtered.forEach(p => {
+      const card = document.createElement('div');
+      card.className = "col";
+      const tagsHTML = (p.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+      card.innerHTML = `
+        <div class="pipeline-card h-100">
+          <h5><a href="${p.link}" target="_blank">${p.name}</a></h5>
+          <p>${p.description}</p>
+          <div>${tagsHTML}</div>
+          <span class="version-badge">Version: ${p.version}</span>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
 </script>
 </html>
