@@ -4,8 +4,9 @@
     "name": "RNAseq-Pipeline",
     "description": "RNA-seq analysis using DESeq2, STAR, Salmon, GSEA.",
     "version": "1.2.0",
-    "link": "pipeline.html?id=rna-seq",
+    "link": "transcriptomics.html",
     "detail_html": "transcriptomics.html",
+	"tags": ["Transcriptomic", "DESeq2", "edgeR","GSEA"]
     "details": {
       "steps": [
         "Quality control with FastQC and MultiQC",
@@ -23,7 +24,7 @@
     "name": "Methylation-Pipeline",
     "description": "EPIC array normalization and DMP analysis.",
     "version": "0.9.1",
-    "link": "pipeline.html?id=methylation",
+    "link": "methylation.html",
     "detail_html": "methylation.html",
     "tags": ["Methylation", "Illumina", "EPIC"],
     "details": {
