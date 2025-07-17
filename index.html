@@ -52,7 +52,7 @@
     <h1 class="mt-4 mb-3">My Bioinformatics Pipelines</h1>
 
     <div id="filter-bar" class="mb-4">
-      <!-- Buttons will be injected here -->
+      <!-- Buttons will be injected here if needed -->
     </div>
 
     <div class="row row-cols-1 row-cols-md-3 g-4" id="pipeline-container">
@@ -90,6 +90,7 @@
               <small><strong>Version:</strong> ${p.version}</small>
             </div>
           `;
+
           container.appendChild(card);
         });
       })
