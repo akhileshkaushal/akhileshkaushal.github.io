@@ -2,117 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>RNA-seq Pipeline | Akhilesh Kaushal</title>
+  <title>Transcriptomic-Pipeline | Akhilesh Kaushal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     body {
-      font-family: "Segoe UI", sans-serif;
       background-color: #f9f9f9;
-      color: #111;
-      line-height: 1.6;
-      padding: 2rem;
-    }
-    h1, h2 {
-      color: #2c3e50;
-      text-align: center;
-      margin-bottom: 1rem;
+      font-family: 'Segoe UI', sans-serif;
+      padding-top: 40px;
     }
     .section {
-      max-width: 1000px;
-      margin: 2rem auto;
-    }
-    code {
-      background-color: #f4f4f4;
-      color: #c7254e;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: Consolas, monospace;
-    }
-    pre {
-      background-color: #f9f9f9;
-      padding: 15px;
-      border-left: 5px solid #ccc;
-      overflow-x: auto;
-      border-radius: 5px;
-      font-family: Consolas, monospace;
-    }
-    .metadata {
-      text-align: center;
-      font-size: 1.1rem;
       margin-bottom: 2rem;
     }
-    a {
-      color: #0077cc;
+    .tag-badge {
+      background: #ddd;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      margin-right: 6px;
+    }
+    a.back-link {
+      font-size: 0.9rem;
       text-decoration: none;
+      color: #004466;
     }
-    a:hover {
+    a.back-link:hover {
       text-decoration: underline;
-    }
-    ul, ol {
-      margin-left: 2rem;
-    }
-    table {
-      width: 100%;
-      margin-top: 1rem;
-      border-collapse: collapse;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
     }
   </style>
 </head>
 
 <body>
 
-  
   <div class="container">
     <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
+
     <h1 class="mt-4">Transcriptomic-Pipeline</h1>
+    <p class="text-muted mb-3">A pipeline for preprocessing and differential analysis of RNA sequencing data generated via NextSeq or HiSeq.</p>
 
-  <div class="section">
-    <h2>📌 Overview</h2>
-    <p>This pipeline provides a comprehensive framework for transcriptomic differential expression and enrichment analysis using RNA-Seq count data. It uses DESeq2 and limma for statistical modeling, and clusterProfiler and fgsea for functional enrichment. Outputs include enhanced volcano plots, heatmaps, and KEGG pathway visualizations.</p>
+    <div class="mb-3">
+      <span class="tag-badge">Transcriptomic</span>
+	  <span class="tag-badge">RNA-Seq</span>
+	  <span class="tag-badge">STAR</span>
+	  <span class="tag-badge">Kallisto</span>
+	  <span class="tag-badge">Subread</span>
+      <span class="tag-badge">DESeq2</span>
+      <span class="tag-badge">EdgeR</span>
+      </div>
+	<div class="section">
+      <h3>Overview</h3>
+      <p>
+        This pipeline provides a comprehensive framework for transcriptomic differential expression and enrichment analysis using RNA-Seq count data. It uses DESeq2 and limma for statistical modeling, and clusterProfiler and fgsea for functional enrichment. Outputs include enhanced volcano plots, heatmaps, and KEGG pathway visualizations.</p>
+      </p>
+    </div>
+
+  <div class="section features">
+    <h2> Features</h2>
+    <ul>
+      <li>Reads configuration from a structured JSON file</li>
+      <li>Supports multiple comparisons across groups</li>
+      <li>Handles sex as a covariate when mixed genders are present</li>
+      <li>Performs DE analysis using both <code>DESeq2</code> and <code>limma-voom</code></li>
+      <li>Generates enhanced volcano plots and heatmaps</li>
+      <li>Saves DEGs (up/down-regulated), RANK files for GSEA</li>
+      <li>Performs batch <code>ORA</code> and <code>GSEA</code> using custom GMT files</li>
+      <li>Pathview visualizations of KEGG pathways with mapped log2 fold changes</li>
+      <li>Extensive logging and modular design for future extension</li>
+    </ul>
   </div>
 
-  <div class="section">
-    <h2>🚀 Features</h2>
+  <div class="section features">
+    <h2> Tools & Libraries Used</h2>
     <ul>
-      <li>JSON-based configuration for comparisons</li>
-      <li>Sex as covariate support</li>
-      <li>DE analysis with <code>DESeq2</code> and <code>limma-voom</code></li>
-      <li>Batch GSEA and ORA with <code>fgsea</code> and <code>clusterProfiler</code></li>
-      <li>Pathview KEGG overlays</li>
+      <li><code>R</code>, <code>Rscript</code>, <code>DESeq2</code>, <code>limma</code>, <code>edgeR</code> for statistical modeling</li>
+      <li><code>EnhancedVolcano</code>, <code>pheatmap</code> for visualization</li>
+      <li><code>clusterProfiler</code>, <code>fgsea</code> for enrichment analysis</li>
+      <li><code>pathview</code> for KEGG visualizations</li>
+      <li><code>jsonlite</code>, <code>openxlsx</code>, <code>dplyr</code> for data processing</li>
+    </ul>
+  </div>
+
+  <div class="section features">
+    <h2> Input Requirements</h2>
+    <ul>
+      <li>A tab-delimited RNA-seq count matrix (samples as columns, genes as rows)</li>
+      <li>A <code>comparisons.json</code> configuration file specifying group comparisons</li>
+      <li>Optional: GSEA/ORA config file (<code>gsea_config.json</code>) and pathway <code>.gmt</code> files</li>
     </ul>
   </div>
 
   <div class="section">
-    <h2>🛠 Tools & Libraries Used</h2>
-    <ul>
-      <li><code>DESeq2</code>, <code>limma</code>, <code>edgeR</code></li>
-      <li><code>EnhancedVolcano</code>, <code>pheatmap</code></li>
-      <li><code>clusterProfiler</code>, <code>fgsea</code>, <code>pathview</code></li>
-      <li><code>jsonlite</code>, <code>openxlsx</code>, <code>dplyr</code></li>
-    </ul>
-  </div>
-
-  <div class="section">
-    <h2>📂 Input Requirements</h2>
-    <ul>
-      <li>Count matrix (TSV format)</li>
-      <li><code>comparisons.json</code> for group setup</li>
-      <li>Optional: <code>gsea_config.json</code>, custom <code>.gmt</code> files</li>
-    </ul>
-  </div>
-
-  <div class="section">
-    <h2>📤 Output Summary</h2>
+    <h2> Output Summary</h2>
     <ul>
       <li>Differential gene expression tables</li>
       <li>Up/downregulated gene lists</li>
@@ -166,10 +147,7 @@ outputs/
 │   └── *_log.txt
 </pre>
 
-<div class="section features">
-<h2>🌐 GitHub Repository</h2>
-<p>All scripts, configuration files, and modules are versioned and hosted on GitHub:</p>
-<p><a href="https://github.com/akhilesh-kaushal/rnaseq-pipeline" target="_blank">🔗 github.com/akhilesh-kaushal/rnaseq-pipeline</a></p>
+
 
 <head>
   <meta charset="UTF-8">
@@ -178,8 +156,8 @@ outputs/
 </head>
 <body>
 
-<h1>📦 Installation Guide</h1>
-<h2>🔧 Prerequisites</h2>
+<h1>Installation Guide</h1>
+<h2> Prerequisites</h2>
 <div class="section features">
 <p>Before running the pipeline, ensure the following software are installed:</p>
 <ul>
@@ -188,12 +166,12 @@ outputs/
   <li>Git (for cloning the repository)</li>
 </ul>
 
-<h2>📁 Clone the Repository</h2>
+<h2> Clone the Repository</h2>
 <pre><code>git clone https://github.com/akhilesh-kaushal/rnaseq-pipeline.git
 cd rnaseq-pipeline
 </code></pre>
 
-<h2>📦 Install Required R Packages</h2>
+<h2>Install Required R Packages</h2>
 <div class="section features">
 <p>Open R or RStudio and run the following:</p>
 
@@ -218,7 +196,7 @@ install.packages(c("jsonlite", "ggplot2", "dplyr", "tibble", "tools", "rmarkdown
   <li>Ensure your HTSeq or featureCounts matrix is correctly formatted</li>
 </ul>
 
-<h2>🧪 Example Directory</h2>
+<h2> Example Directory</h2>
 <pre>
 rnaseq-pipeline/
 ├── main.R
@@ -241,8 +219,8 @@ rnaseq-pipeline/
 </head>
 <body>
 
-<h1>🚀 Running the RNA-seq Pipeline</h1>
-<h2>🎯 Main Entry Script: <code>main.R</code></h2>
+<h1> Running the RNA-seq Pipeline</h1>
+<h2> Main Entry Script: <code>main.R</code></h2>
 <p>This script orchestrates all modules – data loading, differential expression (DE), visualization, and enrichment.</p>
 
 <h2>📝 Step 1: Configure the Comparison JSON</h2>
@@ -261,7 +239,7 @@ rnaseq-pipeline/
 }
 </code></pre>
 
-<h2>📊 Step 2: Launch the Pipeline</h2>
+<h2> Step 2: Launch the Pipeline</h2>
 <pre><code># In terminal or R console
 Rscript main.R
 </code></pre>
@@ -292,7 +270,7 @@ outputs/
     ├── Pathview images (.png)
 </pre>
 
-<h2>🧼 Cleaning and Re-running</h2>
+<h2> Cleaning and Re-running</h2>
 <p>Simply delete the folder inside <code>outputs/</code> for a specific comparison and rerun the pipeline to regenerate results.</p>
 
 <h2>✅ Next: Visualizations</h2>
@@ -308,7 +286,7 @@ outputs/
 </head>
 <body>
 
-<h1>🎨 RNA-seq Visualization Module</h1>
+<h1> RNA-seq Visualization Module</h1>
 
 <h2>🔬 Purpose</h2>
 <p>This module generates plots for easier interpretation of transcriptomic changes across conditions:</p>
@@ -332,18 +310,12 @@ outputs/
 )
 </code></pre>
 
-<h3>Example Output</h3>
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt... (truncated base64)" alt="Dummy Volcano Plot"/>
-
 <h2>🧊 Heatmap of Top DEGs</h2>
 <p>Top 50 up/down genes selected by log2FoldChange and plotted using <code>pheatmap()</code>.</p>
 
 <pre><code>heatmap_data <- counts_matrix[top_genes, samples]
 pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
 </code></pre>
-
-<h3>Example Output</h3>
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt... (truncated base64)" alt="Dummy Heatmap"/>
 
 <h2>🧬 KEGG Pathview</h2>
 <p>Uses <code>pathview</code> to overlay gene expression onto KEGG pathways. Requires internet or local XML files.</p>
@@ -365,7 +337,7 @@ pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
   <li>Volcano/Heatmap require sufficient DEGs to render</li>
 </ul>
 
-<h2>📦 Next: ORA & GSEA</h2>
+<h2> Next: ORA & GSEA</h2>
 <p>Continue to <code>enrichment.html</code> to learn about pathway-level enrichment results.</p>
 
 </body>
@@ -378,15 +350,15 @@ pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
 </head>
 <body>
 
-<h1>🧠 Functional Enrichment Analysis</h1>
-<h2>🎯 Overview</h2>
+<h1> Functional Enrichment Analysis</h1>
+<h2> Overview</h2>
 <p>This module analyzes biological meaning behind differentially expressed genes using:</p>
 <ul>
   <li><strong>ORA</strong> (Over Representation Analysis) via <code>clusterProfiler::enricher()</code></li>
   <li><strong>GSEA</strong> (Gene Set Enrichment Analysis) via <code>fgsea::fgsea()</code></li>
 </ul>
 
-<h2>🔎 ORA: Over Representation Analysis</h2>
+<h2> ORA: Over Representation Analysis</h2>
 <p>ORA identifies significantly enriched pathways in up/down gene sets using GMT files.</p>
 
 <pre><code>result <- enricher(
@@ -397,10 +369,7 @@ pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
 )
 </code></pre>
 
-<h3>Dotplot Example</h3>
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt..." alt="Dummy ORA Dotplot"/>
-
-<h2>⚡ GSEA: Gene Set Enrichment Analysis</h2>
+<h2> GSEA: Gene Set Enrichment Analysis</h2>
 <p>Ranks genes by log2FoldChange and tests for enrichment of ranked genes in each pathway.</p>
 
 <pre><code>fgseaRes <- fgsea(
@@ -440,7 +409,7 @@ pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
   <li>Ensure gene names match the GMT format (SYMBOL or ENTREZ)</li>
 </ul>
 
-<h2>📦 Next: KEGG Pathway Overlay</h2>
+<h2> Next: KEGG Pathway Overlay</h2>
 <p>Continue to <code>pathway.html</code> to learn about visualizing DE genes on KEGG diagrams using <code>pathview</code>.</p>
 
 </body>
@@ -454,7 +423,7 @@ pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
 <body>
 
 <h1>🧬 KEGG Pathway Overlay</h1>
-<h2>📌 Overview</h2>
+<h2> Overview</h2>
 <p>This module uses the <code>pathview</code> R package to overlay differential expression results onto KEGG pathways.</p>
 
 <h2>⚙️ Workflow</h2>
@@ -465,7 +434,7 @@ pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
   <li>Generate visual overlays with <code>pathview()</code></li>
 </ol>
 
-<h2>🧪 Code Example</h2>
+<h2> Code Example</h2>
 
 <pre><code>library(pathview)
 library(clusterProfiler)
@@ -493,7 +462,7 @@ pathview(gene.data = gene_list,
   <li><code>*_unmapped_symbols.csv</code>: Unmatched genes (optional)</li>
 </ul>
 
-<h2>🧭 Example Pathways</h2>
+<h2> Example Pathways</h2>
 <ul>
   <li><strong>hsa04610</strong> – Complement & coagulation cascades</li>
   <li><strong>hsa04611</strong> – Platelet activation</li>
@@ -501,10 +470,10 @@ pathview(gene.data = gene_list,
   <li><strong>hsa05200</strong> – Pathways in cancer</li>
 </ul>
 
-<h2>📸 Output Example</h2>
+<h2> Output Example</h2>
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt..." alt="Dummy Pathview Output"/>
 
-<h2>🧠 Notes</h2>
+<h2> Notes</h2>
 <ul>
   <li>Gene ID format must match pathway data – SYMBOL ➜ ENTREZ recommended</li>
   <li>Supports pathway caching or pre-download for offline use</li>
@@ -527,7 +496,7 @@ pathview(gene.data = gene_list,
 </head>
 <body>
 
-<h1>📦 Output Summary</h1>
+<h1> Output Summary</h1>
 <h2>🗂 Directory Structure</h2>
 
 <pre><code>Analysis/
@@ -601,13 +570,14 @@ pathview(gene.data = gene_list,
   </tbody>
 </table>
 
+
 <h2>📋 Log Files</h2>
 <ul>
   <li>Each comparison logs processing steps, errors, and diagnostic messages</li>
   <li>Useful for debugging and reproducibility</li>
 </ul>
 
-<h2>📌 Notes</h2>
+<h2> Notes</h2>
 <ul>
   <li>All output is organized by comparison group</li>
   <li>All paths are relative to <code>base_output_path</code> in the config JSON</li>
@@ -621,15 +591,15 @@ pathview(gene.data = gene_list,
 <body>
 
 
-<h1>🧬 Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)</h1>
+<h1> Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)</h1>
 
 <div class="section features">
-  <h2>📘 Background</h2>
+  <h2> Background</h2>
   <p>Diamond-Blackfan Anemia (DBA) is a congenital bone marrow failure disorder caused by mutations in ribosomal protein genes such as <strong>RPS19</strong>, <strong>RPL5</strong>, and <strong>RPL11</strong>. Patients typically exhibit macrocytic anemia, physical anomalies, and increased cancer risk.</p>
 </div>
 
 <div class="section features">
-  <h2>🧪 Sample Setup</h2>
+  <h2> Sample Setup</h2>
   <table>
     <tr><th>Group</th><th>Samples</th><th>Description</th></tr>
     <tr><td>DBA Patients</td><td>DBA_01 to DBA_06</td><td>Confirmed DBA with RPS19 mutation</td></tr>
@@ -646,7 +616,7 @@ pathview(gene.data = gene_list,
 </div>
 
 <div class="section features">
-  <h2>🧬 Differential Expression Results</h2>
+  <h2> Differential Expression Results</h2>
   <table>
     <tr><th>Gene</th><th>log2FC</th><th>padj</th><th>Role</th></tr>
     <tr><td>RPL11</td><td>-1.5</td><td>0.001</td><td>Ribosomal protein; mutated in DBA</td></tr>
@@ -657,7 +627,7 @@ pathview(gene.data = gene_list,
 </div>
 
 <div class="section features">
-  <h2>🧠 Enrichment Results</h2>
+  <h2> Enrichment Results</h2>
 
   <h3>ORA Top Terms</h3>
   <table>
@@ -676,13 +646,13 @@ pathview(gene.data = gene_list,
 </div>
 
 <div class="section features">
-  <h2>🧬 KEGG Pathview Example</h2>
+  <h2> KEGG Pathview Example</h2>
   <p><strong>Pathway Visualized:</strong> hsa04115 — p53 Signaling Pathway</p>
   <img src="https://www.genome.jp/kegg/pathway/hsa/hsa04115.png" alt="KEGG p53 Pathway" style="max-width: 100%;">
 </div>
 
 <div class="section features">
-  <h2>📖 Biological Interpretation</h2>
+  <h2> Biological Interpretation</h2>
   <ul>
     <li>Loss of <strong>RPS19/RPL11</strong> function impairs ribosome synthesis in progenitors.</li>
     <li>p53-mediated transcription of <code>CDKN1A</code> leads to cell cycle arrest and apoptosis.</li>
@@ -691,6 +661,11 @@ pathview(gene.data = gene_list,
   </ul>
 </div>
 
+<div class="section text-end">
+      <a href="https://github.com/akhileshkaushal/transcriptomic-pipeline" class="btn btn-outline-dark" target="_blank">
+        View on GitHub
+      </a>
+    </div>
 </body>
 </html>
 
