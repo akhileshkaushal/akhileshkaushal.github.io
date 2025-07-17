@@ -57,9 +57,7 @@
     ],
     "repo": "https://github.com/akhileshkaushal/hiplex-demux",
     "usage": "python hiplex_demux.py --input fastq_dir --output output_dir --index-table indices.csv"
-  }
-}
-
-}
+   }
+ }
 
 ]
