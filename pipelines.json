@@ -38,5 +38,28 @@
       "repo": "https://github.com/akhileshkaushal/methylation-pipeline",
       "usage": "Rscript run_pipeline.R config.yml"
     }
+  },
+ {
+  "id": "hiplex-demux",
+  "name": "HiPlex Demultiplexer",
+  "description": "A Python tool for demultiplexing custom barcoded HiPlex sequencing reads.",
+  "version": "1.0.0",
+  "link": "hiplex.html",
+  "detail_html": "hiplex.html",
+  "tags": ["HiPlex", "Demultiplexing", "FASTQ", "Indexing"],
+  "details": {
+    "steps": [
+      "Parse FASTQ headers for embedded i5 and i7 indices",
+      "Match against a sample index table",
+      "Generate demultiplexed FASTQ files per sample",
+      "Support for gzip-compressed input",
+      "Compatible with Docker and HPC environments"
+    ],
+    "repo": "https://github.com/akhileshkaushal/hiplex-demux",
+    "usage": "python hiplex_demux.py --input fastq_dir --output output_dir --index-table indices.csv"
   }
+}
+
+}
+
 ]
