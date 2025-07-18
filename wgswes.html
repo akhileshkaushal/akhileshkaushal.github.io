@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WGS/WES Variant Calling | Akhilesh Kaushal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: 'Segoe UI', sans-serif;
+      padding-top: 40px;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .tag-badge {
+      background: #ddd;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      margin-right: 6px;
+    }
+    a.back-link {
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: #004466;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- wgswes_intro.html -->
+<!-- wgs_intro.html -->
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
+
+  <h1 class="mt-4">WGS/WES Variant Calling Pipeline</h1>
+  <p><strong>Author:</strong> Akhilesh Kaushal<br>
+  <strong>Version:</strong> 1.0.0</p>
+
+  <p class="text-muted mb-3">
+    A comprehensive pipeline for variant discovery using Whole Genome Sequencing (WGS) and Whole Exome Sequencing (WES) data, supporting both germline and somatic variant calling workflows, with or without matched normal samples.
+  </p>
+
+  <div class="mb-3">
+    <span class="tag-badge">WGS</span>
+    <span class="tag-badge">WES</span>
+    <span class="tag-badge">Germline</span>
+    <span class="tag-badge">Somatic</span>
+    <span class="tag-badge">GATK</span>
+    <span class="tag-badge">Apptainer</span>
+  </div>
+
+  <div class="section">
+    <h2>Introduction</h2>
+    <p>
+      The rapid expansion of next-generation sequencing (NGS) technologies has made WGS and WES indispensable tools in genomic research and clinical diagnostics. This pipeline is designed to support variant calling workflows across diverse experimental designs:
+    </p>
+    <ul>
+      <li><strong>Germline variant calling</strong> for population-scale or rare disease studies</li>
+      <li><strong>Somatic variant calling</strong> for cancer genomics with or without matched normal samples</li>
+    </ul>
+
+    <p>
+      Built on GATK best practices, this pipeline incorporates high-quality preprocessing, robust variant discovery methods, and extensive support for downstream annotation and filtering.
+    </p>
+  </div>
+
+  <div class="section">
+    <h3>Supported Data Types</h3>
+    <ul>
+      <li><strong>WGS</strong>: Whole-genome sequencing (30x coverage typical)</li>
+      <li><strong>WES</strong>: Whole-exome sequencing with target capture kits (e.g., Agilent SureSelect, IDT xGen)</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Experimental Scenarios</h3>
+    <ul>
+      <li><strong>Germline:</strong> Single or multi-sample variant calling using HaplotypeCaller in GVCF mode</li>
+      <li><strong>Somatic (Tumor/Normal):</strong> Matched tumor-normal pairs using Mutect2</li>
+      <li><strong>Somatic (Tumor-only):</strong> Tumor-only mode with panel of normals and population allele frequency filtering</li>
+    </ul>
+  </div>
+</div>
+<!-- wgs_steps.html -->
+<div class="container">
+  <div class="section">
+    <h2>Step-by-Step Workflow</h2>
+    <p>
+      This section describes the standard processing steps for WGS/WES data. The pipeline supports both germline and somatic workflows, dynamically configured via a YAML settings file.
+    </p>
+  </div>
+
+  <div class="section">
+    <h3>1. Quality Control of Raw Reads</h3>
+    <ul>
+      <li>Initial QC using <code>FastQC</code> on paired-end FASTQ files</li>
+      <li>Summarize metrics across samples using <code>MultiQC</code></li>
+    </ul>
+    <pre><code>fastqc sample_R1.fastq.gz sample_R2.fastq.gz -o qc/
+multiqc qc/</code></pre>
+  </div>
+
+  <div class="section">
+    <h3>2. Adapter Trimming and Filtering</h3>
+    <ul>
+      <li>Trim adapters and low-quality bases using <code>fastp</code> or <code>Trimmomatic</code></li>
+      <li>Optional poly-G trimming for NovaSeq data</li>
+    </ul>
+    <pre><code>fastp -i sample_R1.fastq.gz -I sample_R2.fastq.gz \
+-o trimmed_R1.fq.gz -O trimmed_R2.fq.gz --detect_adapter_for_pe</code></pre>
+  </div>
+
+  <div class="section">
+    <h3>3. Alignment to Reference Genome</h3>
+    <ul>
+      <li>Align reads using <code>BWA-MEM2</code> against a pre-indexed reference genome (e.g., GRCh38 or hg19)</li>
+      <li>Sort and index BAM using <code>samtools</code></li>
+    </ul>
+    <pre><code>bwa-mem2 mem -t 16 ref.fa trimmed_R1.fq.gz trimmed_R2.fq.gz | \
+samtools sort -o sample.bam</code></pre>
+  </div>
+
+  <div class="section">
+    <h3>4. Mark Duplicates and BQSR</h3>
+    <ul>
+      <li>Use <code>GATK MarkDuplicatesSpark</code> or <code>Picard MarkDuplicates</code></li>
+      <li>Perform base quality score recalibration (BQSR) using known variant sites (dbSNP, Mills, 1000G indels)</li>
+    </ul>
+    <pre><code>gatk MarkDuplicatesSpark -I sample.bam -O dedup.bam -M metrics.txt
+gatk BaseRecalibrator -I dedup.bam -R ref.fa \
+--known-sites dbsnp.vcf --known-sites mills.vcf -O recal_data.table</code></pre>
+  </div>
+
+  <div class="section">
+    <h3>5. Variant Calling</h3>
+    <h4>Germline Mode</h4>
+    <ul>
+      <li>Use <code>HaplotypeCaller</code> in GVCF mode for joint calling later with <code>GenotypeGVCFs</code></li>
+    </ul>
+    <pre><code>gatk HaplotypeCaller -R ref.fa -I recal.bam -O sample.g.vcf.gz -ERC GVCF</code></pre>
+
+    <h4>Somatic Mode (Tumor-Normal Paired)</h4>
+    <ul>
+      <li>Use <code>Mutect2</code> with matched tumor and normal samples</li>
+    </ul>
+    <pre><code>gatk Mutect2 -R ref.fa -I tumor.bam -tumor TUMOR \
+-I normal.bam -normal NORMAL --germline-resource af-only-gnomad.vcf.gz \
+--panel-of-normals pon.vcf.gz -O somatic.vcf.gz</code></pre>
+
+    <h4>Somatic Mode (Tumor-Only)</h4>
+    <ul>
+      <li>Mutect2 with tumor-only mode using PON and gnomAD filtering</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>6. Variant Filtering</h3>
+    <ul>
+      <li>Apply hard filters for germline variants using <code>VariantFiltration</code></li>
+      <li>Apply <code>FilterMutectCalls</code> for somatic VCF</li>
+    </ul>
+    <pre><code>gatk FilterMutectCalls -V somatic.vcf.gz -R ref.fa -O filtered.vcf.gz</code></pre>
+  </div>
+
+  <div class="section">
+    <h3>7. Annotation</h3>
+    <ul>
+      <li>Functional annotation using <code>VEP</code> or <code>ANNOVAR</code></li>
+      <li>Add allele frequency, pathogenicity, and gene model predictions</li>
+    </ul>
+    <pre><code>vep -i filtered.vcf.gz -o annotated.vcf --cache --offline --assembly GRCh38</code></pre>
+  </div>
+</div>
+
+<!-- wgswes_tools.html -->
+<div class="container">
+  <div class="section">
+    <h2>Key Tools and Dependencies</h2>
+    <p>
+      This pipeline leverages a combination of robust, community-validated bioinformatics tools for efficient and reproducible analysis of Whole Genome Sequencing (WGS) and Whole Exome Sequencing (WES) data. The tools are selected based on compatibility with germline and somatic variant calling workflows, with or without matched normal samples.
+    </p>
+  </div>
+
+  <div class="section">
+    <h3>Preprocessing and Quality Control</h3>
+    <ul>
+      <li><strong>FastQC</strong> — Quality control checks for raw reads</li>
+      <li><strong>MultiQC</strong> — Aggregated quality reports from FastQC and other tools</li>
+      <li><strong>fastp</strong> — Adapter trimming and base quality filtering</li>
+      <li><strong>Trimmomatic</strong> — Optional alternative for trimming</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Alignment and BAM Processing</h3>
+    <ul>
+      <li><strong>BWA-MEM2</strong> — Fast and accurate alignment of sequencing reads to the reference genome (GRCh38/hg19)</li>
+      <li><strong>Samtools</strong> — BAM sorting, indexing, and basic manipulation</li>
+      <li><strong>GATK MarkDuplicatesSpark</strong> or <strong>Picard MarkDuplicates</strong> — Identification and marking of PCR duplicates</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Base Quality Score Recalibration (BQSR)</h3>
+    <ul>
+      <li><strong>GATK BaseRecalibrator</strong> — Recalibrates base quality scores using known variant sites</li>
+      <li>Supported known sites: <code>dbSNP</code>, <code>Mills and 1000G gold standard indels</code></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Variant Calling</h3>
+    <ul>
+      <li><strong>GATK HaplotypeCaller</strong> — Germline variant discovery in GVCF mode for joint genotyping</li>
+      <li><strong>GATK GenotypeGVCFs</strong> — Joint calling from multiple GVCFs</li>
+      <li><strong>GATK Mutect2</strong> — Somatic variant calling with or without matched normal</li>
+      <li><strong>GATK FilterMutectCalls</strong> — Somatic variant filtering</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Variant Annotation</h3>
+    <ul>
+      <li><strong>VEP (Variant Effect Predictor)</strong> — Adds functional consequences, population frequency, and pathogenicity scores</li>
+      <li><strong>ANNOVAR</strong> — Alternate annotation platform with clinical databases and customizable workflows</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Additional Tools</h3>
+    <ul>
+      <li><strong>bcftools</strong> — VCF manipulation and subsetting</li>
+      <li><strong>bedtools</strong> — Intersecting variants with genomic features</li>
+      <li><strong>Apptainer/Docker</strong> — Reproducible containerized environments</li>
+    </ul>
+  </div>
+</div>
+
+<!-- wgs_structure_container.html -->
+<div class="container">
+  <div class="section">
+    <h2>Pipeline Structure and Containerization</h2>
+    <p>
+      This WGS/WES pipeline is organized into modular stages that support both germline and somatic variant calling workflows. It is designed to be flexible, reproducible, and scalable across computing environments including local servers, HPC clusters, and cloud platforms. The pipeline also accommodates a variety of experimental setups, including tumor-only, tumor-normal paired, and trio-based analyses.
+    </p>
+  </div>
+
+  <div class="section">
+    <h3>Modular Workflow Overview</h3>
+    <ul>
+      <li><strong>Module 1: Data Input</strong> — Accepts paired-end FASTQ files, sample metadata (TSV/CSV), and optional panel-of-normals (PoN) or known germline resource files.</li>
+      <li><strong>Module 2: Quality Control and Preprocessing</strong> — Uses FastQC and MultiQC for assessing read quality; Cutadapt or fastp for adapter trimming and low-quality base removal.</li>
+      <li><strong>Module 3: Alignment</strong> — Aligns reads to GRCh38 or GRCh37 using BWA-MEM2; supports alignment benchmarking and contamination check using VerifyBamID or Picard CollectWgsMetrics.</li>
+      <li><strong>Module 4: Post-alignment Processing</strong> — Sorts BAM files, marks duplicates, indexes, and computes insert size distributions. Includes optional optical duplicate detection.</li>
+      <li><strong>Module 5: Base Quality Score Recalibration (BQSR)</strong> — Utilizes known variant sites (dbSNP, Mills indels) to perform recalibration. For somatic workflows, this step is optional but recommended for consistent variant quality.</li>
+      <li><strong>Module 6: Variant Calling</strong> —
+        <ul>
+          <li><strong>Germline Calling:</strong> GATK HaplotypeCaller in GVCF mode, followed by joint genotyping using GenotypeGVCFs.</li>
+          <li><strong>Somatic Calling:</strong> GATK Mutect2 with or without matched normal; supports tumor-only workflows using PoN and germline resource filters.</li>
+        </ul>
+      </li>
+      <li><strong>Module 7: Variant Filtering and Annotation</strong> —
+        <ul>
+          <li>Somatic: FilterMutectCalls, orientation bias filtering, and contamination adjustment.</li>
+          <li>Annotation using Ensembl VEP, ANNOVAR, or snpEff. Integration with ClinVar, gnomAD, COSMIC databases.</li>
+        </ul>
+      </li>
+      <li><strong>Module 8: Optional Analysis</strong> — CNV calling with CNVkit or GATK CNV; MSI status; mutational signatures; TMB calculation; LOH detection.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Support for Germline and Somatic Calling</h3>
+    <ul>
+      <li><strong>Germline Workflows:</strong> Ideal for rare disease, trio-based inheritance analysis, and population studies. Supports joint calling across cohorts, VQSR, and family-based inheritance models.</li>
+      <li><strong>Somatic Workflows:</strong> Designed for cancer genomics. Supports tumor-normal paired, tumor-only, and cohort-level filtering strategies. Incorporates artifact filtering and bias correction.</li>
+      <li><strong>PoN Integration:</strong> Panel-of-Normals removes technical noise and recurrent artifacts from unmatched somatic variant calling.</li>
+      <li><strong>Germline Resource VCF:</strong> Used to distinguish somatic from germline variants in tumor-only pipelines.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Containerization</h3>
+    <ul>
+      <li><strong>Docker:</strong> Container images include all toolchains (e.g., GATK, BWA, samtools, VEP, ANNOVAR) with version pinning. Suitable for local and cloud-native workflows (e.g., AWS Batch, Terra).</li>
+      <li><strong>Apptainer (Singularity):</strong> Secure, non-root containers for HPC use. Compatible with SLURM, PBS, or LSF schedulers.</li>
+      <li>Supports auto-mounting of data/input and result/output directories.</li>
+      <li>Container versions managed via a manifest file; reproducibility validated via checksum and software report logs.</li>
+      <li>Containerization allows users to develop, test, and deploy modules independently using CLI wrappers or JSON-configured workflows.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Scalability and Workflow Automation</h3>
+    <ul>
+      <li>Built-in support for <strong>Snakemake</strong>, <strong>Nextflow</strong>, and <strong>Cromwell/WDL</strong> for robust pipeline orchestration and resume features.</li>
+      <li>Automatic logging of execution metadata including tool versions, command history, environment variables, and container image ID.</li>
+      <li>Modular directory layout for intermediate and final output separation.</li>
+      <li>Checkpointing between modules for easy debugging and scalability.</li>
+      <li>Support for scatter-gather parallelization (e.g., per-sample or per-chromosome) for large-scale datasets.</li>
+      <li>Compatibility with cloud-based platforms (e.g., Terra, DNAnexus, Seven Bridges) using GA4GH-compliant WDL or CWL interfaces.</li>
+      <li>Customizable resource allocation, retry logic, and job monitoring built-in via workflow manager config profiles.</li>
+      <li>Future extensions include machine-learning-based variant filtering, panel-based annotation overlays, and harmonization of WGS/WES calling into joint multi-sample VCFs.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- wgs_tools.html -->
+<div class="container">
+  <div class="section">
+    <h2>Tools and Software Used in the WGS/WES Pipeline</h2>
+    <p>This pipeline leverages a collection of industry-standard, open-source, and peer-reviewed tools for whole-genome and whole-exome sequencing analysis. The workflow supports modular replacement and customization of each tool, enabling both basic and advanced users to optimize analysis for their specific experimental and computational needs.</p>
+  </div>
+
+  <div class="section">
+    <h3>1. Quality Control and Trimming</h3>
+    <ul>
+      <li><strong>FastQC</strong>: Generates QC metrics for raw FASTQ files, including per-base quality, adapter content, and duplication levels.</li>
+      <li><strong>MultiQC</strong>: Aggregates FastQC outputs for batch visualization across multiple samples.</li>
+      <li><strong>fastp</strong>: Performs adapter trimming, quality filtering, poly-G trimming, and base correction for paired-end reads.</li>
+      <li><strong>Cutadapt</strong>: Alternative trimming tool when specific adapters are used; integrated with Snakemake for reproducibility.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>2. Read Alignment</h3>
+    <ul>
+      <li><strong>BWA-MEM2</strong>: High-performance aligner optimized for Illumina paired-end reads; preferred for GRCh38-based alignment.</li>
+      <li><strong>Minimap2</strong>: Optional for long-read hybrid capture or nanopore/WGS hybrid analysis workflows.</li>
+      <li><strong>Picard</strong>: Used for sorting, duplicate marking, and collecting insert size metrics.</li>
+      <li><strong>Samtools</strong>: For BAM indexing, filtering, and quick alignment manipulations.</li>
+      <li><strong>VerifyBamID</strong>: Checks for sample swaps, contamination, and identity mismatches.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>3. Post-alignment Processing</h3>
+    <ul>
+      <li><strong>Picard MarkDuplicates</strong>: Identifies and removes duplicate reads introduced during PCR amplification.</li>
+      <li><strong>GATK BaseRecalibrator</strong>: Performs base quality score recalibration using known variant sites (e.g., dbSNP, Mills).</li>
+      <li><strong>GATK ApplyBQSR</strong>: Applies the recalibration model to correct systematic errors in sequencing.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>4. Variant Calling</h3>
+    <ul>
+      <li><strong>GATK HaplotypeCaller</strong>: For germline variant calling; emits per-sample GVCFs.</li>
+      <li><strong>GATK GenotypeGVCFs</strong>: Combines multiple GVCFs and performs joint genotyping.</li>
+      <li><strong>GATK Mutect2</strong>: For somatic variant calling with or without matched normal samples.</li>
+      <li><strong>GATK FilterMutectCalls</strong>: Applies filters to distinguish real somatic mutations from artifacts.</li>
+      <li><strong>LoFreq</strong>: Optional high-sensitivity somatic variant caller for low-VAF mutations.</li>
+      <li><strong>Strelka2</strong>: Fast and accurate germline and somatic variant caller with high precision.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>5. Variant Annotation</h3>
+    <ul>
+      <li><strong>ANNOVAR</strong>: Annotates functional impact using RefGene, dbSNP, 1000 Genomes, ClinVar, and more.</li>
+      <li><strong>snpEff</strong>: Provides detailed gene-level annotations and predicted variant effects.</li>
+      <li><strong>VEP (Variant Effect Predictor)</strong>: Ensembl-based annotation with support for plugins (e.g., CADD, SpliceAI).</li>
+      <li><strong>bcftools annotate</strong>: Lightweight annotation for simple custom tags and INFO fields.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>6. Optional Modules</h3>
+    <ul>
+      <li><strong>CNVkit</strong>: For detecting copy number variants in tumor and matched-normal WES/WGS data.</li>
+      <li><strong>GATK CNV</strong>: GATK module for somatic CNV analysis; requires matched normal for best accuracy.</li>
+      <li><strong>MSIsensor</strong>: Detects microsatellite instability in tumor-only or paired samples.</li>
+      <li><strong>SigProfiler</strong>: Extracts mutational signatures from somatic variants (COSMIC signature analysis).</li>
+      <li><strong>FACETS</strong>: Allele-specific copy number and LOH analysis in WES/WGS tumor-normal data.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>7. Containers and Workflow Engines</h3>
+    <ul>
+      <li><strong>Docker</strong>: Used for containerized deployment in local and cloud environments.</li>
+      <li><strong>Apptainer</strong>: Formerly Singularity, used for HPC environments with restricted permissions.</li>
+      <li><strong>Snakemake</strong>: Primary workflow manager for dependency handling and modular execution.</li>
+      <li><strong>Nextflow</strong>: Alternative pipeline orchestrator with cloud-native execution (optional).</li>
+      <li><strong>WDL/Cromwell</strong>: For cloud workflows or compatibility with GA4GH platforms.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>8. Data Sources and References</h3>
+    <ul>
+      <li><strong>Reference Genomes:</strong> GRCh38, GRCh37, hg19 (user-defined).</li>
+      <li><strong>Variant Databases:</strong> dbSNP, gnomAD, ClinVar, COSMIC, 1000 Genomes.</li>
+      <li><strong>Known Sites for BQSR:</strong> dbSNP, Mills_and_1000G_gold_standard.indels.</li>
+      <li><strong>PoN (Panel of Normals):</strong> Required for tumor-only somatic workflows.</li>
+      <li><strong>Germline Resource:</strong> gnomAD subset for Mutect2 germline risk estimation.</li>
+    </ul>
+  </div>
+</div>
+<!-- wgs_tools.html -->
+
+<div class="container">
+  <div class="section">
+    <h2>Tools and Software Used in the WGS/WES Pipeline</h2>
+    <p>This pipeline leverages a collection of industry-standard, open-source, and peer-reviewed tools for whole-genome and whole-exome sequencing analysis. The workflow supports modular replacement and customization of each tool, enabling both basic and advanced users to optimize analysis for their specific experimental and computational needs.</p>
+  </div>
+
+  <!-- Existing sections remain unchanged -->
+
+  <div class="section">
+    <h3>9. Annotated Example: Tumor-Normal Variant Calling</h3>
+    <p>Below is an illustrative example of how a paired tumor-normal workflow might proceed using WES data:</p>
+    <ol>
+      <li><strong>Input:</strong> 2 FASTQ files per sample (tumor_R1.fq.gz, tumor_R2.fq.gz and normal_R1.fq.gz, normal_R2.fq.gz)</li>
+      <li><strong>QC and Trimming:</strong> Run <code>fastp</code> for trimming:
+        <pre><code>fastp -i tumor_R1.fq.gz -I tumor_R2.fq.gz -o tumor_trim_R1.fq.gz -O tumor_trim_R2.fq.gz --html tumor_fastp.html</code></pre></li>
+      <li><strong>Alignment:</strong> Align trimmed reads using <code>bwa-mem2</code>:
+        <pre><code>bwa-mem2 mem -t 16 ref.fa tumor_trim_R1.fq.gz tumor_trim_R2.fq.gz | samtools sort -o tumor.bam</code></pre></li>
+      <li><strong>Post-processing:</strong> Use <code>Picard</code> and <code>GATK</code> for duplicates and recalibration:
+        <pre><code>gatk MarkDuplicates -I tumor.bam -O tumor.markdup.bam -M metrics.txt</code></pre>
+        <pre><code>gatk BaseRecalibrator -I tumor.markdup.bam -R ref.fa --known-sites dbsnp.vcf --known-sites mills.vcf -O tumor.recal.table</code></pre>
+        <pre><code>gatk ApplyBQSR -R ref.fa -I tumor.markdup.bam --bqsr-recal-file tumor.recal.table -O tumor.bqsr.bam</code></pre></li>
+      <li><strong>Somatic Calling:</strong> Paired calling using <code>Mutect2</code>:
+        <pre><code>gatk Mutect2 -R ref.fa -I tumor.bqsr.bam -tumor TUMOR \
+-I normal.bqsr.bam -normal NORMAL --germline-resource af-only-gnomad.vcf.gz \
+--panel-of-normals pon.vcf.gz -O somatic.vcf.gz</code></pre></li>
+      <li><strong>Filtering:</strong>
+        <pre><code>gatk FilterMutectCalls -V somatic.vcf.gz -R ref.fa -O somatic.filtered.vcf.gz</code></pre></li>
+      <li><strong>Annotation:</strong> Annotate final variants with <code>VEP</code> or <code>ANNOVAR</code>:
+        <pre><code>vep -i somatic.filtered.vcf.gz -o annotated.vcf --cache --everything --vcf</code></pre></li>
+    </ol>
+    <p>This example can be extended to WGS data by adjusting coverage filters, panel-of-normals selection, and computing resource allocation.</p>
+  </div>
+
+  <div class="section">
+    <h3>10. Annotated Example: Tumor-Only Variant Calling</h3>
+    <p>This scenario is applicable when no matched normal sample is available. Variant calling becomes more challenging due to the difficulty in distinguishing somatic mutations from germline variants and artifacts.</p>
+    <ol>
+      <li><strong>Input:</strong> Tumor FASTQ files (tumor_R1.fq.gz, tumor_R2.fq.gz)</li>
+      <li><strong>Trimming and QC:</strong>
+        <pre><code>fastp -i tumor_R1.fq.gz -I tumor_R2.fq.gz -o tumor_trim_R1.fq.gz -O tumor_trim_R2.fq.gz --html tumor_fastp.html</code></pre></li>
+      <li><strong>Alignment:</strong>
+        <pre><code>bwa-mem2 mem -t 16 ref.fa tumor_trim_R1.fq.gz tumor_trim_R2.fq.gz | samtools sort -o tumor.bam</code></pre></li>
+      <li><strong>Deduplication and Recalibration:</strong>
+        <pre><code>gatk MarkDuplicates -I tumor.bam -O tumor.markdup.bam -M metrics.txt</code></pre>
+        <pre><code>gatk BaseRecalibrator -I tumor.markdup.bam -R ref.fa --known-sites dbsnp.vcf --known-sites mills.vcf -O tumor.recal.table</code></pre>
+        <pre><code>gatk ApplyBQSR -R ref.fa -I tumor.markdup.bam --bqsr-recal-file tumor.recal.table -O tumor.bqsr.bam</code></pre></li>
+      <li><strong>Somatic Variant Calling (Tumor-only Mode):</strong>
+        <pre><code>gatk Mutect2 -R ref.fa -I tumor.bqsr.bam -tumor TUMOR \
+--germline-resource af-only-gnomad.vcf.gz \
+--panel-of-normals pon.vcf.gz -O tumoronly.vcf.gz</code></pre></li>
+      <li><strong>Filtering:</strong>
+        <pre><code>gatk FilterMutectCalls -V tumoronly.vcf.gz -R ref.fa -O tumoronly.filtered.vcf.gz</code></pre></li>
+      <li><strong>Annotation:</strong>
+        <pre><code>vep -i tumoronly.filtered.vcf.gz -o tumoronly.annotated.vcf --cache --everything --vcf</code></pre></li>
+    </ol>
+    <p>For tumor-only pipelines, interpretation of low-VAF or rare variants must be performed carefully, and orthogonal validation (e.g., Sanger) is strongly encouraged.</p>
+  </div>
+
+  <div class="section">
+    <h3>11. Annotated Example: Germline Variant Calling</h3>
+    <p>This example outlines the steps for germline variant discovery from WGS or WES data using GATK Best Practices:</p>
+    <ol>
+      <li><strong>Input:</strong> Single-sample FASTQ files (e.g., sample_R1.fq.gz, sample_R2.fq.gz)</li>
+      <li><strong>Trimming:</strong>
+        <pre><code>fastp -i sample_R1.fq.gz -I sample_R2.fq.gz -o trim_R1.fq.gz -O trim_R2.fq.gz --html sample_fastp.html</code></pre></li>
+      <li><strong>Alignment:</strong>
+        <pre><code>bwa-mem2 mem -t 16 ref.fa trim_R1.fq.gz trim_R2.fq.gz | samtools sort -o sample.bam</code></pre></li>
+      <li><strong>Mark Duplicates:</strong>
+        <pre><code>gatk MarkDuplicates -I sample.bam -O sample.markdup.bam -M sample.metrics.txt</code></pre></li>
+      <li><strong>Base Quality Score Recalibration:</strong>
+        <pre><code>gatk BaseRecalibrator -I sample.markdup.bam -R ref.fa --known-sites dbsnp.vcf --known-sites mills.vcf -O sample.recal.table</code></pre>
+        <pre><code>gatk ApplyBQSR -R ref.fa -I sample.markdup.bam --bqsr-recal-file sample.recal.table -O sample.bqsr.bam</code></pre></li>
+      <li><strong>HaplotypeCaller:</strong>
+        <pre><code>gatk HaplotypeCaller -R ref.fa -I sample.bqsr.bam -O sample.g.vcf.gz -ERC GVCF</code></pre></li>
+      <li><strong>Joint Genotyping (multi-sample):</strong>
+        <pre><code>gatk CombineGVCFs -R ref.fa -V sample1.g.vcf.gz -V sample2.g.vcf.gz -O cohort.g.vcf.gz</code></pre>
+        <pre><code>gatk GenotypeGVCFs -R ref.fa -V cohort.g.vcf.gz -O cohort.vcf.gz</code></pre></li>
+      <li><strong>Variant Quality Score Recalibration (VQSR) or Hard Filtering:</strong>
+        <pre><code>gatk VariantRecalibrator ...</code></pre>
+        <pre><code>gatk ApplyVQSR ...</code></pre>
+        <em>Or</em>
+        <pre><code>gatk VariantFiltration --filter-name "QD_lt_2" --filter-expression "QD &lt; 2.0" -V cohort.vcf.gz -O cohort.filtered.vcf.gz</code></pre></li>
+      <li><strong>Annotation:</strong>
+        <pre><code>vep -i cohort.filtered.vcf.gz -o cohort.annotated.vcf --cache --everything --vcf</code></pre></li>
+    </ol>
+    <p>This germline variant discovery workflow applies equally to WES and WGS data. For population-scale studies, batching, multi-threaded execution, and cloud resources are recommended.</p>
+  </div>
+</div>
+<!-- wgs_structure_container.html -->
+<div class="container">
+  <div class="section">
+    <h2>Pipeline Structure & Containerization</h2>
+    <p>The WGS/WES pipeline is structured as a modular, reproducible, and containerized workflow designed to accommodate a variety of sequencing configurations including tumor-normal, tumor-only, and germline-only analyses. The structure allows flexible tool replacement, intermediate data inspection, and seamless deployment across local HPCs or cloud environments.</p>
+
+    <h3>Directory Structure</h3>
+    <pre><code>.
+├── config/               # YAML or JSON config files
+├── data/                 # Raw input FASTQ files
+├── results/              # Output directory for each module
+│   ├── fastqc/
+│   ├── trimmed/
+│   ├── aligned/
+│   ├── markduplicates/
+│   ├── recalibrated/
+│   ├── variants/
+│   ├── annotated/
+│   └── qc/
+├── logs/                 # Per-step runtime logs
+├── scripts/              # Custom scripts for trimming, calling, QC
+├── Snakefile / main.nf   # Workflow manager definition (Snakemake or Nextflow)
+└── containers/           # Docker or Apptainer definitions and containers</code></pre>
+
+    <h3>Pipeline Modules</h3>
+    <ul>
+      <li><strong>QC:</strong> fastp, FastQC</li>
+      <li><strong>Alignment:</strong> bwa-mem2 or minimap2</li>
+      <li><strong>Post-alignment:</strong> Picard, GATK BQSR</li>
+      <li><strong>Variant Calling:</strong> GATK HaplotypeCaller, Mutect2</li>
+      <li><strong>Filtering:</strong> GATK VQSR or Hard Filtering</li>
+      <li><strong>Annotation:</strong> VEP or ANNOVAR</li>
+    </ul>
+
+    <h3>Workflow Execution</h3>
+    <ul>
+      <li><strong>Snakemake:</strong> Highly modular, supports wildcards and cluster profiles</li>
+      <li><strong>Nextflow:</strong> Ideal for cloud-native execution (e.g., AWS Batch, Google Cloud)</li>
+    </ul>
+
+    <h3>Containerization</h3>
+    <p>The entire pipeline is containerized using either <code>Docker</code> or <code>Apptainer</code> (formerly Singularity). This guarantees version-controlled reproducibility and portability across environments.</p>
+
+    <h4>Dockerfile Example</h4>
+    <pre><code>FROM ubuntu:22.04
+RUN apt update && apt install -y fastp bwa samtools gatk4 vep
+COPY run_pipeline.sh /opt/pipeline/
+ENTRYPOINT ["/opt/pipeline/run_pipeline.sh"]</code></pre>
+
+    <h4>Apptainer Definition File Example</h4>
+    <pre><code>Bootstrap: docker
+From: ubuntu:22.04
+
+%post
+  apt update && apt install -y fastp bwa samtools gatk vep
+
+%runscript
+  exec /opt/pipeline/run_pipeline.sh "$@"</code></pre>
+
+    <h3>Execution Modes</h3>
+    <ul>
+      <li><strong>Local:</strong> Desktop or workstation with Docker/Apptainer</li>
+      <li><strong>HPC:</strong> SLURM/SGE integration using job profiles</li>
+      <li><strong>Cloud:</strong> Nextflow Tower, Cromwell + Terra, DNAnexus</li>
+    </ul>
+
+    <h3>Logging and Monitoring</h3>
+    <ul>
+      <li>Per-step logging to <code>logs/</code> directory</li>
+      <li>Execution time and memory usage profiling per rule</li>
+      <li>MultiQC report integration for overall metrics</li>
+    </ul>
+
+    <h3>Customization</h3>
+    <ul>
+      <li>Supports runtime overrides via CLI or config</li>
+      <li>YAML/JSON parameter templates for tumor-only, tumor-normal, or cohort-based workflows</li>
+      <li>Environment-agnostic design with support for <code>conda</code> or <code>mamba</code></li>
+    </ul>
+
+    <h3>Security and Compliance</h3>
+    <ul>
+      <li>Audit trail maintained via log hashing</li>
+      <li>Container provenance tags</li>
+      <li>Validation modules for reference/annotation integrity</li>
+    </ul>
+
+    <p>This structure ensures rapid deployment, repeatability, and adaptation to emerging bioinformatics tools and platforms.</p>
+  </div>
+</div>
+<!-- wgs_refs.html -->
+<div class="container">
+  <div class="section">
+    <h2>References and Resources</h2>
+    <p>The following references and resources provide foundational background, tools, and best practices followed in the WGS/WES pipeline. These include tool documentation, peer-reviewed publications, and community-developed standards for variant calling workflows.</p>
+  </div>
+
+  <div class="section">
+    <h3>Germline Variant Calling</h3>
+    <ul>
+      <li>Van der Auwera GA et al. "From FastQ data to high-confidence variant calls: the Genome Analysis Toolkit best practices pipeline." <em>Current Protocols in Bioinformatics</em>, 2013.</li>
+      <li>GATK Documentation: <a href="https://gatk.broadinstitute.org/">https://gatk.broadinstitute.org/</a></li>
+      <li>BWA-MEM2: Li H. "Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM." <em>arXiv preprint</em>, 2013.</li>
+      <li>Fastp: Chen S et al. "fastp: an ultra-fast all-in-one FASTQ preprocessor." <em>Bioinformatics</em>, 2018.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Somatic Variant Calling</h3>
+    <ul>
+      <li>Cibulskis K et al. "Sensitive detection of somatic point mutations in impure and heterogeneous cancer samples." <em>Nature Biotechnology</em>, 2013. (Mutect2)</li>
+      <li>Broad Institute's Best Practices for Somatic SNV/Indel Calling: <a href="https://gatk.broadinstitute.org/hc/en-us/articles/360035531132">https://gatk.broadinstitute.org</a></li>
+      <li>Picard Toolkit: <a href="https://broadinstitute.github.io/picard/">https://broadinstitute.github.io/picard/</a></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Annotation Tools</h3>
+    <ul>
+      <li>VEP: McLaren W et al. "The Ensembl Variant Effect Predictor." <em>Genome Biology</em>, 2016. <a href="https://www.ensembl.org/info/docs/tools/vep/index.html">https://www.ensembl.org/info/docs/tools/vep/index.html</a></li>
+      <li>ANNOVAR: Wang K et al. "ANNOVAR: functional annotation of genetic variants from high-throughput sequencing data." <em>Nucleic Acids Research</em>, 2010.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Databases</h3>
+    <ul>
+      <li>dbSNP: Sherry ST et al. "dbSNP: the NCBI database of genetic variation." <em>Nucleic Acids Research</em>, 2001.</li>
+      <li>gnomAD: Karczewski KJ et al. "The mutational constraint spectrum quantified from variation in 141,456 humans." <em>Nature</em>, 2020.</li>
+      <li>1000 Genomes Project: "A global reference for human genetic variation." <em>Nature</em>, 2015.</li>
+    </ul>
+  </div>
+</div>

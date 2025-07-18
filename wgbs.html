@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WGBS-Pipeline | Akhilesh Kaushal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: 'Segoe UI', sans-serif;
+      padding-top: 40px;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .tag-badge {
+      background: #ddd;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      margin-right: 6px;
+    }
+    a.back-link {
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: #004466;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
+
+  <h1 class="mt-4">WGBS-Pipeline</h1>
+  <p><strong>Author:</strong> Akhilesh Kaushal<br>
+     <strong>Version:</strong> 1.0.0</p>
+  <p class="text-muted mb-3">
+    A pipeline for preprocessing and differential analysis of methylation data from Whole Genome Bisulfite Sequencing (WGBS).
+  </p>
+
+  <div class="mb-3">
+    <span class="tag-badge">Methylation</span>
+    <span class="tag-badge">WGBS</span>
+    <span class="tag-badge">Bismark</span>
+    <span class="tag-badge">Bedgraph</span>
+  </div>
+
+  <p>
+    Whole Genome Bisulfite Sequencing (WGBS) is the gold-standard method for base-resolution measurement of cytosine methylation across the entire genome.
+    This pipeline performs raw read processing, alignment, methylation extraction, and differential methylation analysis for both CpG and non-CpG contexts.
+  </p>
+
+  <div class="section">
+    <h2>Biological Applications</h2>
+    <ul>
+      <li>Epigenome-wide association studies (EWAS)</li>
+      <li>Characterizing DNA methylation patterns in development and disease</li>
+      <li>Environmental and exposure-related methylation studies</li>
+      <li>Biomarker discovery from tumor and cell-free DNA samples</li>
+      <li>Comparative methylome analysis across tissues and species</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Advantages of WGBS</h2>
+    <ul>
+      <li>Single-base resolution of methylation at CpG and non-CpG sites (CHG, CHH)</li>
+      <li>Unbiased genome-wide coverage, including promoters, enhancers, and intergenic regions</li>
+      <li>Compatible with low-input and FFPE DNA (via optimized library prep)</li>
+      <li>Supports allele-specific methylation and imprinted gene analysis</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Supported Assay Designs</h2>
+    <ul>
+      <li>PCR-free and PCR-based WGBS protocols</li>
+      <li>Illumina TruSeq DNA Methylation libraries</li>
+      <li>Post-bisulfite and pre-bisulfite library strategies</li>
+      <li>Read lengths: 2x100 bp, 2x150 bp paired-end</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>WGBS Processing Pipeline</h2>
+    <p>This section outlines the step-by-step pipeline for WGBS data processing using standard tools and QC procedures.</p>
+  </div>
+
+  <div class="section">
+    <h3>1. Quality Control and Trimming</h3>
+    <ul>
+      <li>Run <code>FastQC</code> on raw FASTQ files.</li>
+      <li>Trim low-quality bases and adapters using <code>Trim Galore</code> (wrapper for <code>cutadapt</code>):</li>
+      <pre><code>trim_galore --paired --fastqc sample_R1.fq.gz sample_R2.fq.gz</code></pre>
+      <li>Optionally perform adapter auto-detection and overlap trimming for paired-end data.</li>
+    </ul>
+  </div>
+
+
+
+  <div class="section">
+   <h3>2. Alignment to Bisulfite Genome</h3>
+    <ul>
+     <li>Align using <code>Bismark</code>, which performs bisulfite-aware mapping with Bowtie2:</li>
+     <pre><code>
+       bismark --genome /path/to/genome \
+      -1 sample_R1_val_1.fq.gz -2 sample_R2_val_2.fq.gz \
+      -o bismark_output/
+     </code></pre>
+     <li>Use the <code>--score_min</code> option to control alignment stringency (e.g., <code>L,0,-0.6</code>).</li>
+     <li>Post-process using <code>samtools sort</code> and <code>deduplicate_bismark</code>.</li>
+    </ul>
+  </div>
+
+<div class="section">
+  <h3>3. Methylation Extraction</h3>
+  <ul>
+    <li>Extract CpG methylation calls using <code>bismark_methylation_extractor</code>:</li>
+    <pre><code>
+bismark_methylation_extractor --bedGraph --gzip --comprehensive \
+  --merge_non_CpG --paired-end -o meth_calls/ aligned.bam
+    </code></pre>
+    <li>Generates per-CpG and coverage files for downstream DMR analysis.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>4. Coverage Filtering</h3>
+  <ul>
+    <li>Filter low-coverage sites using custom thresholds (e.g., ≥10x).</li>
+    <li>Tools: <code>MethylKit</code>, <code>MethylDackel</code>, or <code>awk</code> one-liners.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>5. Optional: Bisulfite Conversion Rate</h3>
+  <ul>
+    <li>Calculated using spiked-in unmethylated lambda DNA or mitochondrial genome.</li>
+    <li><code>bismark_report</code> summarizes conversion efficiency metrics.</li>
+  </ul>
+</div>
+<!-- wgbs_usage.html -->
+<div class="section">
+  <h2>Input Requirements</h2>
+  <ul>
+    <li><strong>FASTQ files</strong> – Paired-end or single-end bisulfite-treated reads</li>
+    <li><strong>Bisulfite reference genome</strong> – Indexed using <code>bismark_genome_preparation</code></li>
+    <li><strong>Sample sheet</strong> – Optional CSV/TSV metadata for batching/grouping</li>
+    <li><strong>Optional controls</strong> – Lambda DNA or non-CpG methylation estimation</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Expected Outputs</h2>
+  <ul>
+    <li>Trimmed FASTQ files</li>
+    <li>Deduplicated BAM files aligned to bisulfite genome</li>
+    <li><code>.cov</code> and <code>.txt.gz</code> methylation call files (CpG, CHG, CHH)</li>
+    <li>BedGraph and coverage statistics for methylation visualization</li>
+    <li>MultiQC reports (trimming, alignment, coverage)</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Pipeline Usage</h2>
+  <p>You can run the full WGBS pipeline via shell script or Nextflow:</p>
+  <pre><code>bash run_wgbs_pipeline.sh --config config.yaml</code></pre>
+  <p>Edit <code>config.yaml</code> to include input FASTQ paths, genome index, and filtering parameters.</p>
+</div>
+
+<div class="section">
+  <h2>Containerization Support</h2>
+  <ul>
+    <li>Supports <strong>Apptainer</strong>, <strong>Docker</strong>, and <strong>Conda</strong> environments</li>
+    <li>Prebuilt Apptainer image: <code>ghcr.io/akhileshkaushal/wgbs-pipeline:latest</code></li>
+    <li>Use <code>apptainer exec</code> with bind mounts to access input/output directories</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Repository</h2>
+  <p>Code and example datasets are available at:<br>
+    <a href="https://github.com/akhileshkaushal/wgbs-pipeline" target="_blank">
+      https://github.com/akhileshkaushal/wgbs-pipeline
+    </a>
+  </p>
+</div>
+<!-- wgbs_advanced.html -->
+<div class="section">
+  <h2>Advanced Analysis: DMR Calling and Visualization</h2>
+</div>
+
+<div class="section">
+  <h3>1. CpG Aggregation and Binning</h3>
+  <ul>
+    <li>Merge CpGs into promoters, gene bodies, or fixed-size bins (e.g., 100bp, 1kb).</li>
+    <li>Tools: <code>bedtools map</code>, <code>bsseq::BSmooth</code>, or <code>methylKit::tileMethylCounts</code>.</li>
+    <li>Enables smoothing and identification of regional methylation shifts.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>2. Differential Methylation Region (DMR) Calling</h3>
+  <ul>
+    <li><strong>bsseq</strong>: Smooth-based DMR detection with statistical modeling.</li>
+    <li><strong>methylKit</strong>: Logistic regression with q-value correction.</li>
+    <li><strong>DMRcate</strong>: Kernel-based DMR discovery using limma-moderated t-tests.</li>
+    <pre><code>
+library(bsseq)
+dmrs <- dmrFinder(bsseq_obj, cutoff = 0.1)
+    </code></pre>
+    <li>Filter DMRs based on number of CpGs, delta beta (≥ 10%), and q-value &lt; 0.05.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>3. Batch Correction and Normalization</h3>
+  <ul>
+    <li>Apply <code>sva</code> or <code>limma::removeBatchEffect</code> for known confounders.</li>
+    <li>Normalize coverage using quantile or loess methods (especially for array-WGBS comparisons).</li>
+    <li>Assess unwanted variation using PCA and hierarchical clustering of beta values.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>4. Visualization</h3>
+  <ul>
+    <li>Generate methylation heatmaps, violin plots, and PCA plots.</li>
+    <li>Plot regional methylation levels using <code>Gviz</code>, <code>ggbio</code>, or <code>trackViewer</code>.</li>
+    <li>Create TSS/TES methylation metaplots with smoothing using <code>EnrichedHeatmap</code> or <code>deepTools</code>.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>5. Functional Enrichment of DMRs</h3>
+  <ul>
+    <li>Use <code>clusterProfiler</code> or <code>gProfiler2</code> for GO and KEGG enrichment.</li>
+    <li>Prepare gene lists from overlapping DMRs with promoters or gene bodies using <code>bedtools intersect</code>.</li>
+    <pre><code>
+bedtools intersect -a dmrs.bed -b promoters.bed -wa | cut -f4 | sort | uniq &gt; gene_list.txt
+    </code></pre>
+  </ul>
+</div>
+<!-- wgbs_structure_container.html -->
+<div class="section">
+  <h2>Pipeline Structure</h2>
+  <p>This pipeline follows a modular and reproducible structure organized as follows:</p>
+
+  <pre><code>
+wgbs-pipeline/
+├── config/
+│   └── config.yaml             # Input file paths, genome directory, filters
+├── scripts/
+│   ├── trim_galore.sh         # Adapter trimming
+│   ├── bismark_align.sh       # Alignment to bisulfite genome
+│   ├── methylation_extract.sh # Methylation calling
+│   └── dmr_analysis.R         # DMR detection using bsseq/methylKit
+├── container/
+│   └── Dockerfile / .def      # Docker or Apptainer container recipes
+├── data/                      # Raw and processed FASTQ files
+├── results/                   # BAMs, cov files, DMRs, plots
+└── run_wgbs_pipeline.sh       # Unified shell entry point
+  </code></pre>
+</div>
+
+<div class="section">
+  <h2>Containerization</h2>
+  <p>The pipeline supports both Docker and Apptainer for reproducibility and ease of deployment in HPC/cloud environments.</p>
+
+  <h4>Docker</h4>
+  <pre><code>
+docker build -t wgbs-pipeline .
+docker run --rm -v /data:/data wgbs-pipeline \
+  bash run_wgbs_pipeline.sh --config /data/config.yaml
+  </code></pre>
+
+  <h4>Apptainer (formerly Singularity)</h4>
+  <pre><code>
+apptainer build wgbs-pipeline.sif container/wgbs.def
+apptainer exec --bind /data:/mnt wgbs-pipeline.sif \
+  bash /mnt/run_wgbs_pipeline.sh --config /mnt/config.yaml
+  </code></pre>
+
+  <p>
+    The container image includes all core dependencies: <code>FastQC</code>, <code>Trim Galore</code>, <code>Bismark</code>, <code>samtools</code>, <code>MultiQC</code>, and R/Bioconductor packages.
+  </p>
+</div>
+<!-- wgbs_refs.html -->
+<div class="section">
+  <h2>References</h2>
+  <ul>
+    <li>
+      Lister, R. et al. (2009). <i>Human DNA methylomes at base resolution show widespread epigenomic differences.</i>
+      <br><strong>Nature</strong>. <a href="https://www.nature.com/articles/nature08514" target="_blank">[Link]</a>
+    </li>
+    <li>
+      Krueger, F. & Andrews, S. R. (2011). <i>Bismark: a flexible aligner and methylation caller for Bisulfite-Seq applications.</i>
+      <br><strong>Bioinformatics</strong>. <a href="https://academic.oup.com/bioinformatics/article/27/11/1571/242225" target="_blank">[Link]</a>
+    </li>
+    <li>
+      Akalin, A. et al. (2012). <i>methylKit: a comprehensive R package for the analysis of genome-wide DNA methylation profiles.</i>
+      <br><strong>Genome Biology</strong>. <a href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2012-13-10-r87" target="_blank">[Link]</a>
+    </li>
+    <li>
+      Hansen, K. D. et al. (2012). <i>BSmooth: from whole genome bisulfite sequencing reads to differentially methylated regions.</i>
+      <br><strong>Genome Biology</strong>. <a href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2012-13-10-r83" target="_blank">[Link]</a>
+    </li>
+    <li>
+      Peters, T. J. et al. (2015). <i>De novo identification of differentially methylated regions in the human genome.</i>
+      <br><strong>Epigenetics & Chromatin</strong>. <a href="https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/s13072-015-0035-3" target="_blank">[Link]</a>
+    </li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Tools and Resources</h2>
+  <ul>
+    <li><strong>Bismark:</strong> <a href="https://www.bioinformatics.babraham.ac.uk/projects/bismark/" target="_blank">Babraham Bioinformatics</a></li>
+    <li><strong>MethylDackel:</strong> <a href="https://github.com/dpryan79/MethylDackel" target="_blank">GitHub</a></li>
+    <li><strong>bsseq:</strong> <a href="https://bioconductor.org/packages/release/bioc/html/bsseq.html" target="_blank">Bioconductor</a></li>
+    <li><strong>methylKit:</strong> <a href="https://bioconductor.org/packages/methylKit/" target="_blank">Bioconductor</a></li>
+    <li><strong>DMRcate:</strong> <a href="https://bioconductor.org/packages/DMRcate/" target="_blank">Bioconductor</a></li>
+    <li><strong>MultiQC:</strong> <a href="https://multiqc.info/" target="_blank">multiqc.info</a></li>
+  </ul>
+</div>
+
+  <div class="section">
+   <a href="index.html" class="back-link">&larr; Back to Pipeline Index</a>
+  </div>
+
+</div> <!-- END .container -->
+</body>
+</html>

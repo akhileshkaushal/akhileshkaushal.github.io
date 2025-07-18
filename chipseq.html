@@ -1,0 +1,212 @@
+<!-- chipseq_head.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ChIP-seq Pipeline | Akhilesh Kaushal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: 'Segoe UI', sans-serif;
+      padding-top: 40px;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .tag-badge {
+      background: #ddd;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      margin-right: 6px;
+    }
+    a.back-link {
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: #004466;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+    code {
+      background-color: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 1rem;
+      border-left: 4px solid #ccc;
+      overflow-x: auto;
+      border-radius: 4px;
+    }
+    ul {
+      margin-left: 1.5rem;
+    }
+    h1, h2 {
+      color: #2c3e50;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+<!-- chipseq_intro.html -->
+<div class="section">
+  <h1>ChIP-seq Pre-processing and Analysis Pipeline</h1>
+  <p><strong>Author:</strong> Akhilesh Kaushal</p>
+  <p>This pipeline is designed for comprehensive analysis of ChIP-seq data, covering preprocessing, alignment, peak calling, annotation, and differential binding analysis. It adheres to ENCODE guidelines and supports both transcription factor (TF) and histone mark ChIP-seq data.</p>
+</div>
+
+<div class="section">
+  <h2>Scope and Applications</h2>
+  <ul>
+    <li>Profiling of transcription factor binding sites</li>
+    <li>Histone modification landscape analysis</li>
+    <li>Differential binding across conditions</li>
+    <li>Chromatin state mapping</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Pipeline Modules</h2>
+  <p>The pipeline is modular and customizable. Key stages include:</p>
+  <ul>
+    <li>Quality control and adapter trimming</li>
+    <li>Genome alignment and filtering</li>
+    <li>Peak detection and annotation</li>
+    <li>Signal track generation</li>
+    <li>Differential enrichment analysis</li>
+  </ul>
+</div>
+<!-- chipseq_steps.html -->
+<div class="section">
+  <h2>Pipeline Workflow: Step-by-Step</h2>
+</div>
+
+<div class="section">
+  <h3>1. Quality Control</h3>
+  <ul>
+    <li>Run <code>FastQC</code> on all raw FASTQ files.</li>
+    <li>Aggregate results using <code>MultiQC</code> to check for base quality, duplication, overrepresented sequences, and adapter content.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>2. Adapter Trimming and Filtering</h3>
+  <ul>
+    <li>Trim adapters and low-quality bases using <code>Trim Galore</code> (wrapper around Cutadapt and FastQC) or <code>fastp</code>.</li>
+    <li>Parameters typically include a minimum read length cutoff (e.g., 30 bp) and a Phred quality threshold (e.g., Q20).</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>3. Alignment to Reference Genome</h3>
+  <ul>
+    <li>Use <code>BWA-MEM</code> or <code>Bowtie2</code> for aligning reads to the reference genome (e.g., hg38, mm10).</li>
+    <li>Convert SAM to sorted BAM using <code>samtools sort</code>.</li>
+    <li>Remove reads with low mapping quality (e.g., MAPQ &lt; 30).</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>4. Deduplication</h3>
+  <ul>
+    <li>Mark or remove PCR duplicates using <code>Picard MarkDuplicates</code> or <code>sambamba markdup</code>.</li>
+    <li>Retain duplicate-marked BAM files for downstream comparison if needed.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>5. Peak Calling</h3>
+  <ul>
+    <li>Use <code>MACS2</code> for peak calling.</li>
+    <li>
+      Modes:
+      <ul>
+        <li><code>--nomodel --shift -100 --extsize 200</code> for TF ChIP-seq</li>
+        <li><code>--broad</code> for histone modifications</li>
+      </ul>
+    </li>
+    <li>Input control sample recommended to reduce false positives.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>6. Peak Annotation</h3>
+  <ul>
+    <li>Annotate peaks using <code>ChIPseeker</code>, <code>HOMER</code>, or <code>annotatePeaks.pl</code>.</li>
+    <li>Classify peaks as promoter, exon, intron, or intergenic.</li>
+    <li>Link peaks to nearest genes or known enhancers.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7. Signal Track Generation</h3>
+  <ul>
+    <li>Generate coverage-normalized signal tracks (e.g., RPKM or CPM) in bigWig format using <code>deepTools bamCoverage</code>.</li>
+    <li>Use <code>deepTools plotHeatmap</code> and <code>plotProfile</code> for TSS-centered and gene body visualization.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>8. Differential Binding Analysis</h3>
+  <ul>
+    <li>Use <code>DiffBind</code> (R/Bioconductor) for multi-group or pairwise comparisons using read count matrices.</li>
+    <li>Pre-filter peaks by consensus and apply shrinkage methods (e.g., DESeq2 or edgeR under the hood).</li>
+    <li>Visualizations: PCA, heatmaps, MA plots, and volcano plots.</li>
+  </ul>
+</div>
+<!-- chipseq_usage.html -->
+<div class="section">
+  <h2>Inputs</h2>
+  <ul>
+    <li>Paired-end or single-end FASTQ files for ChIP and Input samples</li>
+    <li>Reference genome (e.g., hg38) and its index (BWA/Bowtie2)</li>
+    <li>Gene annotation (GTF or BED)</li>
+    <li>Optional: Blacklist regions (e.g., ENCODE)</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Outputs</h2>
+  <ul>
+    <li>Cleaned and aligned BAM files (sorted, deduplicated)</li>
+    <li>Peak files (<code>narrowPeak</code>, <code>broadPeak</code>, and <code>xls</code> summary)</li>
+    <li>Normalized coverage tracks in <code>bigWig</code> format</li>
+    <li>QC reports (FastQC, MultiQC, FRiP, cross-correlation)</li>
+    <li>Annotated peak tables and gene association files</li>
+    <li>Differential binding analysis outputs (counts, statistics, plots)</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Example Usage</h2>
+  <pre><code>bash run_chipseq_pipeline.sh --config config.yaml</code></pre>
+  <p>Ensure all software dependencies are available in your environment. The pipeline can be containerized using <code>Apptainer</code> or <code>Docker</code>.</p>
+</div>
+
+<div class="section">
+  <h2>Repository</h2>
+  <p>All source code, configuration templates, and test datasets are available on GitHub:</p>
+  <p><a href="https://github.com/akhileshkaushal/chipseq-pipeline" target="_blank">https://github.com/akhileshkaushal/chipseq-pipeline</a></p>
+</div>
+
+<div class="section">
+  <h2>References</h2>
+  <ul>
+    <li>Anders, S. et al. (2012). <i>Detecting differential usage of exons from RNA-seq data</i>. Genome Research. <a href="https://genome.cshlp.org/content/22/10/2008" target="_blank">Link</a></li>
+    <li>ENCODE Consortium. (2012). <i>An integrated encyclopedia of DNA elements in the human genome</i>. Nature. <a href="https://www.nature.com/articles/nature11247" target="_blank">Link</a></li>
+    <li>Zhang, Y. et al. (2008). <i>Model-based analysis of ChIP-Seq (MACS)</i>. Genome Biology. <a href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2008-9-9-r137" target="_blank">Link</a></li>
+    <li>Yu, G. et al. (2015). <i>ChIPseeker: an R/Bioconductor package for ChIP peak annotation</i>. BMC Genomics. <a href="https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-015-1438-8" target="_blank">Link</a></li>
+    <li>Ross-Innes, C. et al. (2012). <i>Differential oestrogen receptor binding is associated with clinical outcome in breast cancer</i>. Nature. <a href="https://www.nature.com/articles/nature11381" target="_blank">Link</a></li>
+  </ul>
+</div>
+
+</div> <!-- end .container -->
+</body>
+</html>

@@ -34,83 +34,311 @@
 </head>
 
 <body>
+<!-- methylation_intro.html -->
+<!-- Close of this </div> was too early; everything below should remain inside the container -->
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
 
-  <div class="container">
-    <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
+  <h1 class="mt-4">Methylation-Pipeline</h1>
+  <p><strong>Author:</strong> Akhilesh Kaushal<br>
+  <strong>Version:</strong> 0.9.1</p>
+  <p class="text-muted mb-3">A pipeline for preprocessing and differential analysis of Illumina EPIC methylation array data.</p>
 
-    <h1 class="mt-4">Methylation-Pipeline</h1>
-	<p><strong>Author:</strong> Akhilesh Kaushal<br>
-	<strong>Version:</strong> 0.9.1 </p>
-    <p class="text-muted mb-3">A pipeline for preprocessing and differential analysis of Illumina EPIC methylation array data.</p>
-
-    <div class="mb-3">
-      <span class="tag-badge">Methylation</span>
-      <span class="tag-badge">EPIC Array</span>
-      <span class="tag-badge">limma</span>
-      <span class="tag-badge">Preprocessing</span>
-    </div>
-
-    <div class="section">
-      <h3>Overview</h3>
-      <p>
-        This pipeline handles Illumina EPIC array data starting from raw IDAT files. It includes probe quality control, background correction, normalization, and differential methylation analysis using <code>limma</code>. The pipeline also supports generation of beta and M-value matrices, and is compatible with downstream annotation and pathway enrichment analysis.
-      </p>
-    </div>
-
-    <div class="section">
-      <h3>Pipeline Steps</h3>
-      <ul>
-        <li>Import raw IDAT files using <code>minfi</code></li>
-        <li>Probe and sample quality control</li>
-        <li>Filtering of non-CpG, SNP, cross-reactive probes</li>
-        <li>Background correction and normalization (e.g., SWAN, BMIQ)</li>
-        <li>Extraction of beta-values and M-values</li>
-        <li>Differential methylation analysis using <code>limma</code></li>
-        <li>Export of DMPs, volcano plots, and annotation tables</li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <h3>Usage</h3>
-      <pre><code>Rscript run_methylation_pipeline.R config.yaml</code></pre>
-      <p>
-        Ensure your <code>config.yaml</code> includes paths to IDATs, sample sheet, annotation, and normalization options.
-      </p>
-    </div>
-
-    <div class="section">
-      <h3>Example Configuration</h3>
-      <pre><code>input_idat_dir: /data/epic/idats/
-sample_sheet: samplesheet.csv
-normalization: BMIQ or SWAN
-filter_cross_reactive: true
-min_detection_p: 0.01</code></pre>
-    </div>
-
-    <div class="section">
-      <h3>Output Files</h3>
-      <ul>
-        <li><code>beta_matrix.csv</code> — filtered and normalized beta-values</li>
-        <li><code>m_matrix.csv</code> — logit-transformed methylation values</li>
-        <li><code>differential_methylation.csv</code> — limma results</li>
-        <li><code>volcano_plot.pdf</code>, <code>density_plot.png</code>, <code>multiqc.html</code></li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <h3>References</h3>
-      <ul>
-        <li>Fortin, J.P. et al., <em>Functional normalization of 450k methylation array data improves replication in large cancer studies</em>, Genome Biology, 2014.</li>
-        <li>Ritchie, M.E. et al., <em>limma powers differential expression analyses for RNA-sequencing and microarray studies</em>, NAR, 2015.</li>
-      </ul>
-    </div>
-
-    <div class="section text-end">
-      <a href="https://github.com/akhileshkaushal/methylation-pipeline" class="btn btn-outline-dark" target="_blank">
-        View on GitHub
-      </a>
-    </div>
+  <div class="mb-3">
+    <span class="tag-badge">Methylation</span>
+    <span class="tag-badge">EPIC Array</span>
+    <span class="tag-badge">limma</span>
+    <span class="tag-badge">Preprocessing</span>
   </div>
 
+  <div class="section">
+    <h2>DNA Methylation Profiling Using Illumina EPIC Arrays</h2>
+    <p>
+      DNA methylation is a critical epigenetic modification involved in gene regulation, cellular differentiation, and disease progression. The Illumina Infinium MethylationEPIC BeadChip enables high-throughput, genome-wide interrogation of &gt;850,000 CpG sites across promoter regions, gene bodies, enhancers, and intergenic regions.
+    </p>
+  </div>
+
+  <div class="section">
+    <h3>Why Use EPIC Arrays?</h3>
+    <ul>
+      <li>Genome-wide coverage with emphasis on functionally relevant CpG regions</li>
+      <li>Reproducible, cost-effective platform for large-scale clinical or cohort studies</li>
+      <li>Compatible with FFPE and low-input DNA samples</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Biological Applications</h3>
+    <ul>
+      <li>Differential methylation analysis between disease and control samples</li>
+      <li>Epigenome-wide association studies (EWAS)</li>
+      <li>Integration with transcriptomics or chromatin state data</li>
+      <li>Biomarker discovery and cell-type deconvolution</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Overview of the Analysis Workflow</h3>
+    <p>
+      The analysis workflow for EPIC arrays typically includes preprocessing of IDAT files, quality control, normalization, filtering of poor-performing probes, detection of differentially methylated positions (DMPs) and regions (DMRs), and downstream biological interpretation.
+    </p>
+  </div>
+
+  <!-- These were outside the container – now moved back in -->
+  <div class="section">
+    <h2>Preprocessing and Quality Control</h2>
+  </div>
+
+  <div class="section">
+    <h3>1. IDAT Import and Sample Sheet Configuration</h3>
+    <ul>
+      <li>Use <code>minfi::read.metharray.exp()</code> to import raw IDAT files.</li>
+      <li>Requires a sample sheet (CSV or TSV) with sample ID, group, sex, slide, array position, and other metadata.</li>
+      <pre><code>
+rgSet <- read.metharray.exp(targets = "sampleSheet.csv")
+      </code></pre>
+    </ul>
+  </div>
+
+  <div class="section">
+		<h3>2. Quality Control</h3>
+		<ul>
+		  <li>Run built-in QC with <code>minfi::qcReport()</code> or <code>	    ChAMP::champ.QC()</code>.</li>
+          <li>Evaluate control probes, median intensities, and detection p-values.</li>
+          <li>Remove samples with poor detection rate (&gt;1% of probes p &gt; 0.01).</li>
+          <pre><code>
+            detP <- detectionP(rgSet)
+            failed <- colMeans(detP &gt; 0.01) &gt; 0.01
+            rgSet <- rgSet[, !failed]
+         </code></pre>
+    </ul>
+  </div>
+
+<div class="section">
+  <h3>3. Probe Filtering</h3>
+  <ul>
+    <li>Filter out non-CpG probes, SNP-affected probes, and cross-reactive sites.</li>
+    <li>Recommended databases: Zhou et al. (2016) blacklist; `minfiData`; `ChAMP::champ.filter()`.</li>
+    <li>Retain autosomal CpG probes for most biological comparisons.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>4. Normalization</h3>
+  <ul>
+    <li>Apply normalization method suited to dataset type:</li>
+    <ul>
+      <li><code>preprocessQuantile()</code> (minfi) – good for homogeneous tissue</li>
+      <li><code>preprocessFunnorm()</code> – for variable cell types or large studies</li>
+      <li><code>ChAMP::champ.norm(method="BMIQ")</code> – handles type I vs II probe bias</li>
+    </ul>
+    <pre><code>
+mSet <- preprocessQuantile(rgSet)
+    </code></pre>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>5. Beta and M-value Extraction</h3>
+  <ul>
+    <li>Beta values: interpreted as methylation proportion (0–1).</li>
+    <li>M-values: used for statistical modeling (logit-transformed beta).</li>
+    <pre><code>
+betaVals <- getBeta(mSet)
+mVals <- getM(mSet)
+    </code></pre>
+  </ul>
+</div>
+<!-- methylation_usage.html -->
+<div class="section">
+  <h2>Pipeline Inputs and Usage</h2>
+</div>
+
+<div class="section">
+  <h3>Required Inputs</h3>
+  <ul>
+    <li><strong>IDAT Files:</strong> Raw red and green signal files generated from the Illumina iScan system.</li>
+    <li><strong>Sample Sheet:</strong> CSV or TSV file specifying metadata such as:
+      <ul>
+        <li>Sample ID</li>
+        <li>Group/Condition</li>
+        <li>Slide and array position</li>
+        <li>Sex and other covariates</li>
+      </ul>
+    </li>
+    <li><strong>Optional Config YAML:</strong> Specifies filtering options, normalization method, and contrast settings.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>Output Files</h3>
+  <ul>
+    <li><code>qc/</code> – Detection p-value plots, control metrics, density plots</li>
+    <li><code>norm/</code> – Normalized beta and M-value matrices</li>
+    <li><code>filtered/</code> – Filtered probes (cross-reactive, SNPs, etc.)</li>
+    <li><code>dmp/</code> – Differentially methylated positions and volcano plots</li>
+    <li><code>dmr/</code> – Annotated DMRs and GSEA/ORA pathway results</li>
+    <li><code>reports/</code> – Final summary plots and MultiQC report (optional)</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>Example Usage</h3>
+  <pre><code># Run entire pipeline from command line (Rscript or bash)
+Rscript run_methylation_pipeline.R \
+  --idat_dir data/IDATs \
+  --sample_sheet metadata/samples.csv \
+  --config config.yml \
+  --output results/
+  </code></pre>
+
+  <p>All results will be saved under the <code>results/</code> directory with organized subfolders.</p>
+</div>
+<!-- methylation_advanced.html -->
+<div class="section">
+  <h2>Differential Methylation and Advanced Analysis</h2>
+</div>
+
+<div class="section">
+  <h3>1. Differentially Methylated Positions (DMPs)</h3>
+  <ul>
+    <li>Fit a linear model using <code>limma</code> on M-values for robust statistical testing.</li>
+    <li>Adjust for covariates (e.g., sex, age, batch) using model matrix.</li>
+    <li>Output includes log fold changes, adjusted p-values, and mean methylation differences.</li>
+    <pre><code>
+design <- model.matrix(~ group + sex + batch, data = targets)
+fit <- lmFit(mVals, design)
+fit <- eBayes(fit)
+topTable(fit, coef="groupCase", adjust="BH")
+    </code></pre>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>2. Differentially Methylated Regions (DMRs)</h3>
+  <ul>
+    <li>Use region-based analysis tools like <code>DMRcate</code>, <code>Bumphunter</code>, or <code>DMRfinder</code>.</li>
+    <li>DMRs provide more biologically meaningful interpretation by aggregating CpGs in clusters.</li>
+    <pre><code>
+dmrcoutput <- dmrcate(myAnnotation, lambda=1000, C=2)
+    </code></pre>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>3. Batch Effect Correction</h3>
+  <ul>
+    <li>Apply <code>limma::removeBatchEffect()</code> to remove known technical sources of variation.</li>
+    <li>Include batch covariates in linear modeling to preserve biological signal.</li>
+    <pre><code>
+corrected <- removeBatchEffect(mVals, batch=targets$Slide, covariates=targets$Sex)
+    </code></pre>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>4. Annotation and Genomic Context</h3>
+  <ul>
+    <li>Use <code>IlluminaHumanMethylationEPICanno.ilm10b4.hg38</code> package or <code>annotatr</code>.</li>
+    <li>Annotate DMPs with promoter, gene body, enhancer, intergenic region categories.</li>
+    <pre><code>
+annotated <- cbind(DMPs, getAnnotation(IlluminaHumanMethylationEPICanno.ilm10b4.hg38)[rownames(DMPs), ])
+    </code></pre>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>5. Visualization</h3>
+  <ul>
+    <li>Volcano plots, heatmaps, PCA plots and TSS methylation metaplots using <code>ggplot2</code>, <code>pheatmap</code>, and <code>ComplexHeatmap</code>.</li>
+    <li>Gene-centric plots or GSEA using <code>clusterProfiler</code> on DMP-associated genes.</li>
+    <pre><code>
+EnhancedVolcano::EnhancedVolcano(DMPs, lab = DMPs$gene, x = 'logFC', y = 'adj.P.Val')
+    </code></pre>
+  </ul>
+</div>
+<!-- methylation_structure_container.html -->
+<div class="section">
+  <h2>Pipeline Structure and Containerization</h2>
+</div>
+
+<div class="section">
+  <h3>Directory Layout</h3>
+  <pre><code>
+methylation-pipeline/
+├── data/
+│   └── IDATs/                    # Raw IDAT files
+├── metadata/
+│   └── samples.csv               # Sample sheet with metadata
+├── results/
+│   ├── qc/                       # QC reports and detection plots
+│   ├── norm/                     # Normalized beta and M-value matrices
+│   ├── dmp/                      # Differential methylation results
+│   ├── dmr/                      # Regional methylation analysis
+│   └── reports/                  # Final summary plots and tables
+├── config/
+│   └── config.yml                # YAML config specifying contrast and filters
+├── scripts/
+│   ├── run_methylation_pipeline.R
+│   └── helper_functions.R
+└── container/
+    └── Dockerfile or apptainer.def
+  </code></pre>
+</div>
+
+<div class="section">
+  <h3>Containerization Options</h3>
+  <ul>
+    <li><strong>Docker:</strong> A Dockerfile is provided to build an image with R, Bioconductor, and required CRAN packages.</li>
+    <li><strong>Apptainer (formerly Singularity):</strong> For use on HPC systems without root access. Includes Bioconductor stack and system libraries.</li>
+  </ul>
+
+  <p><strong>Example: Building and running with Docker</strong></p>
+  <pre><code>
+# Build the container
+docker build -t methylation-pipeline -f container/Dockerfile .
+
+# Run the pipeline
+docker run -v $PWD:/workspace -w /workspace methylation-pipeline \
+  Rscript scripts/run_methylation_pipeline.R --config config/config.yml
+  </code></pre>
+
+  <p><strong>Example: Running with Apptainer</strong></p>
+  <pre><code>
+apptainer build methylation_pipeline.sif container/apptainer.def
+
+apptainer exec methylation_pipeline.sif \
+  Rscript scripts/run_methylation_pipeline.R --config config/config.yml
+  </code></pre>
+</div>
+<!-- methylation_refs.html -->
+<div class="section">
+  <h2>References and Resources</h2>
+</div>
+
+<div class="section">
+  <ul>
+    <li>Fortin, J.P. et al. (2014). <strong>Functional normalization of 450k methylation array data improves replication in large cancer studies.</strong> Genome Biology, 15:503. <a href="https://doi.org/10.1186/s13059-014-0503-2" target="_blank">https://doi.org/10.1186/s13059-014-0503-2</a></li>
+
+    <li>Triche, T.J. et al. (2013). <strong>Low-level processing of Illumina Infinium DNA Methylation BeadArrays.</strong> Nucleic Acids Research, 41:e90. <a href="https://doi.org/10.1093/nar/gkt090" target="_blank">https://doi.org/10.1093/nar/gkt090</a></li>
+
+    <li>Zhou, W. et al. (2016). <strong>Comprehensive characterization, annotation and innovative use of Infinium DNA methylation BeadChip probes.</strong> Nucleic Acids Res. 45:e22. <a href="https://doi.org/10.1093/nar/gkw967" target="_blank">https://doi.org/10.1093/nar/gkw967</a></li>
+
+    <li><strong>minfi:</strong> Bioconductor package for processing and analyzing Infinium methylation arrays. <br>
+    <a href="https://bioconductor.org/packages/minfi/" target="_blank">https://bioconductor.org/packages/minfi/</a></li>
+
+    <li><strong>ChAMP:</strong> Comprehensive pipeline for analyzing EPIC and 450k data. <br>
+    <a href="https://bioconductor.org/packages/ChAMP/" target="_blank">https://bioconductor.org/packages/ChAMP/</a></li>
+
+    <li><strong>DMRcate:</strong> Tool for identifying and annotating differentially methylated regions. <br>
+    <a href="https://bioconductor.org/packages/DMRcate/" target="_blank">https://bioconductor.org/packages/DMRcate/</a></li>
+
+    <li><strong>IlluminaHumanMethylationEPICanno.ilm10b4.hg38:</strong> Annotation package for EPIC arrays. <br>
+    <a href="https://bioconductor.org/packages/release/data/annotation/html/IlluminaHumanMethylationEPICanno.ilm10b4.hg38.html" target="_blank">View package</a></li>
+
+    <li><strong>Repository:</strong> <a href="https://github.com/akhileshkaushal/methylation-pipeline" target="_blank">https://github.com/akhileshkaushal/methylation-pipeline</a></li>
+  </ul>
+ </div>
+</div> <!-- END of .container -->
 </body>
 </html>

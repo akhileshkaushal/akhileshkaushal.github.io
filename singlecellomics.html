@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Single-cell Omics Pipelines | Akhilesh Kaushal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: 'Segoe UI', sans-serif;
+      padding-top: 40px;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .tag-badge {
+      background: #ddd;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      margin-right: 6px;
+    }
+    a.back-link {
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: #004466;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<!-- singleomics_intro.html -->
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
+  <h1 class="mt-4">Single-cell Omics Pipelines</h1>
+  <p><strong>Author:</strong> Akhilesh Kaushal<br>
+  <strong>Version:</strong> 1.0.0</p>
+  <p class="text-muted mb-3">
+    Overview of modular and scalable pipelines for single-cell omics technologies, including scRNA-seq, CITE-seq, TCR-seq, and BCR-seq. These pipelines support end-to-end processing from raw FASTQ data to high-resolution single-cell level insights.
+  </p>
+
+  <div class="mb-3">
+    <span class="tag-badge">Single-cell RNA-seq</span>
+    <span class="tag-badge">CITE-seq</span>
+    <span class="tag-badge">TCR-seq</span>
+    <span class="tag-badge">BCR-seq</span>
+  </div>
+
+  <div class="section">
+    <h2>Supported Modalities</h2>
+    <ul>
+      <li><strong>scRNA-seq:</strong> Transcriptome-wide gene expression profiling at single-cell resolution</li>
+      <li><strong>CITE-seq:</strong> Simultaneous quantification of transcriptome and surface protein abundance using antibody-derived tags (ADTs)</li>
+      <li><strong>TCR-seq:</strong> T-cell receptor profiling to track clonality and immune repertoire diversity</li>
+      <li><strong>BCR-seq:</strong> B-cell receptor sequencing for clonal expansion and somatic hypermutation analysis</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Pipeline Structure (Generalized)</h2>
+    <ul>
+      <li><strong>Input:</strong> Paired-end FASTQ files (or BCL) from droplet-based or plate-based assays</li>
+      <li><strong>Preprocessing:</strong> Barcode correction, UMI extraction, and read filtering</li>
+      <li><strong>Alignment:</strong> STAR, Cell Ranger, or Kallisto|Bustools-based quantification</li>
+      <li><strong>Quantification:</strong> Gene-cell matrix or feature-barcode matrices for ADTs/TCRs</li>
+      <li><strong>QC and Filtering:</strong> Doublet removal, mitochondrial gene filtering, cell/capture thresholding</li>
+      <li><strong>Downstream Analysis:</strong> Normalization, clustering, trajectory analysis, differential expression</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Recommended Tools</h2>
+    <ul>
+      <li><strong>Preprocessing:</strong> Cell Ranger, STARsolo, Alevin</li>
+      <li><strong>Analysis:</strong> Seurat, Scanpy, Monocle, ArchR (for ATAC integration)</li>
+      <li><strong>ADT analysis:</strong> CiteFuse, Seurat v4+ with WNN integration</li>
+      <li><strong>Immune Repertoire:</strong> MiXCR, TRUST4, ImReP for TCR/BCR</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Use Cases</h2>
+    <ul>
+      <li>Immune cell profiling and phenotyping in cancer, autoimmunity, and infection</li>
+      <li>Clonal tracking of adaptive immune responses</li>
+      <li>Tumor microenvironment dissection</li>
+      <li>Cell-type-specific expression and trajectory inference in development</li>
+    </ul>
+  </div>
+</div>
+<!-- scrna_steps.html -->
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
+
+  <h1 class="mt-4">scRNA-seq Pipeline Steps</h1>
+  <p class="text-muted mb-3">Detailed step-by-step workflow for processing single-cell RNA sequencing (scRNA-seq) data using standard tools and formats.</p>
+
+  <div class="section">
+    <h2>1. FASTQ Generation and Initial QC</h2>
+    <ul>
+      <li>Generate raw FASTQ files using Illumina bcl2fastq or bcl-convert from BCL data.</li>
+      <li>Run FastQC to assess base quality and adapter contamination.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>2. Alignment and UMI Processing</h2>
+    <ul>
+      <li>Use <code>Cell Ranger</code> or <code>STARsolo</code> for alignment and UMI counting.</li>
+      <li>Map reads to the appropriate reference transcriptome (e.g., GRCh38, mm10).</li>
+      <li>Demultiplex cell barcodes and collapse UMIs to generate gene-barcode matrix.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>3. Quality Control and Filtering</h2>
+    <ul>
+      <li>Filter cells based on the number of detected genes, total UMIs, and mitochondrial gene content.</li>
+      <li>Optional: Remove doublets using tools like <code>DoubletFinder</code> or <code>Scrublet</code>.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>4. Normalization and Feature Selection</h2>
+    <ul>
+      <li>Log-normalize counts using Seurat or Scanpy.</li>
+      <li>Identify highly variable genes for downstream analysis.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>5. Dimensionality Reduction and Clustering</h2>
+    <ul>
+      <li>Perform PCA on variable genes.</li>
+      <li>Cluster cells using graph-based methods (e.g., Louvain or Leiden).</li>
+      <li>Visualize using UMAP or t-SNE embeddings.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>6. Marker Identification and Cell Type Annotation</h2>
+    <ul>
+      <li>Use differential expression (e.g., Wilcoxon test) to identify cluster-specific markers.</li>
+      <li>Annotate clusters using known marker gene sets or automated tools like <code>SingleR</code> or <code>CellTypist</code>.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>7. Downstream Analysis</h2>
+    <ul>
+      <li>Pathway enrichment analysis using <code>clusterProfiler</code>, <code>fgsea</code>, or <code>Enrichr</code>.</li>
+      <li>Trajectory analysis using <code>Monocle</code>, <code>Slingshot</code>, or <code>paga</code>.</li>
+      <li>Integration with spatial or epigenomic datasets.</li>
+    </ul>
+  </div>
+</div>
+<!-- cite_seq_steps.html -->
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
+
+  <h1 class="mt-4">CITE-seq Analysis Pipeline</h1>
+  <p class="text-muted mb-3">
+    A unified workflow for analyzing Cellular Indexing of Transcriptomes and Epitopes by sequencing (CITE-seq) data that integrates gene expression with surface protein quantification using antibody-derived tags (ADTs).
+  </p>
+
+  <div class="mb-3">
+    <span class="tag-badge">CITE-seq</span>
+    <span class="tag-badge">Single-cell</span>
+    <span class="tag-badge">ADT</span>
+    <span class="tag-badge">Multi-modal</span>
+  </div>
+
+  <div class="section">
+    <h2>Workflow Overview</h2>
+    <ol>
+      <li><strong>Raw Data Input:</strong> FASTQ files (Gene expression and ADT libraries)</li>
+      <li><strong>Demultiplexing:</strong> Using <code>bcl2fastq</code> or <code>bcl-convert</code> with CITE-seq specific sample sheets</li>
+      <li><strong>Alignment & Quantification:</strong>
+        <ul>
+          <li><strong>Gene Expression:</strong> STARsolo or Cell Ranger (10x Genomics)</li>
+          <li><strong>ADT Tags:</strong> Cell Ranger multi or CITE-seq-Count</li>
+        </ul>
+      </li>
+      <li><strong>Cell Filtering & Quality Control:</strong> Filter cells by total UMI, mitochondrial content, and detected features using Seurat or Scanpy</li>
+      <li><strong>Normalization:</strong> SCTransform for RNA; centered log-ratio (CLR) for ADTs</li>
+      <li><strong>Integration:</strong> Joint dimensionality reduction of RNA and ADT space using WNN (weighted nearest neighbor)</li>
+      <li><strong>Clustering & Visualization:</strong> UMAP/t-SNE plots colored by clusters, markers, or ADT signals</li>
+      <li><strong>Marker Detection:</strong> Identify canonical genes and protein markers for each cluster</li>
+      <li><strong>Differential Expression:</strong> Between clusters or experimental conditions across RNA and ADT modalities</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>Key Outputs</h2>
+    <ul>
+      <li>Filtered and annotated single-cell expression matrix (RNA + ADT)</li>
+      <li>Clustering assignments and low-dimensional projections (UMAP/t-SNE)</li>
+      <li>Heatmaps of gene and surface protein expression</li>
+      <li>Cluster-specific markers and DEGs</li>
+      <li>Multi-modal cell-type annotations</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Software & Tools</h2>
+    <ul>
+      <li><strong>STARsolo</strong> / <strong>Cell Ranger</strong> for read alignment and counting</li>
+      <li><strong>CITE-seq-Count</strong> for ADT counting</li>
+      <li><strong>Seurat</strong> for downstream integration and visualization</li>
+      <li><strong>Scanpy</strong> (Python alternative) for full pipeline execution</li>
+    </ul>
+  </div>
+</div>
+<!-- tcr_bcr_seq_steps.html -->
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
+
+  <h1 class="mt-4">TCR/BCR Sequencing Pipeline</h1>
+  <p class="text-muted mb-3">
+    A pipeline for analyzing T cell receptor (TCR) and B cell receptor (BCR) sequencing data for profiling adaptive immune repertoires in bulk or single-cell datasets.
+  </p>
+
+  <div class="mb-3">
+    <span class="tag-badge">TCR-seq</span>
+    <span class="tag-badge">BCR-seq</span>
+    <span class="tag-badge">Immunogenomics</span>
+    <span class="tag-badge">VDJ</span>
+    <span class="tag-badge">Clonotype</span>
+  </div>
+
+  <div class="section">
+    <h2>Pipeline Overview</h2>
+    <p>
+      This workflow processes TCR and BCR sequencing data to identify V(D)J recombination events, infer clonotypes, and quantify repertoire diversity. It supports both bulk sequencing and single-cell platforms (e.g., 10x Genomics V(D)J).
+    </p>
+  </div>
+
+  <div class="section">
+    <h3>1. Input FASTQ Files</h3>
+    <ul>
+      <li>Paired-end sequencing data from V(D)J enriched libraries</li>
+      <li>Optional: Sample metadata file for cohort annotations</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>2. Quality Control</h3>
+    <ul>
+      <li>Assess read quality using <code>FastQC</code></li>
+      <li>Trim low-quality bases and adapters using <code>fastp</code></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>3. Alignment and V(D)J Mapping</h3>
+    <ul>
+      <li>Use <code>MiXCR</code>, <code>IgBlast</code>, or <code>Cell Ranger V(D)J</code> (for 10x Genomics data)</li>
+      <li>Map reads to germline V, D, J, and C gene segments</li>
+      <li>Output clonotype assignments and CDR3 sequences</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>4. Clonotype Aggregation and Filtering</h3>
+    <ul>
+      <li>Collapse reads into clonotypes based on shared CDR3 and V(D)J usage</li>
+      <li>Filter low-abundance or non-productive sequences</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>5. Repertoire Diversity Analysis</h3>
+    <ul>
+      <li>Calculate richness, Shannon entropy, and Simpson index</li>
+      <li>Assess clonal expansion and dominance</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>6. Visualization and Reporting</h3>
+    <ul>
+      <li>Generate stacked barplots of V/J gene usage</li>
+      <li>Plot clonotype frequencies and diversity indices</li>
+      <li>Create Circos plots for V-J pairing</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>7. Optional Downstream Analyses</h3>
+    <ul>
+      <li>Track TCR/BCR clonotypes across time points or tissues</li>
+      <li>Integrate with scRNA-seq (e.g., Seurat + VDJ metadata)</li>
+      <li>Epitope prediction and TCR specificity clustering (e.g., GLIPH, TCRdist)</li>
+    </ul>
+  </div>
+</div>
+<!-- integrated_example.html -->
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Back to Pipelines</a>
+
+  <h1 class="mt-4">Integrated Single-Cell Multi-Omics Analysis</h1>
+  <p class="text-muted mb-3">
+    This example demonstrates a comprehensive pipeline combining scRNA-seq, CITE-seq (cell surface protein), and TCR/BCR sequencing data to interrogate immune cell phenotypes and clonal architecture in a tumor microenvironment.
+  </p>
+
+  <div class="mb-3">
+    <span class="tag-badge">scRNA-seq</span>
+    <span class="tag-badge">CITE-seq</span>
+    <span class="tag-badge">TCR-seq</span>
+    <span class="tag-badge">BCR-seq</span>
+    <span class="tag-badge">Multi-omics</span>
+  </div>
+
+  <div class="section">
+    <h2>Dataset</h2>
+    <p>
+      Tumor-infiltrating lymphocytes (TILs) were isolated from a melanoma patient. Single-cell data was generated using 10x Genomics Chromium 5' v3 chemistry, capturing transcriptome, cell surface proteins (TotalSeq-B antibodies), and TCR/BCR repertoire.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>Pipeline Overview</h2>
+    <ol>
+      <li>Preprocess raw FASTQ files using <code>cellranger multi</code> with a multi config YAML specifying gene expression, antibody capture, and V(D)J libraries.</li>
+      <li>Generate filtered feature-barcode matrices and V(D)J contigs.</li>
+      <li>Load data into Seurat and align RNA + ADT modalities using <code>NormalizeData()</code>, <code>FindMultiModalNeighbors()</code>.</li>
+      <li>Integrate TCR/BCR information using the <code>scRepertoire</code> package and map clonotypes back to cell clusters.</li>
+      <li>Perform UMAP dimensionality reduction and cluster annotation based on RNA and ADT markers.</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>Results Interpretation</h2>
+    <ul>
+      <li><strong>Transcriptomics:</strong> UMAP revealed discrete clusters of CD4+ T cells, CD8+ cytotoxic T cells, NK cells, Tregs, and exhausted T cells (expressing PD-1, LAG3).</li>
+      <li><strong>Surface Proteins:</strong> CITE-seq validated RNA expression and identified CD69+CD103+ tissue-resident memory (TRM) cells and CD25+FOXP3+ regulatory T cells.</li>
+      <li><strong>Clonotype Expansion:</strong> TCR sequencing identified expanded clonotypes in CD8+ T cells localized to the exhausted cluster, suggesting tumor-specific activation.</li>
+      <li><strong>BCR Diversity:</strong> BCR-seq showed diverse repertoire in naive B cells but clonal expansion in plasma cells, indicative of an antigen-driven response.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Conclusions</h2>
+    <p>
+      This integrated single-cell multi-omics pipeline offers deep insights into immune cell function, phenotypic diversity, and clonal dynamics. By combining RNA expression, protein abundance, and receptor specificity, researchers can characterize cell states and responses at high resolution.
+    </p>
+  </div>
+</div>
+<!-- wgs_tools.html -->
+<div class="container">
+  <div class="section">
+    
+  </div>
+
+ <!-- wgs_tools.html -->
+<div class="container">
+  <div class="section">
+    
+  </div>
+
+  <!-- Existing sections remain unchanged -->
+
+  <div class="section">
+    <h3>Integrated R Script: scRNA-seq + CITE-seq + TCR/BCR-seq Analysis</h3>
+    <p>The following R script demonstrates how to integrate and analyze scRNA-seq, CITE-seq (antibody-derived tags), and TCR/BCR-seq data using Seurat and scRepertoire:</p>
+    <pre><code>&lt;!-- R script --&gt;
+# Load required libraries
+library(Seurat)
+library(scRepertoire)
+library(ggplot2)
+library(patchwork)
+
+# Load scRNA-seq + ADT (CITE-seq) dataset
+cite &lt;- Read10X(data.dir = "filtered_feature_bc_matrix/")
+seurat_obj &lt;- CreateSeuratObject(counts = cite$`Gene Expression`, min.cells = 3, min.features = 200)
+
+# Add ADT assay
+seurat_obj[["ADT"]] &lt;- CreateAssayObject(counts = cite$`Antibody Capture`)
+
+# Standard pre-processing for RNA
+seurat_obj &lt;- NormalizeData(seurat_obj)
+seurat_obj &lt;- FindVariableFeatures(seurat_obj)
+seurat_obj &lt;- ScaleData(seurat_obj)
+seurat_obj &lt;- RunPCA(seurat_obj)
+seurat_obj &lt;- RunUMAP(seurat_obj, dims = 1:15)
+
+# Process ADT (CITE-seq) assay
+seurat_obj &lt;- NormalizeData(seurat_obj, assay = "ADT", normalization.method = "CLR")
+seurat_obj &lt;- ScaleData(seurat_obj, assay = "ADT")
+
+# Plot RNA + ADT UMAP
+p1 &lt;- DimPlot(seurat_obj, reduction = "umap", group.by = "orig.ident")
+p2 &lt;- FeaturePlot(seurat_obj, features = c("CD4", "CD8"), assay = "ADT")
+
+# Load TCR/BCR data (10x Cell Ranger VDJ output)
+tcr &lt;- read.csv("filtered_contig_annotations.csv")
+tcr &lt;- tcr[!duplicated(tcr$barcode), ]
+
+# Add clonotype information
+seurat_obj &lt;- combineExpression(tcr, seurat_obj, cloneCall="aa")
+
+# Visualize clonotype overlap
+DimPlot(seurat_obj, group.by = "CTaa", label = TRUE) + NoLegend()
+
+# Calculate diversity
+clonalDiversity(seurat_obj, cloneCall = "aa", group.by = "seurat_clusters")
+
+# Integrate all modalities
+FeaturePlot(seurat_obj, features = c("CD3E", "CD19")) +
+  VlnPlot(seurat_obj, features = c("CD4", "CD8"), assay = "ADT", slot = "data") +
+  DimPlot(seurat_obj, group.by = "CTaa")
+
+# Save final object
+saveRDS(seurat_obj, file = "integrated_seurat_object.rds")
+&lt;!-- end R script --&gt;</code></pre>
+    <p>This script assumes 10x Genomics data processed using Cell Ranger, but can be adapted to other single-cell platforms. It provides a foundation for interpreting multimodal immune landscapes, including clonal expansion, marker expression, and transcriptomic profiles in a single unified framework.</p>
+  </div>
+</div>

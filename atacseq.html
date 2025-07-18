@@ -1,0 +1,327 @@
+<!-- atacseq_head.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ATAC-seq Pipeline | Akhilesh Kaushal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: 'Segoe UI', sans-serif;
+      padding-top: 40px;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .tag-badge {
+      background: #ddd;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      margin-right: 6px;
+    }
+    a.back-link {
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: #004466;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+    code {
+      background-color: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 1rem;
+      border-left: 4px solid #ccc;
+      overflow-x: auto;
+      border-radius: 4px;
+    }
+    ul {
+      margin-left: 1.5rem;
+    }
+    h1, h2 {
+      color: #2c3e50;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+<!-- atacseq_intro.html -->
+<div class="section">
+  <h1>ATAC-seq Pipeline</h1>
+  <p><strong>Author:</strong> Akhilesh Kaushal</p>
+  <p>
+    Assay for Transposase-Accessible Chromatin using sequencing (ATAC-seq) enables genome-wide profiling of open chromatin regions with high resolution and low input requirements.
+    This pipeline performs end-to-end preprocessing and downstream analysis of ATAC-seq data from raw reads to peak annotation and visualization.
+  </p>
+</div>
+
+<div class="section">
+  <h2>Biological Applications</h2>
+  <ul>
+    <li>Mapping genome-wide chromatin accessibility</li>
+    <li>Identifying enhancers, promoters, and regulatory elements</li>
+    <li>Inferring transcription factor binding via footprinting</li>
+    <li>Studying dynamic chromatin remodeling across conditions</li>
+    <li>Integration with RNA-seq and ChIP-seq for regulatory network analysis</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Comparison with Related Assays</h2>
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th>Assay</th>
+        <th>Target</th>
+        <th>Input</th>
+        <th>Resolution</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>ATAC-seq</strong></td>
+        <td>Open chromatin</td>
+        <td>&lt; 50,000 cells</td>
+        <td>Base-pair</td>
+        <td>Fast protocol, captures TF footprints</td>
+      </tr>
+      <tr>
+        <td>DNase-seq</td>
+        <td>Accessible DNA</td>
+        <td>10–50 million cells</td>
+        <td>High</td>
+        <td>Enzymatic digestion, complex library prep</td>
+      </tr>
+      <tr>
+        <td>MNase-seq</td>
+        <td>Nucleosome positioning</td>
+        <td>Low–moderate</td>
+        <td>Base-pair</td>
+        <td>Focuses on histone-bound DNA</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Supported Configurations</h2>
+  <ul>
+    <li>Single-end and paired-end reads</li>
+    <li>Support for multiple replicates and experimental batches</li>
+    <li>Built-in normalization using CPM, RPKM, or RPGC</li>
+    <li>Compatible with reference genomes: hg38, mm10, rn6, and custom</li>
+  </ul>
+</div>
+<!-- atacseq_steps.html -->
+<div class="section">
+  <h2>Step-by-Step Pipeline</h2>
+</div>
+
+<div class="section">
+  <h3>1. Quality Control</h3>
+  <ul>
+    <li>Run <code>FastQC</code> on raw FASTQ files to assess per-base quality, adapter content, and duplication levels.</li>
+    <li>Aggregate QC metrics using <code>MultiQC</code>.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>2. Adapter and Quality Trimming</h3>
+  <ul>
+    <li>Use <code>Trim Galore</code> or <code>fastp</code> to remove adapters and low-quality reads.</li>
+    <li>Set minimum length cutoff to <code>20 bp</code> (or <code>35 bp</code> for paired-end).</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>3. Alignment to Genome</h3>
+  <ul>
+    <li>Align trimmed reads to reference genome using <code>Bowtie2</code>:</li>
+    <pre><code>bowtie2 -X2000 --very-sensitive -x genome_index -1 R1.fq -2 R2.fq</code></pre>
+    <li>Sort and index using <code>samtools</code>.</li>
+    <li>Filter reads by mapping quality: <code>MAPQ ≥ 30</code>.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>4. Tn5 Shift Correction</h3>
+  <ul>
+    <li>Adjust alignments to reflect Tn5 insertion offsets using <code>alignmentSieve</code>:</li>
+    <pre><code>alignmentSieve --ATACshift -b input.bam -o shifted.bam</code></pre>
+    <li>This corrects the 9 bp staggered cut introduced by the Tn5 enzyme.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>5. Remove Duplicates and Mitochondrial Reads</h3>
+  <ul>
+    <li>Use <code>Picard MarkDuplicates</code> or <code>samtools rmdup</code> to remove PCR duplicates.</li>
+    <li>Filter out reads aligned to the mitochondrial genome (chrM) using <code>samtools view</code>.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>6. Peak Calling</h3>
+  <ul>
+    <li>Use <code>MACS2</code> in paired-end mode for peak calling:</li>
+    <pre><code>macs2 callpeak -f BAMPE -t shifted.bam -n sample --keep-dup all --nomodel --shift -100 --extsize 200</code></pre>
+    <li>Parameters optimized for ATAC-seq: fixed shift and extension instead of model building.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7. Generate Signal Tracks</h3>
+  <ul>
+    <li>Create normalized coverage files using <code>bamCoverage</code> from deepTools:</li>
+    <pre><code>bamCoverage -b shifted.bam -o signal.bw --normalizeUsing RPGC</code></pre>
+    <li>Use <code>plotProfile</code> or <code>plotHeatmap</code> to visualize aggregate signals.</li>
+  </ul>
+</div>
+<!-- atacseq_usage.html -->
+<div class="section">
+  <h2>Input Requirements</h2>
+  <ul>
+    <li><strong>FASTQ files</strong> – Single-end or paired-end reads</li>
+    <li><strong>Reference genome</strong> – Bowtie2-indexed genome directory</li>
+    <li><strong>Annotation files</strong> – Optional GTF/GFF for peak annotation</li>
+    <li><strong>Blacklist regions</strong> – ENCODE-recommended blacklists (e.g., hg38)</li>
+    <li><strong>Sample metadata</strong> – CSV or TSV format for grouping and labeling</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Output Files</h2>
+  <ul>
+    <li>Trimmed and aligned BAM files (sorted, deduplicated, and Tn5-corrected)</li>
+    <li>Peak files in <code>narrowPeak</code> and <code>bed</code> formats</li>
+    <li>Signal tracks in <code>bigWig</code> format (normalized)</li>
+    <li>Fragment size distribution plots and insert size metrics</li>
+    <li>MultiQC report summarizing all steps</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Usage</h2>
+  <p>Run the pipeline using the wrapper shell script or from a Nextflow module:</p>
+  <pre><code>bash run_atacseq_pipeline.sh --config config.yaml</code></pre>
+  <p>Make sure to edit the <code>config.yaml</code> with sample-specific paths and parameters.</p>
+</div>
+
+<div class="section">
+  <h2>Containerization</h2>
+  <ul>
+    <li>Compatible with <strong>Apptainer/Singularity</strong> and <strong>Docker</strong></li>
+    <li>Container image includes Bowtie2, MACS2, SAMtools, and deepTools</li>
+    <li>Example: <code>ghcr.io/akhileshkaushal/atacseq-pipeline:latest</code></li>
+    <li>Use <code>apptainer exec</code> or bind paths for read/write access</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Source Code</h2>
+  <p>
+    All code and example datasets are available at:<br>
+    <a href="https://github.com/akhileshkaushal/atacseq-pipeline" target="_blank">
+      https://github.com/akhileshkaushal/atacseq-pipeline
+    </a>
+  </p>
+</div>
+<!-- atacseq_advanced.html -->
+<div class="section">
+  <h2>Advanced Analysis and Quality Metrics</h2>
+</div>
+
+<div class="section">
+  <h3>1. TSS Enrichment Score</h3>
+  <ul>
+    <li>Use <code>computeMatrix</code> and <code>plotProfile</code> from <code>deepTools</code> to calculate signal intensity around transcription start sites (TSS).</li>
+    <li>A high-quality ATAC-seq sample typically shows a sharp peak centered at TSS.</li>
+    <li>TSS enrichment score &gt; 6 is considered acceptable, &gt; 10 is excellent.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>2. FRiP Score (Fraction of Reads in Peaks)</h3>
+  <ul>
+    <li>FRiP = (number of reads in peaks) / (total mapped reads)</li>
+    <li>Compute using <code>bedtools intersect</code>:</li>
+    <pre><code>bedtools intersect -a aligned.bam -b peaks.narrowPeak | samtools view -c</code></pre>
+    <li>FRiP &gt; 0.2 is acceptable for bulk data; lower for single-cell ATAC.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>3. Reproducibility Across Replicates</h3>
+  <ul>
+    <li>Use <code>IDR</code> (Irreproducible Discovery Rate) to assess peak concordance:</li>
+    <pre><code>idr --samples rep1.narrowPeak rep2.narrowPeak --output-file idr.txt</code></pre>
+    <li>Generate overlap heatmaps with <code>multiBamSummary</code> and <code>plotCorrelation</code>.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>4. Transcription Factor Footprinting (Optional)</h3>
+  <ul>
+    <li>Tools such as <code>TOBIAS</code>, <code>HINT-ATAC</code>, and <code>PIQ</code> identify protected binding motifs within accessible chromatin.</li>
+    <li>Requires motif database (e.g., JASPAR) and bias correction model.</li>
+    <li>Example with TOBIAS:</li>
+    <pre><code>TOBIAS FootprintScores --bam shifted.bam --regions peaks.bed --output footprints.bw</code></pre>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>5. Track Visualization</h3>
+  <ul>
+    <li>Load <code>.bigWig</code> signal tracks and peak files into IGV or UCSC Genome Browser.</li>
+    <li>Compare between conditions or replicate consistency.</li>
+    <li>Visual inspection remains crucial for interpreting regulatory regions.</li>
+  </ul>
+</div>
+<!-- atacseq_refs.html -->
+<div class="section">
+  <h2>References</h2>
+  <ul>
+    <li>
+      Buenrostro, J. D. et al. (2013). <i>Transposition of native chromatin for fast and sensitive epigenomic profiling of open chromatin, DNA-binding proteins and nucleosome position.</i>
+      <br><strong>Nature Methods</strong>. <a href="https://www.nature.com/articles/nmeth.2688" target="_blank">[Link]</a>
+    </li>
+    <li>
+      Zhang, Y. et al. (2008). <i>Model-based analysis of ChIP-Seq (MACS).</i>
+      <br><strong>Genome Biology</strong>. <a href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2008-9-9-r137" target="_blank">[Link]</a>
+    </li>
+    <li>
+      Ramírez, F. et al. (2016). <i>deepTools2: a next generation web server for deep-sequencing data analysis.</i>
+      <br><strong>Nucleic Acids Research</strong>. <a href="https://academic.oup.com/nar/article/44/W1/W160/2499348" target="_blank">[Link]</a>
+    </li>
+    <li>
+      Li, Q. et al. (2011). <i>Measuring reproducibility of high-throughput experiments.</i>
+      <br><strong>The Annals of Applied Statistics</strong>. <a href="https://projecteuclid.org/journals/annals-of-applied-statistics/volume-5/issue-3/Measuring-reproducibility-of-high-throughput-experiments/10.1214/11-AOAS466.short" target="_blank">[Link]</a>
+    </li>
+    <li>
+      Bentsen, M. et al. (2020). <i>ATAC-seq footprinting unravels kinetics of transcription factor binding during zygotic genome activation.</i>
+      <br><strong>Nature Communications</strong>. <a href="https://www.nature.com/articles/s41467-020-14589-2" target="_blank">[Link]</a>
+    </li>
+    <li>
+      ENCODE Consortium. (2020). <i>Expanded encyclopaedias of DNA elements in human and mouse genomes.</i>
+      <br><strong>Nature</strong>. <a href="https://www.nature.com/articles/s41586-020-2493-4" target="_blank">[Link]</a>
+    </li>
+  </ul>
+</div>
+
+<div class="section">
+  <a href="index.html" class="back-link">&larr; Back to Pipeline Index</a>
+</div>
+
+</div> <!-- end .container -->
+</body>
+</html>
