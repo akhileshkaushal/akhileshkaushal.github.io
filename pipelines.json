@@ -42,22 +42,155 @@
  {
   "id": "hiplex-demux",
   "name": "HiPlex Demultiplexer",
-  "description": "A Python tool for demultiplexing custom barcoded HiPlex sequencing reads.",
+  "description": "A scalable and efficient pipeline for preprocessing, demultiplexing, and downstream analysis of high-throughput multiplexed Cut&Tag data targeting multiple histone marks or transcription factors",
   "version": "1.0.0",
   "link": "hiplex.html",
   "detail_html": "hiplex.html",
   "tags": ["HiPlex", "Demultiplexing", "FASTQ", "Indexing"],
   "details": {
     "steps": [
-      "Parse FASTQ headers for embedded i5 and i7 indices",
-      "Match against a sample index table",
-      "Generate demultiplexed FASTQ files per sample",
-      "Support for gzip-compressed input",
-      "Compatible with Docker and HPC environments"
+      "Sample-level Demultiplexing: Based on standard i7 and i5 Illumina dual indices to separate libraries from different samples.",
+      "Antibody-level Demultiplexing: Performed using barcodes at both 5′ and 3′ ends that identify the target-specific antibodies."
+
     ],
     "repo": "https://github.com/akhileshkaushal/hiplex-demux",
     "usage": "python hiplex_demux.py --input fastq_dir --output output_dir --index-table indices.csv"
    }
+ },
+ {
+  "id": "atacseq",
+  "name": "ATAC-Seq",
+  "description": "Pipeline for preprocessing and downstream analysis of ATAC-seq data from raw reads to peak annotation and visualization",
+  "version": "1.0.0",
+  "link": "atacseq.html",
+  "detail_html": "atacseq.html",
+  "tags": ["ATACseq", "FASTQ", "Transposase"],
+  "details": {
+    "steps": [
+      "Mapping genome-wide chromatin accessibility",
+	  "Identifying enhancers, promoters, and regulatory elements",
+	  "Inferring transcription factor binding via footprinting",
+      "Studying dynamic chromatin remodeling across conditions",
+      "Integration with RNA-seq and ChIP-seq for regulatory network analysis"
+    ],
+    "repo": "https://github.com/akhileshkaushal/atacseq-pipeline",
+    }
+ },
+ {
+  "id": "chipseq",
+  "name": "Chip-Seq",
+  "description": "pipeline is designed for comprehensive analysis of ChIP-seq data, covering preprocessing, alignment, peak calling, annotation, and differential binding analysis",
+  "version": "1.0.0",
+  "link": "chipseq.html",
+  "detail_html": "chipseq.html",
+  "tags": ["ATACseq", "FASTQ", "Transposase"],
+  "details": {
+    "steps": [
+      "Profiling of transcription factor binding sites",
+      "Histone modification landscape analysis",
+      "Differential binding across conditions",
+      "Chromatin state mapping"
+
+    ],
+    "repo": "https://github.com/akhileshkaushal/chipseq-pipeline",
+    }
+ },
+ {
+  "id": "cutntag",
+  "name": "CutnTag",
+  "description": "pipeline provides a complete workflow for processing and analyzing Cleavage Under Targets and Tagmentation (Cut&Tag) data",
+  "version": "1.0.0",
+  "link": "chipseq.html",
+  "detail_html": "chipseq.html",
+  "tags": ["CutnTag", "FASTQ", "deepTools"],
+  "details": {
+    "steps": [
+      "Histone mark profiling (e.g., H3K27ac, H3K4me3, H3K27me3)",
+      "Transcription factor binding analysis with low cell numbers",
+      "Epigenomic landscape profiling in primary tissues or rare cell populations",
+      "Single-cell chromatin profiling (in modified implementations)"
+
+
+    ],
+    "repo": "https://github.com/akhileshkaushal/cutandtag-pipeline",
+    }
+ },
+ {
+  "id": "cutntag",
+  "name": "CutnTag",
+  "description": "pipeline provides a complete workflow for processing and analyzing Cleavage Under Targets and Tagmentation (Cut&Tag) data",
+  "version": "1.0.0",
+  "link": "cutandtag.html",
+  "detail_html": "cutandtag.html",
+  "tags": ["CutnTag", "FASTQ", "deepTools"],
+  "details": {
+    "steps": [
+      "Histone mark profiling (e.g., H3K27ac, H3K4me3, H3K27me3)",
+      "Transcription factor binding analysis with low cell numbers",
+      "Epigenomic landscape profiling in primary tissues or rare cell populations",
+      "Single-cell chromatin profiling (in modified implementations)"
+
+
+    ],
+    "repo": "https://github.com/akhileshkaushal/cutandtag-pipeline",
+    }
+ },
+ {
+  "id": "singlecellomics",
+  "name": "Single Cell Omics",
+  "description": "pipeline provides modular and scalable pipelines for single-cell omics technologies, including scRNA-seq, CITE-seq, TCR-seq, and BCR-seq",
+  "version": "1.0.0",
+  "link": "singlecellomics.html",
+  "detail_html": "singlecellomics.html",
+  "tags": ["Single-cell RNA-seq", "CITE-seq", "TCR-seq","BCR-seq"],
+  "details": {
+    "steps": [
+      "scRNA-seq: Transcriptome-wide gene expression profiling at single-cell resolution",
+      "CITE-seq: Simultaneous quantification of transcriptome and surface protein abundance using antibody-derived tags (ADTs)",
+      "TCR-seq: T-cell receptor profiling to track clonality and immune repertoire diversity",
+      "BCR-seq: B-cell receptor sequencing for clonal expansion and somatic hypermutation analysis"
+
+
+
+    ],
+    "repo": "https://github.com/akhileshkaushal/single-cell-omics-pipeline",
+    }
+ },
+ {
+  "id": "wgbs",
+  "name": "Whole Genome Bisulfite Sequencing (WGBS)",
+  "description": "A pipeline for preprocessing and differential analysis of methylation data from Whole Genome Bisulfite Sequencing (WGBS)",
+  "version": "1.0.0",
+  "link": "wgbs.html",
+  "detail_html": "wgbs.html",
+  "tags": ["Methylation","WGBS","Bismark","Bedgraph"],
+  "details": {
+    "steps": [
+      "Single-base resolution of methylation at CpG and non-CpG sites (CHG, CHH)",
+      "Unbiased genome-wide coverage, including promoters, enhancers, and intergenic regions",
+      "Compatible with low-input and FFPE DNA (via optimized library prep)",
+      "Supports allele-specific methylation and imprinted gene analysis"
+ ],
+    "repo": "https://github.com/akhileshkaushal/wgbs-pipeline",
+    }
+ },
+ {
+  "id": "wgswes",
+  "name": "WGS/WES Variant Calling Pipeline",
+  "description": "A comprehensive pipeline for variant discovery using Whole Genome Sequencing (WGS) and Whole Exome Sequencing (WES) data, supporting both germline and somatic variant calling workflows, with or without matched normal samples. ",
+  "version": "1.0.0",
+  "link": "wgswes.html",
+  "detail_html": "wgswes.html",
+  "tags": ["WGS","WES","Germline","Somatic","GATK"],
+  "details": {
+    "steps": [
+      "Germline: Single or multi-sample variant calling using HaplotypeCaller in GVCF mode",
+      "Somatic (Tumor/Normal): Matched tumor-normal pairs using Mutect2",
+      "Somatic (Tumor-only): Tumor-only mode with panel of normals and population allele frequency filtering"
+
+ ],
+    "repo": "https://github.com/akhileshkaushal/wgs-wes-pipeline",
+    }
  }
 
 ]
