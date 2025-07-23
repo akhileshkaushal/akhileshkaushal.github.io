@@ -5,42 +5,62 @@
   <title>Akhilesh Kaushal – Pipelines</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Bootstrap CSS -->
-  
-<body class="bg-gray-100">
-  <!-- Header -->
-  <header class="gradient-bg text-white py-12">
-    <div class="container mx-auto px-4 text-center">
-      <h1 class="text-4xl font-bold mb-2">Bioinformatics Pipelines</h1>
-      <p class="text-lg opacity-90">Explore our advanced computational suites for genomic, epigenomic analysis and data processing</p>
-    </div>
-  </header>
-
-
   <!-- Custom Styling -->
   <style>
-    .bg-soft-blue    { background-color: #e8f4fd; color: #003366; }
-    .bg-soft-green   { background-color: #eafaf1; color: #1e4620; }
-    .bg-soft-yellow  { background-color: #fff9e6; color: #665c00; }
-    .bg-soft-gray    { background-color: #f4f4f4; color: #333; }
-    .bg-soft-purple  { background-color: #f3e8fd; color: #4b3869; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      color: #1a1a1a;
+    }
+
+    header {
+      background: linear-gradient(to right, #004080, #006699);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.2em;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+
+    .pipeline-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
 
     .pipeline-card-custom {
       border-radius: 10px;
       box-shadow: 0 1px 6px rgba(0,0,0,0.08);
       padding: 20px;
-      height: 100%;
+      background-color: #ffffff;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .pipeline-card-custom:hover {
+      transform: scale(1.02);
     }
 
     .pipeline-card-custom a {
       font-weight: 600;
-      text-decoration: underline;
-      color: inherit;
-      transition: color 0.2s ease;
+      text-decoration: none;
+      color: #004080;
     }
 
     .pipeline-card-custom a:hover {
       color: #0077cc;
+      text-decoration: underline;
     }
 
     .tag-badge {
@@ -48,23 +68,54 @@
       border-radius: 10px;
       padding: 2px 8px;
       font-size: 0.75rem;
-      margin-right: 5px;
+      margin: 0 5px 5px 0;
+      display: inline-block;
+    }
+
+    .bg-soft-blue    { background-color: #e8f4fd; color: #003366; }
+    .bg-soft-green   { background-color: #eafaf1; color: #1e4620; }
+    .bg-soft-yellow  { background-color: #fff9e6; color: #665c00; }
+    .bg-soft-gray    { background-color: #f4f4f4; color: #333; }
+    .bg-soft-purple  { background-color: #f3e8fd; color: #4b3869; }
+
+    footer {
+      background-color: #1f2937;
+      color: #fff;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 0.9em;
+    }
+
+    @media screen and (max-width: 600px) {
+      header h1 {
+        font-size: 1.6em;
+      }
+      .pipeline-wrapper {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Injected header (WordPress link) will be loaded here -->
-  
-  
+  <!-- Header -->
+  <header>
+    <h1>Bioinformatics Pipelines</h1>
+    <p>Explore our advanced computational suites for genomic and epigenomic analysis</p>
+  </header>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4" id="pipeline-container">
-      <!-- Cards will be injected here -->
-    </div>
+  <!-- Pipeline Grid -->
+  <div class="pipeline-wrapper" id="pipeline-container">
+    <!-- Cards will be dynamically inserted here -->
   </div>
 
-  <!-- Dynamic pipeline rendering -->
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Bioinformatics Suites. All rights reserved.
+  </footer>
+
+  <!-- Dynamic Content Script -->
   <script>
     fetch('pipelines.json')
       .then(response => response.json())
@@ -78,21 +129,15 @@
         data.forEach((p, i) => {
           const bgClass = bgClasses[i % bgClasses.length];
           const card = document.createElement('div');
-          card.className = "col";
+          card.className = `pipeline-card-custom ${bgClass}`;
 
           card.innerHTML = `
-            <div class="pipeline-card-custom ${bgClass}">
-              <h5>
-                <a href="${p.link}" target="_blank">
-                  ${p.name} <span style="font-size: 0.85em;">🔗</span>
-                </a>
-              </h5>
-              <p>${p.description}</p>
-              <div style="margin-bottom: 8px;">
-                ${(p.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
-              </div>
-              <small><strong>Version:</strong> ${p.version}</small>
+            <h3><a href="${p.link}" target="_blank">${p.name} 🔗</a></h3>
+            <p>${p.description}</p>
+            <div>
+              ${(p.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
             </div>
+            <small><strong>Version:</strong> ${p.version}</small>
           `;
 
           container.appendChild(card);
@@ -102,30 +147,7 @@
         document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
         console.error(err);
       });
-<!-- Footer -->
-  <footer class="bg-gray-800 text-white py-6">
-    <div class="container mx-auto px-4 text-center">
-      <p>&copy; 2025 Bioinformatics Suites. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <script>
-    // Example JavaScript for filter functionality (to be expanded based on requirements)
-    document.querySelectorAll('#filter-bar button').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('#filter-bar button').forEach(btn => {
-          btn.classList.remove('bg-blue-600', 'text-white');
-          btn.classList.add('bg-gray-200', 'text-gray-800');
-        });
-        button.classList.remove('bg-gray-200', 'text-gray-800');
-        button.classList.add('bg-blue-600', 'text-white');
-        // Add logic to filter pipeline cards based on button clicked
-      });
-    });
   </script>
- 
 
-</script>
-  </head>
 </body>
 </html>
