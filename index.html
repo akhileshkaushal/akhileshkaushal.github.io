@@ -7,94 +7,125 @@
 
   <!-- Custom Styling -->
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f8f9fa;
-      margin: 0;
-      color: #1a1a1a;
-    }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    color: #1a1a1a;
+  }
 
-    header {
-      background: linear-gradient(to right, #004080, #006699);
-      color: white;
-      padding: 60px 20px;
-      text-align: center;
-    }
+  header {
+    background: linear-gradient(to right, #004080, #006699);
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+  }
 
+  header h1 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+  }
+
+  header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+  }
+
+  .pipeline-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  .pipeline-card-custom {
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    background-color: #ffffff;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .pipeline-card-custom:hover {
+    transform: scale(1.02);
+  }
+
+  .pipeline-card-custom a {
+    font-weight: 600;
+    text-decoration: none;
+    color: #004080;
+  }
+
+  .pipeline-card-custom a:hover {
+    color: #0077cc;
+    text-decoration: underline;
+  }
+
+  .tag-badge {
+    background: #ddd;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    margin: 0 5px 5px 0;
+    display: inline-block;
+  }
+
+  /* Light Pastel Backgrounds (Professional tone) */
+  .bg-soft-blue    { background-color: #e8f4fd; color: #003366; }
+  .bg-soft-green   { background-color: #eafaf1; color: #1e4620; }
+  .bg-soft-yellow  { background-color: #fff9e6; color: #665c00; }
+  .bg-soft-gray    { background-color: #f4f4f4; color: #333; }
+  .bg-soft-purple  { background-color: #f3e8fd; color: #4b3869; }
+  .bg-soft-rose    { background-color: #fff0f5; color: #712c4c; }
+  .bg-soft-mint    { background-color: #e6fff5; color: #22705b; }
+  .bg-soft-lavender{ background-color: #f6f3ff; color: #483d8b; }
+  .bg-soft-teal    { background-color: #e0f7f9; color: #004f4f; }
+
+  .blog-link {
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 1.1em;
+  }
+
+  .blog-link a {
+    color: #004080;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1.5em;
+    transition: color 0.3s ease;
+  }
+
+  .blog-link a:hover {
+    color: #0077cc;
+    text-decoration: underline;
+  }
+
+  footer {
+    background-color: #1f2937;
+    color: #fff;
+    text-align: center;
+    padding: 20px 10px;
+    font-size: 0.9em;
+  }
+
+  @media screen and (max-width: 600px) {
     header h1 {
-      font-size: 2.2em;
-      margin-bottom: 10px;
-    }
-
-    header p {
-      font-size: 1.1em;
-      opacity: 0.9;
+      font-size: 1.6em;
     }
 
     .pipeline-wrapper {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 40px 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .pipeline-card-custom {
-      border-radius: 10px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
       padding: 20px;
-      background-color: #ffffff;
-      transition: transform 0.2s ease-in-out;
     }
 
-    .pipeline-card-custom:hover {
-      transform: scale(1.02);
+    .blog-link a {
+      font-size: 1.2em;
     }
+  }
+</style>
 
-    .pipeline-card-custom a {
-      font-weight: 600;
-      text-decoration: none;
-      color: #004080;
-    }
-
-    .pipeline-card-custom a:hover {
-      color: #0077cc;
-      text-decoration: underline;
-    }
-
-    .tag-badge {
-      background: #ddd;
-      border-radius: 10px;
-      padding: 2px 8px;
-      font-size: 0.75rem;
-      margin: 0 5px 5px 0;
-      display: inline-block;
-    }
-
-    .bg-soft-blue    { background-color: #e8f4fd; color: #003366; }
-    .bg-soft-green   { background-color: #eafaf1; color: #1e4620; }
-    .bg-soft-yellow  { background-color: #fff9e6; color: #665c00; }
-    .bg-soft-gray    { background-color: #f4f4f4; color: #333; }
-    .bg-soft-purple  { background-color: #f3e8fd; color: #4b3869; }
-
-    footer {
-      background-color: #1f2937;
-      color: #fff;
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 0.9em;
-    }
-
-    @media screen and (max-width: 600px) {
-      header h1 {
-        font-size: 1.6em;
-      }
-      .pipeline-wrapper {
-        padding: 20px;
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -110,6 +141,14 @@
     <!-- Cards will be dynamically inserted here -->
   </div>
 
+  <!-- Blog Link -->
+  <div class="blog-link">
+    🌐 Visit my main blog at  
+    <a href="https://akhileshkaushal.com" target="_blank" rel="noopener noreferrer">
+      akhileshkaushal.com
+    </a>
+  </div>
+
   <!-- Footer -->
   <footer>
     &copy; 2025 Bioinformatics Suites. All rights reserved.
@@ -117,37 +156,39 @@
 
   <!-- Dynamic Content Script -->
   <script>
-    fetch('pipelines.json')
-      .then(response => response.json())
-      .then(data => {
-        const container = document.getElementById('pipeline-container');
-        const bgClasses = [
-          'bg-soft-blue', 'bg-soft-green', 'bg-soft-yellow',
-          'bg-soft-purple', 'bg-soft-gray'
-        ];
+  fetch('pipelines.json')
+    .then(response => response.json())
+    .then(data => {
+      const container = document.getElementById('pipeline-container');
+      const bgClasses = [
+        'bg-soft-blue', 'bg-soft-green', 'bg-soft-yellow',
+        'bg-soft-purple', 'bg-soft-gray', 'bg-soft-rose',
+        'bg-soft-mint', 'bg-soft-lavender', 'bg-soft-teal'
+      ];
 
-        data.forEach((p, i) => {
-          const bgClass = bgClasses[i % bgClasses.length];
-          const card = document.createElement('div');
-          card.className = `pipeline-card-custom ${bgClass}`;
+      data.forEach((p, i) => {
+        const bgClass = bgClasses[i % bgClasses.length];
+        const card = document.createElement('div');
+        card.className = `pipeline-card-custom ${bgClass}`;
 
-          card.innerHTML = `
-            <h3><a href="${p.link}" target="_blank">${p.name} 🔗</a></h3>
-            <p>${p.description}</p>
-            <div>
-              ${(p.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
-            </div>
-            <small><strong>Version:</strong> ${p.version}</small>
-          `;
+        card.innerHTML = `
+          <h3><a href="${p.link}" target="_blank">${p.name} 🔗</a></h3>
+          <p>${p.description}</p>
+          <div>
+            ${(p.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
+          </div>
+          <small><strong>Version:</strong> ${p.version}</small>
+        `;
 
-          container.appendChild(card);
-        });
-      })
-      .catch(err => {
-        document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
-        console.error(err);
+        container.appendChild(card);
       });
-  </script>
+    })
+    .catch(err => {
+      document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
+      console.error(err);
+    });
+</script>
+
 
 </body>
 </html>
