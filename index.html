@@ -17,18 +17,30 @@
     }
 
     .card {
-  border-radius: 12px;
-  background: linear-gradient(145deg, #f5fff9, #e3f6ec); /* Light green metallic pastel */
-  border: 1px solid #b8d8c2; /* Gentle green-gray metallic edge */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 16px;
+  background: rgba(245, 255, 249, 0.55); /* semi-transparent mint */
+  backdrop-filter: blur(16px); /* frosted glass effect */
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(184, 216, 194, 0.6); /* soft green metallic border */
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 4px 20px rgba(0, 0, 0, 0.06),
+    0 0 2px rgba(255, 255, 255, 0.4); /* subtle light bloom */
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
 }
 
+/* Hover effect: lifted and glow */
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0, 200, 120, 0.4);
+  box-shadow:
+    0 6px 24px rgba(0, 0, 0, 0.15),
+    0 0 12px rgba(0, 255, 170, 0.08);
+}
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
 
     .card:nth-child(1) {
       background: linear-gradient(145deg, #f0f8ff, #e6f0fa);
@@ -59,6 +71,15 @@
       text-decoration: none;
       color: inherit;
       display: block;
+	  
+	  .card-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: #0f3d32;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
     }
   </style>
 </head>
