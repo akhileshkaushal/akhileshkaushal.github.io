@@ -4,8 +4,8 @@
     "name": "RNAseq-Pipeline",
     "description": "RNA-seq analysis using DESeq2, STAR, Salmon, and GSEA.",
     "version": "1.2.0",
-    "link": "transcriptomics.html",
-    "detail_html": "transcriptomics.html",
+    "link": "transcriptomic/index.html",
+	"detail_html": "transcriptomic/index.html",
     "tags": ["Transcriptomics", "DESeq2", "edgeR", "GSEA"],
     "details": {
       "steps": [
