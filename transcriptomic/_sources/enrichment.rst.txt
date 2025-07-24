@@ -1,0 +1,151 @@
+Functional Enrichment Analysis
+==============================
+
+Overview
+--------
+
+This module provides tools to explore the biological relevance of differentially expressed genes by identifying enriched functional pathways. It supports both Over Representation Analysis (ORA) and Gene Set Enrichment Analysis (GSEA), and outputs enrichment scores, plots, and KEGG overlays for downstream interpretation.
+
+Enrichment Methods
+------------------
+
+The two main types of analyses are:
+
+- **ORA (Over Representation Analysis)** using `clusterProfiler::enricher()` on gene lists
+- **GSEA (Gene Set Enrichment Analysis)** using `fgsea::fgsea()` on ranked gene vectors
+
+ORA: Over Representation Analysis
+---------------------------------
+
+ORA identifies significantly enriched gene sets among up- or down-regulated genes, using `.gmt` pathway files.
+
+.. code-block:: r
+
+   result <- enricher(
+     gene = gene_list,
+     TERM2GENE = gmt_df,
+     pvalueCutoff = 0.05,
+     qvalueCutoff = 0.2
+   )
+
+- Input: vector of gene IDs (SYMBOL or ENTREZ)
+- Output: data frame of enriched pathways with FDR values and gene overlaps
+
+GSEA: Gene Set Enrichment Analysis
+----------------------------------
+
+GSEA evaluates whether genes from a predefined pathway are enriched at the top or bottom of a ranked gene list.
+
+.. code-block:: r
+
+   fgseaRes <- fgsea(
+     pathways = gmt_list,
+     stats = ranked_genes,
+     minSize = 50,
+     maxSize = 500
+   )
+
+- Input: named vector of log2FC values (gene ranking)
+- Output: normalized enrichment scores (NES), p-values, adjusted p-values
+
+Random Walk Plot
+----------------
+
+For top-ranked gene sets, a GSEA-style random walk plot is generated to visualize enrichment.
+
+.. code-block:: r
+
+   plotEnrichment(pathways[[1]], ranked_genes) + ggtitle("Pathway Enrichment")
+
+Output Files
+------------
+
+The enrichment modules output the following files per comparison group:
+
+.. code-block:: text
+
+   ORA_results.xlsx          # Excel sheet with per-set enrichment
+   *_dotplot.tiff            # Top 15 enriched categories (ORA or GSEA)
+   gsea_results.csv          # Full GSEA result table with NES and padj
+
+Inputs
+------
+
+- `ranked_genes.rnk` for GSEA
+- `upregulated_genes.csv` and `downregulated_genes.csv` for ORA
+- `.gmt` gene sets from MSigDB, KEGG, GO BP, Reactome, etc.
+
+Tips
+----
+
+- 🧠 Use curated `.gmt` files relevant to your biological context
+- 📊 Review NES, p.adjust, and pathway size for meaningful hits
+- ⚠️ Ensure gene names match the format in GMT (SYMBOL or ENTREZ)
+
+KEGG Pathway Overlay
+====================
+
+Overview
+--------
+
+In addition to statistical enrichment, this module maps expression changes onto KEGG pathways for visual interpretation.
+
+Workflow
+--------
+
+1. Filter DEGs using fold change and FDR thresholds
+2. Map gene symbols to ENTREZ IDs
+3. Identify KEGG pathway ID(s)
+4. Use `pathview()` to overlay values
+
+Code Example
+------------
+
+.. code-block:: r
+
+   library(pathview)
+   library(clusterProfiler)
+   library(org.Hs.eg.db)
+
+   # Convert SYMBOL to ENTREZ
+   entrez_map <- bitr(gene_symbols, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = org.Hs.eg.db)
+
+   # Build gene list with log2FC values
+   res_df <- read.csv("group_deseq2_results.csv", row.names = 1)
+   mapped <- intersect(entrez_map$SYMBOL, rownames(res_df))
+   gene_list <- res_df[mapped, "log2FoldChange"]
+   names(gene_list) <- entrez_map$ENTREZID[match(mapped, entrez_map$SYMBOL)]
+
+   # Generate Pathview for KEGG ID
+   pathview(gene.data = gene_list,
+            pathway.id = "hsa04610",
+            species = "hsa",
+            out.suffix = "group_hsa04610")
+
+Output Files
+------------
+
+- `*.png`: Pathway diagrams with expression-mapped coloring
+- `*_unmapped_symbols.csv`: Genes that failed ID conversion
+
+Example Pathways
+----------------
+
+- `hsa04610` — Complement and coagulation cascades
+- `hsa04611` — Platelet activation
+- `hsa04060` — Cytokine–cytokine receptor interaction
+- `hsa05200` — Pathways in cancer
+
+Notes
+-----
+
+- Gene IDs must match pathway expectations (SYMBOL ➜ ENTREZ conversion is recommended)
+- Pathview supports online fetching or offline XML cache
+- Default gradient: red = up, green = down, grey = unmapped
+
+Related Docs
+------------
+
+- :doc:`execution` – Running the pipeline
+- :doc:`visualization` – Plotting DEGs
+

@@ -1,0 +1,113 @@
+Transcriptomic RNA-seq Pipeline
+===============================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents
+
+   installation
+   execution
+   enrichment
+   dba_case
+
+Overview
+--------
+
+This pipeline provides a comprehensive framework for transcriptomic differential expression and enrichment analysis using RNA-Seq count data generated from high-throughput platforms such as Illumina NextSeq or HiSeq. It supports various experimental designs and enables robust statistical modeling, pathway analysis, and data visualization, making it ideal for both exploratory and hypothesis-driven transcriptomics studies.
+
+The pipeline leverages:
+- **DESeq2** and **limma** for differential gene expression analysis
+- **clusterProfiler** and **fgsea** for over-representation and gene set enrichment analyses
+- **EnhancedVolcano**, **pheatmap**, and **pathview** for rich graphical summaries of differential expression and biological pathways
+
+Features
+--------
+
+- Parses experimental design from a structured `comparisons.json` configuration
+- Supports multiple comparisons across sample groups with optional covariates
+- Includes built-in handling of sex as a biological covariate when present
+- Offers both DESeq2 and limma-voom options for differential expression
+- Outputs volcano plots, heatmaps, and GSEA-compatible ranked gene files
+- Conducts high-throughput batch ORA and GSEA using `.gmt` gene set collections
+- Generates KEGG pathway overlays using mapped log2 fold change data
+- Extensible structure with modular R scripts and automated logging for reproducibility
+
+Tools & Libraries Used
+----------------------
+
+- **Statistical Modeling**: `R`, `DESeq2`, `limma`, `edgeR`
+- **Visualization**: `EnhancedVolcano`, `pheatmap`, `ggplot2`
+- **Enrichment Analysis**: `clusterProfiler`, `fgsea`, `pathview`, `enrichplot`
+- **Data Processing**: `jsonlite`, `openxlsx`, `dplyr`, `tibble`
+- **Utility & Logging**: Custom scripts for reading data, logging, and config parsing
+
+Input Requirements
+------------------
+
+- A tab-delimited RNA-seq count matrix (genes as rows, samples as columns)
+- A `comparisons.json` file defining group comparisons and covariates
+- Optional enrichment input: `gsea_config.json` and pathway `.gmt` files
+- Required R packages (see installation section)
+
+Output Summary
+--------------
+
+Each comparison generates a dedicated subdirectory under `outputs/` containing:
+
+- Differential gene expression result tables (DESeq2, limma)
+- Up/down-regulated gene lists
+- Volcano plots and clustered heatmaps
+- GSEA-compatible ranked gene files (`.rnk`)
+- ORA/GSEA results including `.csv`, `.xlsx`, and dot plots
+- Pathway overlays from KEGG (Pathview-generated PNGs)
+- Logs and intermediate summaries
+
+Directory Structure
+-------------------
+
+.. code-block:: text
+
+    RNAseqPipeline/
+    ├── main.R                         # Master script
+    ├── comparisons.json              # Comparison config
+    ├── gsea_config.json              # ORA/GSEA config
+    ├── /analysis
+    │   ├── gene_analysis.R           # DESeq2 + limma models
+    │   ├── enrichment_ora_batch.R    # Batch ORA
+    │   ├── enrichment_gsea_batch.R   # Batch GSEA
+    ├── /visualization
+    │   ├── plot_generation.R         # Volcano and heatmap
+    │   ├── pathway_visualization.R   # KEGG Pathview plots
+    ├── /config
+    │   └── load_config.R             # JSON config loader
+    ├── /io
+    │   └── read_data.R               # Count matrix loader
+    ├── /utils
+    │   ├── helpers.R                 # Utility functions
+    │   └── logging.R                 # Logger
+    ├── /logs                         # Per-comparison logs
+    ├── /outputs                      # All analysis results
+    └── README.md                     # Overview + instructions
+
+Output Directory Example
+------------------------
+
+.. code-block:: text
+
+    outputs/
+    ├── GroupA_vs_GroupB/
+    │   ├── GroupA_vs_GroupB_deseq2_results.csv
+    │   ├── GroupA_vs_GroupB_limma_results.csv
+    │   ├── GroupA_vs_GroupB_upregulated_genes.csv
+    │   ├── GroupA_vs_GroupB_downregulated_genes.csv
+    │   ├── GroupA_vs_GroupB_ranked_genes.rnk
+    │   ├── GroupA_vs_GroupB_volcano_plot.tiff
+    │   ├── GroupA_vs_GroupB_heatmap.png
+    │   ├── GroupA_vs_GroupB_pathview_*.png
+    │   └── GroupA_vs_GroupB_log.txt
+
+Get Started
+-----------
+
+Proceed to the :doc:`installation` page for software prerequisites and setup steps. Then move to :doc:`execution` to learn how to run your analysis.
+

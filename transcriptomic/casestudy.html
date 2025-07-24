@@ -1,0 +1,256 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA) &mdash; RNA-seq Transcriptomic Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            RNA-seq Transcriptomic Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#repository-setup">Repository Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-required-r-packages">Install Required R Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#project-directory-setup">Project Directory Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#directory-example">Directory Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Pipeline Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#main-entry-script-main-r">Main Entry Script: <cite>main.R</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-1-configure-comparisons-json">Step 1: Configure <cite>comparisons.json</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-2-launch-the-pipeline">Step 2: Launch the Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#what-happens-internally">What Happens Internally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#cleaning-and-re-running">Cleaning and Re-running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html">Functional Enrichment Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#enrichment-methods">Enrichment Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#ora-over-representation-analysis">ORA: Over Representation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#gsea-gene-set-enrichment-analysis">GSEA: Gene Set Enrichment Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#random-walk-plot">Random Walk Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#inputs">Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html#kegg-pathway-overlay">KEGG Pathway Overlay</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id1">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#code-example">Code Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id2">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#example-pathways">Example Pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#related-docs">Related Docs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">RNA-seq Transcriptomic Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/casestudy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="transcriptomic-analysis-in-diamond-blackfan-anemia-dba">
+<h1>Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)<a class="headerlink" href="#transcriptomic-analysis-in-diamond-blackfan-anemia-dba" title="Link to this heading"></a></h1>
+<section id="background">
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
+<p>Diamond-Blackfan Anemia (DBA) is a congenital bone marrow failure disorder caused by mutations
+in ribosomal protein genes such as <em>RPS19</em>, <em>RPL5</em>, and <em>RPL11</em>. Patients typically exhibit macrocytic
+anemia, physical anomalies, and increased cancer risk.</p>
+</section>
+<section id="sample-setup">
+<h2>Sample Setup<a class="headerlink" href="#sample-setup" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Group</p></th>
+<th class="head"><p>Samples</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DBA Patients
+Healthy Controls</p></td>
+<td><p>DBA_01 to DBA_06
+CTRL_01 to CTRL_06</p></td>
+<td><p>Confirmed DBA with RPS19 mutation
+Age-matched healthy donors</p></td>
+</tr>
+</tbody>
+</table>
+<p>JSON configuration snippet:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;DBA_vs_Control&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;group1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;DBA_01&quot;</span><span class="p">,</span> <span class="s2">&quot;DBA_02&quot;</span><span class="p">,</span> <span class="s2">&quot;DBA_03&quot;</span><span class="p">,</span> <span class="s2">&quot;DBA_04&quot;</span><span class="p">,</span> <span class="s2">&quot;DBA_05&quot;</span><span class="p">,</span> <span class="s2">&quot;DBA_06&quot;</span><span class="p">],</span>
+  <span class="s2">&quot;group2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;CTRL_01&quot;</span><span class="p">,</span> <span class="s2">&quot;CTRL_02&quot;</span><span class="p">,</span> <span class="s2">&quot;CTRL_03&quot;</span><span class="p">,</span> <span class="s2">&quot;CTRL_04&quot;</span><span class="p">,</span> <span class="s2">&quot;CTRL_05&quot;</span><span class="p">,</span> <span class="s2">&quot;CTRL_06&quot;</span><span class="p">],</span>
+  <span class="s2">&quot;sex_groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="differential-expression-results">
+<h2>Differential Expression Results<a class="headerlink" href="#differential-expression-results" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Gene</p></th>
+<th class="head"><p>log2FC</p></th>
+<th class="head"><p>padj</p></th>
+<th class="head"><p>Role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RPL11
+CDKN1A (p21)
+TP53
+IL6</p></td>
+<td><p>-1.5
++2.2
++1.7
++2.0</p></td>
+<td><p>0.001
+0.0005
+0.004
+0.002</p></td>
+<td><p>Ribosomal protein; mutated in DBA
+p53 target; cell cycle arrest
+Master tumor suppressor
+Inflammatory cytokine</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="enrichment-results">
+<h2>Enrichment Results<a class="headerlink" href="#enrichment-results" title="Link to this heading"></a></h2>
+<p>ORA Top Terms:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Gene Set</p></th>
+<th class="head"><p>p.adjust</p></th>
+<th class="head"><p>Category</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="GO:0006364">GO:0006364</a> Ribosome biogenesis
+REACTOME_p53_pathway
+HALLMARK_INFLAMMATORY_RESPONSE</p></td>
+<td><p>0.0001
+0.001
+0.003</p></td>
+<td><p>GO BP
+Reactome
+MSigDB</p></td>
+</tr>
+</tbody>
+</table>
+<p>GSEA Highlights:</p>
+<ul class="simple">
+<li><p><em>p53 Signaling Pathway</em>: NES = +2.1, padj = 0.002</p></li>
+<li><p><em>Ribosome Pathway</em>: NES = -2.4, padj = 0.0008</p></li>
+<li><p><em>TNF Signaling via NFκB</em>: NES = +1.9, padj = 0.01</p></li>
+</ul>
+</section>
+<section id="kegg-pathview-example">
+<h2>KEGG Pathview Example<a class="headerlink" href="#kegg-pathview-example" title="Link to this heading"></a></h2>
+<p><strong>Pathway Visualized</strong>: <code class="docutils literal notranslate"><span class="pre">hsa04115</span></code> — p53 Signaling Pathway</p>
+<a class="reference internal image-reference" href="https://www.genome.jp/kegg/pathway/hsa/hsa04115.png"><img alt="KEGG p53 Pathway" class="align-center" src="https://www.genome.jp/kegg/pathway/hsa/hsa04115.png" style="width: 80%;" />
+</a>
+</section>
+<section id="biological-interpretation">
+<h2>Biological Interpretation<a class="headerlink" href="#biological-interpretation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Loss of <em>RPS19</em>/<em>RPL11</em> function impairs ribosome synthesis in progenitors.</p></li>
+<li><p>p53-mediated transcription of <em>CDKN1A</em> leads to cell cycle arrest and apoptosis.</p></li>
+<li><p>Upregulation of inflammatory pathways may contribute to secondary immune effects.</p></li>
+<li><p>Distinct transcriptional clustering validates biological differentiation of cases vs. controls.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+RNA-seq Visualization Module
+============================
+
+Purpose
+-------
+
+The visualization module generates publication-ready plots to facilitate interpretation of differential gene expression results across experimental groups. It supports multiple visualization formats that highlight both statistical significance and biological relevance.
+
+Plot Types
+----------
+
+- **Volcano Plot** — Displays differential expression as fold change versus statistical significance.
+- **Heatmap** — Shows expression patterns of top differentially expressed genes across samples.
+- **KEGG Pathview Overlay** — Maps log2 fold changes onto KEGG pathway diagrams for biological insight.
+
+Volcano Plot (DESeq2)
+---------------------
+
+The pipeline uses `EnhancedVolcano` to create volcano plots that distinguish significantly up- and down-regulated genes.
+
+.. code-block:: r
+
+   EnhancedVolcano(res_df,
+     lab = rownames(res_df),
+     x = 'log2FoldChange',
+     y = 'padj',
+     pCutoff = 0.25,
+     FCcutoff = 0.3,
+     title = 'Volcano: Case_vs_Control',
+     legendPosition = 'none'
+   )
+
+💡 Tip: You can adjust `pCutoff` and `FCcutoff` for more or less stringent filtering.
+
+Heatmap of Top DEGs
+--------------------
+
+The top 50 up- and down-regulated genes (by absolute log2 fold change) are visualized using the `pheatmap` package.
+
+.. code-block:: r
+
+   heatmap_data <- counts_matrix[top_genes, samples]
+   pheatmap(heatmap_data, scale = "row", main = "Top DEGs")
+
+- Rows represent genes
+- Columns represent samples
+- Expression values are z-scaled (row-wise)
+
+KEGG Pathview Overlay
+---------------------
+
+Differential expression results can be superimposed on KEGG pathway maps using the `pathview` package. This provides insight into biological processes affected by gene expression changes.
+
+.. code-block:: r
+
+   pathview(
+     gene.data = gene_list,
+     pathway.id = "hsa04610",
+     species = "hsa",
+     out.suffix = "Case_vs_Control"
+   )
+
+Requirements:
+- Internet access (for automatic download of XML pathway definitions), OR
+- Pre-cached XML definitions placed in your working directory
+
+Example Output
+--------------
+
+Upon successful execution, check your `outputs/` subdirectories for:
+
+- `.tiff` files — volcano plots
+- `.png` files — heatmaps
+- `*_pathview_*.png` — KEGG overlays for selected pathways
+
+.. code-block:: text
+
+   outputs/
+   └── Case_vs_Control/
+       ├── Case_vs_Control_volcano_plot.tiff
+       ├── Case_vs_Control_heatmap.png
+       ├── Case_vs_Control_pathview_hsa04610.png
+       └── ...
+
+Notes
+-----
+
+- Volcano plots and heatmaps are only generated if sufficient DEGs are detected
+- Colors and layout can be modified via the corresponding R scripts in `visualization/`
+- Pathview plots use a default red-green color scale (log2FC mapped)
+
+Next Steps
+----------
+
+See :doc:`enrichment` to explore ORA and GSEA output based on the differential results shown above.
+

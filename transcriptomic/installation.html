@@ -1,0 +1,230 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation Guide &mdash; RNA-seq Transcriptomic Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Pipeline Execution" href="execution.html" />
+    <link rel="prev" title="Transcriptomic RNA-seq Pipeline" href="index.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            RNA-seq Transcriptomic Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#repository-setup">Repository Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-required-r-packages">Install Required R Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-directory-setup">Project Directory Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#directory-example">Directory Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Pipeline Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#main-entry-script-main-r">Main Entry Script: <cite>main.R</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-1-configure-comparisons-json">Step 1: Configure <cite>comparisons.json</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-2-launch-the-pipeline">Step 2: Launch the Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#what-happens-internally">What Happens Internally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#cleaning-and-re-running">Cleaning and Re-running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html">Functional Enrichment Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#enrichment-methods">Enrichment Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#ora-over-representation-analysis">ORA: Over Representation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#gsea-gene-set-enrichment-analysis">GSEA: Gene Set Enrichment Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#random-walk-plot">Random Walk Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#inputs">Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html#kegg-pathway-overlay">KEGG Pathway Overlay</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id1">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#code-example">Code Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id2">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#example-pathways">Example Pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#related-docs">Related Docs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">RNA-seq Transcriptomic Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="index.html" class="btn btn-neutral float-left" title="Transcriptomic RNA-seq Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="execution.html" class="btn btn-neutral float-right" title="Pipeline Execution" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation-guide">
+<h1>Installation Guide<a class="headerlink" href="#installation-guide" title="Link to this heading"></a></h1>
+<p>This section outlines the setup process required to run the transcriptomic RNA-seq pipeline. It covers software installation, R package dependencies, and project folder structure.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Before running the pipeline, ensure the following software are installed on your system:</p>
+<ul class="simple">
+<li><p><strong>R (version ≥ 4.0)</strong>: Required for statistical computing and visualization.</p></li>
+<li><p><strong>Rtools</strong> (for Windows users only): Necessary for compiling R packages from source.</p></li>
+<li><p><strong>Git</strong>: For cloning the pipeline repository from GitHub.</p></li>
+<li><p>Optional: <strong>RStudio</strong> as a user-friendly IDE for managing R scripts.</p></li>
+</ul>
+<p>To verify installations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>R<span class="w"> </span>--version
+git<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="repository-setup">
+<h2>Repository Setup<a class="headerlink" href="#repository-setup" title="Link to this heading"></a></h2>
+<p>Clone the pipeline repository from GitHub using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/akhilesh-kaushal/rnaseq-pipeline.git
+<span class="nb">cd</span><span class="w"> </span>rnaseq-pipeline
+</pre></div>
+</div>
+<p>This will download the full analysis suite including R scripts, configuration templates, and helper utilities.</p>
+</section>
+<section id="install-required-r-packages">
+<h2>Install Required R Packages<a class="headerlink" href="#install-required-r-packages" title="Link to this heading"></a></h2>
+<p>Open an R console or RStudio session and run the following:</p>
+<p>Step 1: Install <cite>BiocManager</cite> (if not already installed)</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;BiocManager&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Step 2: Install core Bioconductor packages</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">BiocManager</span><span class="o">::</span><span class="nf">install</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">&quot;DESeq2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;limma&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EnhancedVolcano&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pheatmap&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;clusterProfiler&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;org.Hs.eg.db&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pathview&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;fgsea&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;enrichplot&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;openxlsx&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ggrepel&quot;</span>
+<span class="p">))</span>
+</pre></div>
+</div>
+<p>Step 3: Install CRAN dependencies</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">install.packages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;jsonlite&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ggplot2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dplyr&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tibble&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;rmarkdown&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>💡 Tips:
+- For system-wide installations on shared servers, use <cite>.libPaths()</cite> to set a custom package library.
+- If using RStudio Projects, set the working directory to the cloned <cite>rnaseq-pipeline/</cite> folder.</p>
+</section>
+<section id="project-directory-setup">
+<h2>Project Directory Setup<a class="headerlink" href="#project-directory-setup" title="Link to this heading"></a></h2>
+<p>Ensure the following structure and configuration before running any analysis:</p>
+<ol class="arabic simple">
+<li><p>Create an <cite>outputs/</cite> directory to store results</p></li>
+<li><p>Edit <cite>comparisons.json</cite> to define group labels and comparison pairs</p></li>
+<li><p>(Optional) Customize <cite>gsea_config.json</cite> and provide <cite>.gmt</cite> files for pathway enrichment</p></li>
+<li><p>Ensure your RNA-seq count matrix is properly formatted (e.g., output from HTSeq, featureCounts)</p></li>
+</ol>
+</section>
+<section id="directory-example">
+<h2>Directory Example<a class="headerlink" href="#directory-example" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>rnaseq-pipeline/
+├── main.R
+├── comparisons.json
+├── gsea_config.json
+├── outputs/
+│   └── [comparison-specific subfolders]
+
+[Optional]
+├── pathway_files/
+│   └── hallmark.gmt, kegg.gmt, go_bp.gmt
+</pre></div>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Once the installation and setup are complete, proceed to the <a class="reference internal" href="execution.html"><span class="doc">Pipeline Execution</span></a> section to begin running your first RNA-seq comparison analysis.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Transcriptomic RNA-seq Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="execution.html" class="btn btn-neutral float-right" title="Pipeline Execution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

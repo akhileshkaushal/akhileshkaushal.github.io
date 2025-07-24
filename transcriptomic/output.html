@@ -1,0 +1,194 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Output Summary &mdash; RNA-seq Transcriptomic Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            RNA-seq Transcriptomic Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#repository-setup">Repository Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-required-r-packages">Install Required R Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#project-directory-setup">Project Directory Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#directory-example">Directory Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Pipeline Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#main-entry-script-main-r">Main Entry Script: <cite>main.R</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-1-configure-comparisons-json">Step 1: Configure <cite>comparisons.json</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-2-launch-the-pipeline">Step 2: Launch the Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#what-happens-internally">What Happens Internally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#cleaning-and-re-running">Cleaning and Re-running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html">Functional Enrichment Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#enrichment-methods">Enrichment Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#ora-over-representation-analysis">ORA: Over Representation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#gsea-gene-set-enrichment-analysis">GSEA: Gene Set Enrichment Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#random-walk-plot">Random Walk Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#inputs">Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html#kegg-pathway-overlay">KEGG Pathway Overlay</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id1">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#code-example">Code Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id2">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#example-pathways">Example Pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#related-docs">Related Docs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">RNA-seq Transcriptomic Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Output Summary</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/output.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="output-summary">
+<h1>Output Summary<a class="headerlink" href="#output-summary" title="Link to this heading"></a></h1>
+<p>This section describes the structure and contents of the output files generated by the RNA-seq pipeline. Each analysis is comparison-specific and organized in a modular directory layout.</p>
+<section id="directory-structure">
+<h2>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h2>
+<p>The pipeline creates a unique subdirectory under <cite>outputs/</cite> (or your <cite>base_output_path</cite>) for each group comparison. All plots, tables, logs, and enrichment results are stored here.</p>
+<p>Example Layout:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Analysis/
+├── logs/
+│   ├── Group1_vs_Group2_log.txt
+├── Group1_vs_Group2/
+│   ├── Group1_vs_Group2_deseq2_results.csv
+│   ├── Group1_vs_Group2_limma_results.csv
+│   ├── Group1_vs_Group2_upregulated_genes.csv
+│   ├── Group1_vs_Group2_downregulated_genes.csv
+│   ├── Group1_vs_Group2_ranked_genes.rnk
+│   ├── Group1_vs_Group2_volcano_plot.tiff
+│   ├── Group1_vs_Group2_heatmap.png
+│   ├── Group1_vs_Group2_KEGG/
+│   │   ├── hsa04610.Group1_vs_Group2_hsa04610.png
+│   │   └── ...
+│   ├── Group1_vs_Group2_unmapped_symbols.csv
+│   └── Group1_vs_Group2_ORA_results.xlsx
+</pre></div>
+</div>
+</section>
+<section id="output-file-descriptions">
+<h2>Output File Descriptions<a class="headerlink" href="#output-file-descriptions" title="Link to this heading"></a></h2>
+</section>
+<section id="log-files">
+<h2>Log Files<a class="headerlink" href="#log-files" title="Link to this heading"></a></h2>
+<p>For every comparison, a log file tracks:
+- Execution time and version info
+- Loaded files and sample stats
+- Errors and warnings (if any)
+- Summary of generated output</p>
+<p>This is helpful for troubleshooting and ensuring reproducibility.</p>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>All outputs are grouped by the <cite>name</cite> value in <cite>comparisons.json</cite></p></li>
+<li><p>File naming conventions follow: <cite>&lt;comparison&gt;_&lt;task&gt;.ext</cite></p></li>
+<li><p>Paths are relative to <cite>base_output_path</cite>, which can be customized</p></li>
+<li><p>Output formats are consistent across comparisons for easy automation</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Refer to <a class="reference internal" href="visualization.html"><span class="doc">RNA-seq Visualization Module</span></a> and <a class="reference internal" href="enrichment.html"><span class="doc">Functional Enrichment Analysis</span></a> to interpret and explore the outputs.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

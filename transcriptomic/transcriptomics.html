@@ -1,0 +1,294 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transcriptomic RNA-seq Pipeline &mdash; RNA-seq Transcriptomic Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation Guide" href="installation.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            RNA-seq Transcriptomic Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#repository-setup">Repository Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-required-r-packages">Install Required R Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#project-directory-setup">Project Directory Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#directory-example">Directory Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Pipeline Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#main-entry-script-main-r">Main Entry Script: <cite>main.R</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-1-configure-comparisons-json">Step 1: Configure <cite>comparisons.json</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-2-launch-the-pipeline">Step 2: Launch the Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#what-happens-internally">What Happens Internally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#cleaning-and-re-running">Cleaning and Re-running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html">Functional Enrichment Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#enrichment-methods">Enrichment Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#ora-over-representation-analysis">ORA: Over Representation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#gsea-gene-set-enrichment-analysis">GSEA: Gene Set Enrichment Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#random-walk-plot">Random Walk Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#inputs">Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html#kegg-pathway-overlay">KEGG Pathway Overlay</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id1">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#code-example">Code Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id2">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#example-pathways">Example Pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#related-docs">Related Docs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">RNA-seq Transcriptomic Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Transcriptomic RNA-seq Pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation Guide" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="transcriptomic-rna-seq-pipeline">
+<h1>Transcriptomic RNA-seq Pipeline<a class="headerlink" href="#transcriptomic-rna-seq-pipeline" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#repository-setup">Repository Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-required-r-packages">Install Required R Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#project-directory-setup">Project Directory Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#directory-example">Directory Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Pipeline Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#main-entry-script-main-r">Main Entry Script: <cite>main.R</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-1-configure-comparisons-json">Step 1: Configure <cite>comparisons.json</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-2-launch-the-pipeline">Step 2: Launch the Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#what-happens-internally">What Happens Internally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#cleaning-and-re-running">Cleaning and Re-running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html">Functional Enrichment Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#enrichment-methods">Enrichment Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#ora-over-representation-analysis">ORA: Over Representation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#gsea-gene-set-enrichment-analysis">GSEA: Gene Set Enrichment Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#random-walk-plot">Random Walk Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#inputs">Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html#kegg-pathway-overlay">KEGG Pathway Overlay</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id1">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#code-example">Code Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id2">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#example-pathways">Example Pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#related-docs">Related Docs</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>This pipeline provides a comprehensive framework for transcriptomic differential expression and enrichment analysis using RNA-Seq count data generated from high-throughput platforms such as Illumina NextSeq or HiSeq. It supports various experimental designs and enables robust statistical modeling, pathway analysis, and data visualization, making it ideal for both exploratory and hypothesis-driven transcriptomics studies.</p>
+<p>The pipeline leverages:
+- <strong>DESeq2</strong> and <strong>limma</strong> for differential gene expression analysis
+- <strong>clusterProfiler</strong> and <strong>fgsea</strong> for over-representation and gene set enrichment analyses
+- <strong>EnhancedVolcano</strong>, <strong>pheatmap</strong>, and <strong>pathview</strong> for rich graphical summaries of differential expression and biological pathways</p>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Parses experimental design from a structured <cite>comparisons.json</cite> configuration</p></li>
+<li><p>Supports multiple comparisons across sample groups with optional covariates</p></li>
+<li><p>Includes built-in handling of sex as a biological covariate when present</p></li>
+<li><p>Offers both DESeq2 and limma-voom options for differential expression</p></li>
+<li><p>Outputs volcano plots, heatmaps, and GSEA-compatible ranked gene files</p></li>
+<li><p>Conducts high-throughput batch ORA and GSEA using <cite>.gmt</cite> gene set collections</p></li>
+<li><p>Generates KEGG pathway overlays using mapped log2 fold change data</p></li>
+<li><p>Extensible structure with modular R scripts and automated logging for reproducibility</p></li>
+</ul>
+</section>
+<section id="tools-libraries-used">
+<h2>Tools &amp; Libraries Used<a class="headerlink" href="#tools-libraries-used" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Statistical Modeling</strong>: <cite>R</cite>, <cite>DESeq2</cite>, <cite>limma</cite>, <cite>edgeR</cite></p></li>
+<li><p><strong>Visualization</strong>: <cite>EnhancedVolcano</cite>, <cite>pheatmap</cite>, <cite>ggplot2</cite></p></li>
+<li><p><strong>Enrichment Analysis</strong>: <cite>clusterProfiler</cite>, <cite>fgsea</cite>, <cite>pathview</cite>, <cite>enrichplot</cite></p></li>
+<li><p><strong>Data Processing</strong>: <cite>jsonlite</cite>, <cite>openxlsx</cite>, <cite>dplyr</cite>, <cite>tibble</cite></p></li>
+<li><p><strong>Utility &amp; Logging</strong>: Custom scripts for reading data, logging, and config parsing</p></li>
+</ul>
+</section>
+<section id="input-requirements">
+<h2>Input Requirements<a class="headerlink" href="#input-requirements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>A tab-delimited RNA-seq count matrix (genes as rows, samples as columns)</p></li>
+<li><p>A <cite>comparisons.json</cite> file defining group comparisons and covariates</p></li>
+<li><p>Optional enrichment input: <cite>gsea_config.json</cite> and pathway <cite>.gmt</cite> files</p></li>
+<li><p>Required R packages (see installation section)</p></li>
+</ul>
+</section>
+<section id="output-summary">
+<h2>Output Summary<a class="headerlink" href="#output-summary" title="Link to this heading"></a></h2>
+<p>Each comparison generates a dedicated subdirectory under <cite>outputs/</cite> containing:</p>
+<ul class="simple">
+<li><p>Differential gene expression result tables (DESeq2, limma)</p></li>
+<li><p>Up/down-regulated gene lists</p></li>
+<li><p>Volcano plots and clustered heatmaps</p></li>
+<li><p>GSEA-compatible ranked gene files (<cite>.rnk</cite>)</p></li>
+<li><p>ORA/GSEA results including <cite>.csv</cite>, <cite>.xlsx</cite>, and dot plots</p></li>
+<li><p>Pathway overlays from KEGG (Pathview-generated PNGs)</p></li>
+<li><p>Logs and intermediate summaries</p></li>
+</ul>
+</section>
+<section id="directory-structure">
+<h2>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>RNAseqPipeline/
+├── main.R                         # Master script
+├── comparisons.json              # Comparison config
+├── gsea_config.json              # ORA/GSEA config
+├── /analysis
+│   ├── gene_analysis.R           # DESeq2 + limma models
+│   ├── enrichment_ora_batch.R    # Batch ORA
+│   ├── enrichment_gsea_batch.R   # Batch GSEA
+├── /visualization
+│   ├── plot_generation.R         # Volcano and heatmap
+│   ├── pathway_visualization.R   # KEGG Pathview plots
+├── /config
+│   └── load_config.R             # JSON config loader
+├── /io
+│   └── read_data.R               # Count matrix loader
+├── /utils
+│   ├── helpers.R                 # Utility functions
+│   └── logging.R                 # Logger
+├── /logs                         # Per-comparison logs
+├── /outputs                      # All analysis results
+└── README.md                     # Overview + instructions
+</pre></div>
+</div>
+</section>
+<section id="output-directory-example">
+<h2>Output Directory Example<a class="headerlink" href="#output-directory-example" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>outputs/
+├── GroupA_vs_GroupB/
+│   ├── GroupA_vs_GroupB_deseq2_results.csv
+│   ├── GroupA_vs_GroupB_limma_results.csv
+│   ├── GroupA_vs_GroupB_upregulated_genes.csv
+│   ├── GroupA_vs_GroupB_downregulated_genes.csv
+│   ├── GroupA_vs_GroupB_ranked_genes.rnk
+│   ├── GroupA_vs_GroupB_volcano_plot.tiff
+│   ├── GroupA_vs_GroupB_heatmap.png
+│   ├── GroupA_vs_GroupB_pathview_*.png
+│   └── GroupA_vs_GroupB_log.txt
+</pre></div>
+</div>
+</section>
+<section id="get-started">
+<h2>Get Started<a class="headerlink" href="#get-started" title="Link to this heading"></a></h2>
+<p>Proceed to the <a class="reference internal" href="installation.html"><span class="doc">Installation Guide</span></a> page for software prerequisites and setup steps. Then move to <a class="reference internal" href="execution.html"><span class="doc">Pipeline Execution</span></a> to learn how to run your analysis.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

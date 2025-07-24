@@ -1,0 +1,96 @@
+Installation Guide
+==================
+
+This section outlines the setup process required to run the transcriptomic RNA-seq pipeline. It covers software installation, R package dependencies, and project folder structure.
+
+Prerequisites
+-------------
+
+Before running the pipeline, ensure the following software are installed on your system:
+
+- **R (version ≥ 4.0)**: Required for statistical computing and visualization.
+- **Rtools** (for Windows users only): Necessary for compiling R packages from source.
+- **Git**: For cloning the pipeline repository from GitHub.
+- Optional: **RStudio** as a user-friendly IDE for managing R scripts.
+
+To verify installations:
+
+.. code-block:: bash
+
+   R --version
+   git --version
+
+Repository Setup
+----------------
+
+Clone the pipeline repository from GitHub using:
+
+.. code-block:: bash
+
+   git clone https://github.com/akhilesh-kaushal/rnaseq-pipeline.git
+   cd rnaseq-pipeline
+
+This will download the full analysis suite including R scripts, configuration templates, and helper utilities.
+
+Install Required R Packages
+---------------------------
+
+Open an R console or RStudio session and run the following:
+
+Step 1: Install `BiocManager` (if not already installed)
+
+.. code-block:: r
+
+   install.packages("BiocManager")
+
+Step 2: Install core Bioconductor packages
+
+.. code-block:: r
+
+   BiocManager::install(c(
+     "DESeq2", "limma", "EnhancedVolcano", "pheatmap", 
+     "clusterProfiler", "org.Hs.eg.db", "pathview", "fgsea", 
+     "enrichplot", "openxlsx", "ggrepel"
+   ))
+
+Step 3: Install CRAN dependencies
+
+.. code-block:: r
+
+   install.packages(c("jsonlite", "ggplot2", "dplyr", "tibble", "tools", "rmarkdown"))
+
+💡 Tips:
+- For system-wide installations on shared servers, use `.libPaths()` to set a custom package library.
+- If using RStudio Projects, set the working directory to the cloned `rnaseq-pipeline/` folder.
+
+Project Directory Setup
+------------------------
+
+Ensure the following structure and configuration before running any analysis:
+
+1. Create an `outputs/` directory to store results
+2. Edit `comparisons.json` to define group labels and comparison pairs
+3. (Optional) Customize `gsea_config.json` and provide `.gmt` files for pathway enrichment
+4. Ensure your RNA-seq count matrix is properly formatted (e.g., output from HTSeq, featureCounts)
+
+Directory Example
+-----------------
+
+.. code-block:: text
+
+   rnaseq-pipeline/
+   ├── main.R
+   ├── comparisons.json
+   ├── gsea_config.json
+   ├── outputs/
+   │   └── [comparison-specific subfolders]
+
+   [Optional]
+   ├── pathway_files/
+   │   └── hallmark.gmt, kegg.gmt, go_bp.gmt
+
+Next Steps
+----------
+
+Once the installation and setup are complete, proceed to the :doc:`execution` section to begin running your first RNA-seq comparison analysis.
+

@@ -1,0 +1,230 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RNA-seq Visualization Module &mdash; RNA-seq Transcriptomic Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            RNA-seq Transcriptomic Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#repository-setup">Repository Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-required-r-packages">Install Required R Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#project-directory-setup">Project Directory Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#directory-example">Directory Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Pipeline Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#main-entry-script-main-r">Main Entry Script: <cite>main.R</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-1-configure-comparisons-json">Step 1: Configure <cite>comparisons.json</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-2-launch-the-pipeline">Step 2: Launch the Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#what-happens-internally">What Happens Internally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#cleaning-and-re-running">Cleaning and Re-running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html">Functional Enrichment Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#enrichment-methods">Enrichment Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#ora-over-representation-analysis">ORA: Over Representation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#gsea-gene-set-enrichment-analysis">GSEA: Gene Set Enrichment Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#random-walk-plot">Random Walk Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#inputs">Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enrichment.html#kegg-pathway-overlay">KEGG Pathway Overlay</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id1">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#code-example">Code Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#id2">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#example-pathways">Example Pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enrichment.html#related-docs">Related Docs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">RNA-seq Transcriptomic Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">RNA-seq Visualization Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/visualization.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rna-seq-visualization-module">
+<h1>RNA-seq Visualization Module<a class="headerlink" href="#rna-seq-visualization-module" title="Link to this heading"></a></h1>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>The visualization module generates publication-ready plots to facilitate interpretation of differential gene expression results across experimental groups. It supports multiple visualization formats that highlight both statistical significance and biological relevance.</p>
+</section>
+<section id="plot-types">
+<h2>Plot Types<a class="headerlink" href="#plot-types" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Volcano Plot</strong> — Displays differential expression as fold change versus statistical significance.</p></li>
+<li><p><strong>Heatmap</strong> — Shows expression patterns of top differentially expressed genes across samples.</p></li>
+<li><p><strong>KEGG Pathview Overlay</strong> — Maps log2 fold changes onto KEGG pathway diagrams for biological insight.</p></li>
+</ul>
+</section>
+<section id="volcano-plot-deseq2">
+<h2>Volcano Plot (DESeq2)<a class="headerlink" href="#volcano-plot-deseq2" title="Link to this heading"></a></h2>
+<p>The pipeline uses <cite>EnhancedVolcano</cite> to create volcano plots that distinguish significantly up- and down-regulated genes.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">EnhancedVolcano</span><span class="p">(</span><span class="n">res_df</span><span class="p">,</span>
+<span class="w">  </span><span class="n">lab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">res_df</span><span class="p">),</span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;log2FoldChange&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;padj&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">pCutoff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.25</span><span class="p">,</span>
+<span class="w">  </span><span class="n">FCcutoff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.3</span><span class="p">,</span>
+<span class="w">  </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;Volcano: Case_vs_Control&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">legendPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;none&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>💡 Tip: You can adjust <cite>pCutoff</cite> and <cite>FCcutoff</cite> for more or less stringent filtering.</p>
+</section>
+<section id="heatmap-of-top-degs">
+<h2>Heatmap of Top DEGs<a class="headerlink" href="#heatmap-of-top-degs" title="Link to this heading"></a></h2>
+<p>The top 50 up- and down-regulated genes (by absolute log2 fold change) are visualized using the <cite>pheatmap</cite> package.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">heatmap_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">counts_matrix</span><span class="p">[</span><span class="n">top_genes</span><span class="p">,</span><span class="w"> </span><span class="n">samples</span><span class="p">]</span>
+<span class="nf">pheatmap</span><span class="p">(</span><span class="n">heatmap_data</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;row&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Top DEGs&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Rows represent genes</p></li>
+<li><p>Columns represent samples</p></li>
+<li><p>Expression values are z-scaled (row-wise)</p></li>
+</ul>
+</section>
+<section id="kegg-pathview-overlay">
+<h2>KEGG Pathview Overlay<a class="headerlink" href="#kegg-pathview-overlay" title="Link to this heading"></a></h2>
+<p>Differential expression results can be superimposed on KEGG pathway maps using the <cite>pathview</cite> package. This provides insight into biological processes affected by gene expression changes.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">pathview</span><span class="p">(</span>
+<span class="w">  </span><span class="n">gene.data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gene_list</span><span class="p">,</span>
+<span class="w">  </span><span class="n">pathway.id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;hsa04610&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">species</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;hsa&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">out.suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Case_vs_Control&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Requirements:
+- Internet access (for automatic download of XML pathway definitions), OR
+- Pre-cached XML definitions placed in your working directory</p>
+</section>
+<section id="example-output">
+<h2>Example Output<a class="headerlink" href="#example-output" title="Link to this heading"></a></h2>
+<p>Upon successful execution, check your <cite>outputs/</cite> subdirectories for:</p>
+<ul class="simple">
+<li><p><cite>.tiff</cite> files — volcano plots</p></li>
+<li><p><cite>.png</cite> files — heatmaps</p></li>
+<li><p><cite>*_pathview_*.png</cite> — KEGG overlays for selected pathways</p></li>
+</ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>outputs/
+└── Case_vs_Control/
+    ├── Case_vs_Control_volcano_plot.tiff
+    ├── Case_vs_Control_heatmap.png
+    ├── Case_vs_Control_pathview_hsa04610.png
+    └── ...
+</pre></div>
+</div>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Volcano plots and heatmaps are only generated if sufficient DEGs are detected</p></li>
+<li><p>Colors and layout can be modified via the corresponding R scripts in <cite>visualization/</cite></p></li>
+<li><p>Pathview plots use a default red-green color scale (log2FC mapped)</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="enrichment.html"><span class="doc">Functional Enrichment Analysis</span></a> to explore ORA and GSEA output based on the differential results shown above.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

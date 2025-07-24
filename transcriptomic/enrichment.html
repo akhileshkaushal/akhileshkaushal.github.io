@@ -1,0 +1,296 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Functional Enrichment Analysis &mdash; RNA-seq Transcriptomic Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Pipeline Execution" href="execution.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            RNA-seq Transcriptomic Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#repository-setup">Repository Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-required-r-packages">Install Required R Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#project-directory-setup">Project Directory Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#directory-example">Directory Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Pipeline Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#main-entry-script-main-r">Main Entry Script: <cite>main.R</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-1-configure-comparisons-json">Step 1: Configure <cite>comparisons.json</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#step-2-launch-the-pipeline">Step 2: Launch the Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#what-happens-internally">What Happens Internally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#cleaning-and-re-running">Cleaning and Re-running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="execution.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Functional Enrichment Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#enrichment-methods">Enrichment Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ora-over-representation-analysis">ORA: Over Representation Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gsea-gene-set-enrichment-analysis">GSEA: Gene Set Enrichment Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#random-walk-plot">Random Walk Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inputs">Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#kegg-pathway-overlay">KEGG Pathway Overlay</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-example">Code Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-pathways">Example Pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-docs">Related Docs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">RNA-seq Transcriptomic Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Functional Enrichment Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/enrichment.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="execution.html" class="btn btn-neutral float-left" title="Pipeline Execution" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="functional-enrichment-analysis">
+<h1>Functional Enrichment Analysis<a class="headerlink" href="#functional-enrichment-analysis" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>This module provides tools to explore the biological relevance of differentially expressed genes by identifying enriched functional pathways. It supports both Over Representation Analysis (ORA) and Gene Set Enrichment Analysis (GSEA), and outputs enrichment scores, plots, and KEGG overlays for downstream interpretation.</p>
+</section>
+<section id="enrichment-methods">
+<h2>Enrichment Methods<a class="headerlink" href="#enrichment-methods" title="Link to this heading"></a></h2>
+<p>The two main types of analyses are:</p>
+<ul class="simple">
+<li><p><strong>ORA (Over Representation Analysis)</strong> using <cite>clusterProfiler::enricher()</cite> on gene lists</p></li>
+<li><p><strong>GSEA (Gene Set Enrichment Analysis)</strong> using <cite>fgsea::fgsea()</cite> on ranked gene vectors</p></li>
+</ul>
+</section>
+<section id="ora-over-representation-analysis">
+<h2>ORA: Over Representation Analysis<a class="headerlink" href="#ora-over-representation-analysis" title="Link to this heading"></a></h2>
+<p>ORA identifies significantly enriched gene sets among up- or down-regulated genes, using <cite>.gmt</cite> pathway files.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">enricher</span><span class="p">(</span>
+<span class="w">  </span><span class="n">gene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gene_list</span><span class="p">,</span>
+<span class="w">  </span><span class="n">TERM2GENE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gmt_df</span><span class="p">,</span>
+<span class="w">  </span><span class="n">pvalueCutoff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">,</span>
+<span class="w">  </span><span class="n">qvalueCutoff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Input: vector of gene IDs (SYMBOL or ENTREZ)</p></li>
+<li><p>Output: data frame of enriched pathways with FDR values and gene overlaps</p></li>
+</ul>
+</section>
+<section id="gsea-gene-set-enrichment-analysis">
+<h2>GSEA: Gene Set Enrichment Analysis<a class="headerlink" href="#gsea-gene-set-enrichment-analysis" title="Link to this heading"></a></h2>
+<p>GSEA evaluates whether genes from a predefined pathway are enriched at the top or bottom of a ranked gene list.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">fgseaRes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">fgsea</span><span class="p">(</span>
+<span class="w">  </span><span class="n">pathways</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gmt_list</span><span class="p">,</span>
+<span class="w">  </span><span class="n">stats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ranked_genes</span><span class="p">,</span>
+<span class="w">  </span><span class="n">minSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span><span class="p">,</span>
+<span class="w">  </span><span class="n">maxSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">500</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Input: named vector of log2FC values (gene ranking)</p></li>
+<li><p>Output: normalized enrichment scores (NES), p-values, adjusted p-values</p></li>
+</ul>
+</section>
+<section id="random-walk-plot">
+<h2>Random Walk Plot<a class="headerlink" href="#random-walk-plot" title="Link to this heading"></a></h2>
+<p>For top-ranked gene sets, a GSEA-style random walk plot is generated to visualize enrichment.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">plotEnrichment</span><span class="p">(</span><span class="n">pathways</span><span class="p">[[</span><span class="m">1</span><span class="p">]],</span><span class="w"> </span><span class="n">ranked_genes</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">ggtitle</span><span class="p">(</span><span class="s">&quot;Pathway Enrichment&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="output-files">
+<h2>Output Files<a class="headerlink" href="#output-files" title="Link to this heading"></a></h2>
+<p>The enrichment modules output the following files per comparison group:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ORA_results.xlsx          # Excel sheet with per-set enrichment
+*_dotplot.tiff            # Top 15 enriched categories (ORA or GSEA)
+gsea_results.csv          # Full GSEA result table with NES and padj
+</pre></div>
+</div>
+</section>
+<section id="inputs">
+<h2>Inputs<a class="headerlink" href="#inputs" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><cite>ranked_genes.rnk</cite> for GSEA</p></li>
+<li><p><cite>upregulated_genes.csv</cite> and <cite>downregulated_genes.csv</cite> for ORA</p></li>
+<li><p><cite>.gmt</cite> gene sets from MSigDB, KEGG, GO BP, Reactome, etc.</p></li>
+</ul>
+</section>
+<section id="tips">
+<h2>Tips<a class="headerlink" href="#tips" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>🧠 Use curated <cite>.gmt</cite> files relevant to your biological context</p></li>
+<li><p>📊 Review NES, p.adjust, and pathway size for meaningful hits</p></li>
+<li><p>⚠️ Ensure gene names match the format in GMT (SYMBOL or ENTREZ)</p></li>
+</ul>
+</section>
+</section>
+<section id="kegg-pathway-overlay">
+<h1>KEGG Pathway Overlay<a class="headerlink" href="#kegg-pathway-overlay" title="Link to this heading"></a></h1>
+<section id="id1">
+<h2>Overview<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>In addition to statistical enrichment, this module maps expression changes onto KEGG pathways for visual interpretation.</p>
+</section>
+<section id="workflow">
+<h2>Workflow<a class="headerlink" href="#workflow" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Filter DEGs using fold change and FDR thresholds</p></li>
+<li><p>Map gene symbols to ENTREZ IDs</p></li>
+<li><p>Identify KEGG pathway ID(s)</p></li>
+<li><p>Use <cite>pathview()</cite> to overlay values</p></li>
+</ol>
+</section>
+<section id="code-example">
+<h2>Code Example<a class="headerlink" href="#code-example" title="Link to this heading"></a></h2>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">pathview</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">clusterProfiler</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">org.Hs.eg.db</span><span class="p">)</span>
+
+<span class="c1"># Convert SYMBOL to ENTREZ</span>
+<span class="n">entrez_map</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bitr</span><span class="p">(</span><span class="n">gene_symbols</span><span class="p">,</span><span class="w"> </span><span class="n">fromType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SYMBOL&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">toType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ENTREZID&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">OrgDb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">org.Hs.eg.db</span><span class="p">)</span>
+
+<span class="c1"># Build gene list with log2FC values</span>
+<span class="n">res_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;group_deseq2_results.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="n">mapped</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">intersect</span><span class="p">(</span><span class="n">entrez_map</span><span class="o">$</span><span class="n">SYMBOL</span><span class="p">,</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">res_df</span><span class="p">))</span>
+<span class="n">gene_list</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_df</span><span class="p">[</span><span class="n">mapped</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;log2FoldChange&quot;</span><span class="p">]</span>
+<span class="nf">names</span><span class="p">(</span><span class="n">gene_list</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">entrez_map</span><span class="o">$</span><span class="n">ENTREZID</span><span class="p">[</span><span class="nf">match</span><span class="p">(</span><span class="n">mapped</span><span class="p">,</span><span class="w"> </span><span class="n">entrez_map</span><span class="o">$</span><span class="n">SYMBOL</span><span class="p">)]</span>
+
+<span class="c1"># Generate Pathview for KEGG ID</span>
+<span class="nf">pathview</span><span class="p">(</span><span class="n">gene.data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gene_list</span><span class="p">,</span>
+<span class="w">         </span><span class="n">pathway.id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;hsa04610&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="n">species</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;hsa&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="n">out.suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;group_hsa04610&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h2>Output Files<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><cite>*.png</cite>: Pathway diagrams with expression-mapped coloring</p></li>
+<li><p><cite>*_unmapped_symbols.csv</cite>: Genes that failed ID conversion</p></li>
+</ul>
+</section>
+<section id="example-pathways">
+<h2>Example Pathways<a class="headerlink" href="#example-pathways" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><cite>hsa04610</cite> — Complement and coagulation cascades</p></li>
+<li><p><cite>hsa04611</cite> — Platelet activation</p></li>
+<li><p><cite>hsa04060</cite> — Cytokine–cytokine receptor interaction</p></li>
+<li><p><cite>hsa05200</cite> — Pathways in cancer</p></li>
+</ul>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Gene IDs must match pathway expectations (SYMBOL ➜ ENTREZ conversion is recommended)</p></li>
+<li><p>Pathview supports online fetching or offline XML cache</p></li>
+<li><p>Default gradient: red = up, green = down, grey = unmapped</p></li>
+</ul>
+</section>
+<section id="related-docs">
+<h2>Related Docs<a class="headerlink" href="#related-docs" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="execution.html"><span class="doc">Pipeline Execution</span></a> – Running the pipeline</p></li>
+<li><p><a class="reference internal" href="visualization.html"><span class="doc">RNA-seq Visualization Module</span></a> – Plotting DEGs</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="execution.html" class="btn btn-neutral float-left" title="Pipeline Execution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+.. \_references:
+
+# References
+
+1. Love MI, Huber W, Anders S. **Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2.** *Genome Biology*. 2014;15(12):550. doi:[10.1186/s13059-014-0550-8](https://doi.org/10.1186/s13059-014-0550-8)
+
+2. Ritchie ME, Phipson B, Wu D, et al. **limma powers differential expression analyses for RNA-sequencing and microarray studies.** *Nucleic Acids Research*. 2015;43(7)\:e47. doi:[10.1093/nar/gkv007](https://doi.org/10.1093/nar/gkv007)
+
+3. Yu G, Wang LG, Han Y, He QY. **clusterProfiler: an R package for comparing biological themes among gene clusters.** *OMICS*. 2012;16(5):284-287. doi:[10.1089/omi.2011.0118](https://doi.org/10.1089/omi.2011.0118)
+
+4. Korotkevich G, Sukhov V, Budin N, et al. **Fast gene set enrichment analysis.** *bioRxiv*. 2019. doi:[10.1101/060012](https://doi.org/10.1101/060012)
+
+5. Luo W, Brouwer C. **Pathview: an R/Bioconductor package for pathway-based data integration and visualization.** *Bioinformatics*. 2013;29(14):1830-1831. doi:[10.1093/bioinformatics/btt285](https://doi.org/10.1093/bioinformatics/btt285)
+
+6. Hänzelmann S, Castelo R, Guinney J. **GSVA: gene set variation analysis for microarray and RNA-seq data.** *BMC Bioinformatics*. 2013;14:7. doi:[10.1186/1471-2105-14-7](https://doi.org/10.1186/1471-2105-14-7)
+
+7. Kolde R, Laur S, Adler P, Vilo J. **GSEA implementation in R: the fgsea package.** *Bioinformatics*. 2021;37(5):459-461. doi:[10.1093/bioinformatics/btaa1027](https://doi.org/10.1093/bioinformatics/btaa1027)
+
+8. The Gene Ontology Consortium. **The Gene Ontology Resource: enriching a GOld mine.** *Nucleic Acids Research*. 2021;49(D1)\:D325–D334. doi:[10.1093/nar/gkaa1113](https://doi.org/10.1093/nar/gkaa1113)

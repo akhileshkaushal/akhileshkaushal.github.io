@@ -1,0 +1,80 @@
+Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)
+=========================================================
+
+Background
+----------
+
+Diamond-Blackfan Anemia (DBA) is a congenital bone marrow failure disorder caused by mutations
+in ribosomal protein genes such as *RPS19*, *RPL5*, and *RPL11*. Patients typically exhibit macrocytic
+anemia, physical anomalies, and increased cancer risk.
+
+Sample Setup
+------------
+
++-------------------+-------------------------+-----------------------------------------------+
+| Group             | Samples                 | Description                                   |
++===================+=========================+===============================================+
+| DBA Patients      | DBA_01 to DBA_06        | Confirmed DBA with RPS19 mutation             |
+| Healthy Controls  | CTRL_01 to CTRL_06      | Age-matched healthy donors                    |
++-------------------+-------------------------+-----------------------------------------------+
+
+JSON configuration snippet:
+
+::
+
+  {
+    "name": "DBA_vs_Control",
+    "group1": ["DBA_01", "DBA_02", "DBA_03", "DBA_04", "DBA_05", "DBA_06"],
+    "group2": ["CTRL_01", "CTRL_02", "CTRL_03", "CTRL_04", "CTRL_05", "CTRL_06"],
+    "sex_groups": ["F", "F", "F", "M", "M", "M", "F", "F", "M", "M", "F", "M"]
+  }
+
+Differential Expression Results
+-------------------------------
+
++------------------+--------+--------+-----------------------------------------+
+| Gene             | log2FC | padj   | Role                                    |
++==================+========+========+=========================================+
+| RPL11            | -1.5   | 0.001  | Ribosomal protein; mutated in DBA       |
+| CDKN1A (p21)     | +2.2   | 0.0005 | p53 target; cell cycle arrest           |
+| TP53             | +1.7   | 0.004  | Master tumor suppressor                 |
+| IL6              | +2.0   | 0.002  | Inflammatory cytokine                   |
++------------------+--------+--------+-----------------------------------------+
+
+Enrichment Results
+------------------
+
+ORA Top Terms:
+
++-----------------------------------------+------------+------------+
+| Gene Set                                | p.adjust   | Category   |
++=========================================+============+============+
+| GO:0006364 Ribosome biogenesis          | 0.0001     | GO BP      |
+| REACTOME_p53_pathway                    | 0.001      | Reactome   |
+| HALLMARK_INFLAMMATORY_RESPONSE          | 0.003      | MSigDB     |
++-----------------------------------------+------------+------------+
+
+GSEA Highlights:
+
+- *p53 Signaling Pathway*: NES = +2.1, padj = 0.002
+- *Ribosome Pathway*: NES = -2.4, padj = 0.0008
+- *TNF Signaling via NFκB*: NES = +1.9, padj = 0.01
+
+KEGG Pathview Example
+---------------------
+
+**Pathway Visualized**: ``hsa04115`` — p53 Signaling Pathway
+
+.. image:: https://www.genome.jp/kegg/pathway/hsa/hsa04115.png
+   :alt: KEGG p53 Pathway
+   :width: 80%
+   :align: center
+
+Biological Interpretation
+-------------------------
+
+- Loss of *RPS19*/*RPL11* function impairs ribosome synthesis in progenitors.
+- p53-mediated transcription of *CDKN1A* leads to cell cycle arrest and apoptosis.
+- Upregulation of inflammatory pathways may contribute to secondary immune effects.
+- Distinct transcriptional clustering validates biological differentiation of cases vs. controls.
+

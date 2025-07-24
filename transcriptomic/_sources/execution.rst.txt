@@ -1,0 +1,106 @@
+
+Pipeline Execution
+==================
+
+This section explains how to run the transcriptomic RNA-seq pipeline from the command line or within RStudio. It includes configuration setup, execution steps, and expected output structure.
+
+Main Entry Script: `main.R`
+---------------------------
+
+The core pipeline is launched via the `main.R` script, which orchestrates:
+- Data loading and preprocessing
+- Differential expression (DE) modeling using DESeq2 and limma
+- Generation of visual summaries (volcano plots, heatmaps)
+- Optional pathway enrichment and KEGG overlay modules
+
+Step 1: Configure `comparisons.json`
+------------------------------------
+
+Define the experimental design by editing `comparisons.json`. Each comparison should specify:
+- Input count matrix file
+- Output path
+- Sample groupings
+- (Optional) sex covariate
+
+Example:
+
+.. code-block:: json
+
+   {
+     "counts_file": "path/to/count_matrix.tsv",
+     "base_output_path": "outputs",
+     "comparisons": [
+       {
+         "name": "Case_vs_Control",
+         "group1": ["Sample_1", "Sample_2"],
+         "group2": ["Sample_3", "Sample_4"],
+         "sex_groups": ["M", "M", "F", "F"]
+       }
+     ]
+   }
+
+Step 2: Launch the Pipeline
+---------------------------
+
+To execute all comparisons defined in the JSON configuration:
+
+.. code-block:: bash
+
+   Rscript main.R
+
+If using RStudio, simply open `main.R` and click "Run" or press `Ctrl+Shift+Enter`.
+
+What Happens Internally
+------------------------
+
+For each comparison, the pipeline will:
+
+- 🔹 Load experimental configuration and read count matrix
+- 🔹 Filter out low-expression genes (based on minimum count thresholds)
+- 🔹 Normalize and model expression using **DESeq2** and **limma**
+- 🔹 Export differential expression results to `.csv` files
+- 🔹 Rank genes by log2FC for GSEA and export `.rnk` files
+- 🔹 Generate visualizations:
+  - Volcano plot (`.tiff`)
+  - Heatmap (`.png`)
+- 🔹 Optionally:
+  - Perform ORA and GSEA if pathway configs are provided
+  - Overlay log2FC values on KEGG pathways using pathview
+
+Output Structure
+----------------
+
+Each comparison will generate a dedicated folder in the `outputs/` directory:
+
+.. code-block:: text
+
+   outputs/
+   └── Case_vs_Control/
+       ├── Case_vs_Control_deseq2_results.csv
+       ├── Case_vs_Control_limma_results.csv
+       ├── Case_vs_Control_volcano_plot.tiff
+       ├── Case_vs_Control_heatmap.png
+       ├── Case_vs_Control_ranked_genes.rnk
+       ├── *.png (Pathview KEGG pathway overlays)
+       ├── *_ORA_results.xlsx (if ORA is performed)
+       └── *_log.txt
+
+Cleaning and Re-running
+------------------------
+
+To rerun a specific comparison cleanly:
+
+1. Delete the corresponding subfolder inside `outputs/`
+2. Rerun the pipeline with:
+
+.. code-block:: bash
+
+   Rscript main.R
+
+This will regenerate the differential analysis and associated visual outputs.
+
+Next Steps
+----------
+
+Proceed to the :doc:`visualization` section to learn how pathway-level enrichment and KEGG overlays are computed.
+
