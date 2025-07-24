@@ -2,143 +2,132 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bioinformatics Pipelines</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-      min-height: 100vh;
+      background: linear-gradient(135deg, #eafcf1, #d4f5dd);
       margin: 0;
-      display: flex;
-      flex-direction: column;
+      min-height: 100vh;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .card {
-  border-radius: 16px;
-  background: rgba(245, 255, 249, 0.55); /* semi-transparent mint */
-  backdrop-filter: blur(16px); /* frosted glass effect */
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(184, 216, 194, 0.6); /* soft green metallic border */
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.04),
-    0 4px 20px rgba(0, 0, 0, 0.06),
-    0 0 2px rgba(255, 255, 255, 0.4); /* subtle light bloom */
-  transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease,
-    border-color 0.35s ease;
-}
-
-/* Hover effect: lifted and glow */
-.card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(0, 200, 120, 0.4);
-  box-shadow:
-    0 6px 24px rgba(0, 0, 0, 0.15),
-    0 0 12px rgba(0, 255, 170, 0.08);
-}
-
-
-    .card:nth-child(1) {
-      background: linear-gradient(145deg, #f0f8ff, #e6f0fa);
-      border-color: #b6c7d6;
-    }
-
-    .card:nth-child(2) {
-      background: linear-gradient(145deg, #f8f4ff, #ede9fe);
-      border-color: #c4b8d9;
-    }
-
-    .card:nth-child(3) {
-      background: linear-gradient(145deg, #f9fafa, #f0f0f0);
-      border-color: #c2c2c2;
-    }
-
-    .card:nth-child(4) {
-      background: linear-gradient(145deg, #fff8f0, #fcefe1);
-      border-color: #ddc9ab;
-    }
-
-    .card:nth-child(5) {
-      background: linear-gradient(145deg, #f0fcff, #e2f5f9);
-      border-color: #a4d2dc;
-    }
-
-    .card-link {
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
       text-decoration: none;
-      color: inherit;
-      display: block;
-	  
-	  .card-title {
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 1.5rem;
-  color: #0f3d32;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
-}
+      color: #1a1a1a;
+    }
 
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: #00c090;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 0 0 3px rgba(0, 192, 144, 0.1);
+    }
+
+    .card h3 {
+      font-size: 1.5em;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      flex-grow: 1;
+      font-size: 1em;
+      color: #333;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.75em;
+      background: #d1fae5;
+      color: #065f46;
+      border-radius: 9999px;
+      padding: 4px 10px;
+      margin-right: 6px;
+      margin-top: 10px;
+    }
+
+    header, footer {
+      background-color: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+    }
+
+    .glow-title {
+      font-weight: 800;
+      font-size: 2rem;
+      color: #045d56;
+      text-shadow: 0 0 10px rgba(0, 255, 191, 0.2);
+    }
+
+    @media (min-width: 768px) {
+      .glow-title {
+        font-size: 2.5rem;
+      }
     }
   </style>
 </head>
-
 <body>
-  <header class="py-6 px-4 sm:px-6 lg:px-8 bg-white/80 backdrop-blur-md">
+  <header class="w-full px-6 py-6 shadow-sm">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <h1 class="text-3xl font-bold text-gray-900">Bioinformatics Pipelines</h1>
-      <a href="https://akhileshkaushal.com" class="text-gray-700 hover:text-blue-600 transition-colors">Visit Blog</a>
+      <h1 class="glow-title">Bioinformatics Pipelines</h1>
+      <a href="https://akhileshkaushal.com" target="_blank" class="text-green-900 hover:text-emerald-600 font-semibold text-sm">Visit Blog</a>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 flex-1">
-    <section class="text-center mb-16">
-      <h2 class="text-4xl font-semibold text-gray-900 mb-4">Advanced Computational Suites</h2>
-      <p class="text-lg text-gray-700 max-w-3xl mx-auto">
-        Explore our cutting-edge bioinformatics pipelines designed for genomic and epigenomic analysis. 
-        Leverage high-performance tools to unlock insights from complex biological data.
+  <main class="max-w-7xl mx-auto px-6 py-12">
+    <section class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-green-900 mb-4">Explore Computational Suites</h2>
+      <p class="text-gray-700 text-lg max-w-3xl mx-auto">
+        Discover high-resolution, production-grade bioinformatics pipelines designed for scalable genomics and epigenomics.
       </p>
     </section>
 
-    <div id="pipeline-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Cards will be injected here -->
-    </div>
+    <div id="pipeline-container" class="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"></div>
   </main>
 
-  <footer class="py-6 px-4 sm:px-6 lg:px-8 bg-white/80 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto text-center">
-      <p class="text-gray-700">© 2025 Bioinformatics Suites. All rights reserved.</p>
-    </div>
+  <footer class="w-full text-center py-6 text-sm text-green-900">
+    © 2025 Bioinformatics Suites. All rights reserved.
   </footer>
 
   <script>
     fetch('pipelines.json')
-      .then(res => res.json())
+      .then(response => response.json())
       .then(data => {
         const container = document.getElementById('pipeline-container');
-        data.forEach((p, i) => {
+
+        data.forEach(pipeline => {
           const card = document.createElement('a');
-          card.href = p.link;
-          card.className = 'card-link';
-          card.target = '_blank';
+          card.href = pipeline.link;
+          card.target = "_blank";
+          card.className = 'card';
+
           card.innerHTML = `
-            <div class="card p-6">
-              <h3 class="text-2xl font-semibold text-gray-900 mb-4">${p.name}</h3>
-              <p class="text-gray-600 mb-4">${p.description}</p>
-              <div class="flex flex-wrap gap-2">
-                ${(p.tags || []).map(tag => `
-                  <span class="text-xs bg-blue-100 text-blue-800 font-medium px-3 py-1 rounded-full">${tag}</span>
-                `).join('')}
-              </div>
-            </div>
+            <h3>${pipeline.name}</h3>
+            <p>${pipeline.description}</p>
+            <div>${(pipeline.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
           `;
+
           container.appendChild(card);
         });
       })
-      .catch(err => {
-        document.getElementById('pipeline-container').innerHTML = "<p class='text-red-600'>Error loading pipelines.json</p>";
-        console.error(err);
+      .catch(error => {
+        console.error('Error loading JSON:', error);
+        document.getElementById('pipeline-container').innerHTML = '<p class="text-red-500">Failed to load pipeline data.</p>';
       });
   </script>
 </body>
