@@ -4,198 +4,233 @@
   <meta charset="UTF-8">
   <title>Akhilesh Kaushal – Pipelines</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
-  <!-- Custom Styling -->
   <style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    color: #1a1a1a;
-  }
-
-  header {
-  background: linear-gradient(to right, #dceefc, #c1dbf4); /* Metallic soft blue gradient */
-  color: #1c3f63; /* Deep metallic text tone */
-  padding: 28px 20px;
-  text-align: center;
-  border-bottom: 1px solid #bfd2e1;
-  font-family: 'Segoe UI', sans-serif;
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-}
-
-header h1 {
-  font-size: 1.8em;
-  margin-bottom: 6px;
-  letter-spacing: 0.3px;
-  font-weight: 600;
-}
-
-header p {
-  font-size: 1em;
-  opacity: 0.85;
-  margin: 0;
-}
-
-
-  .pipeline-wrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 40px 20px;
-    max-width: 1200px;
-    margin: auto;
-  }
-
-  .pipeline-card-custom {
-    border-radius: 10px;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
-    padding: 20px;
-    background-color: #ffffff;
-    transition: transform 0.2s ease-in-out;
-  }
-
-  .pipeline-card-custom:hover {
-    transform: scale(1.02);
-  }
-
-  .pipeline-card-custom a {
-    font-weight: 600;
-    text-decoration: none;
-    color: #004080;
-  }
-
-  .pipeline-card-custom a:hover {
-    color: #0077cc;
-    text-decoration: underline;
-  }
-
-  .tag-badge {
-    background: #ddd;
-    border-radius: 10px;
-    padding: 2px 8px;
-    font-size: 0.75rem;
-    margin: 0 5px 5px 0;
-    display: inline-block;
-  }
-
-  /* Light Pastel Backgrounds (Professional tone) */
-  .bg-soft-blue    { background-color: #e8f4fd; color: #003366; }
-  .bg-soft-green   { background-color: #eafaf1; color: #1e4620; }
-  .bg-soft-yellow  { background-color: #fff9e6; color: #665c00; }
-  .bg-soft-gray    { background-color: #f4f4f4; color: #333; }
-  .bg-soft-purple  { background-color: #f3e8fd; color: #4b3869; }
-  .bg-soft-rose    { background-color: #fff0f5; color: #712c4c; }
-  .bg-soft-mint    { background-color: #e6fff5; color: #22705b; }
-  .bg-soft-lavender{ background-color: #f6f3ff; color: #483d8b; }
-  .bg-soft-teal    { background-color: #e0f7f9; color: #004f4f; }
-
-  .blog-link {
-    display: block;
-    text-align: center;
-    margin-top: 30px;
-    font-size: 1.1em;
-  }
-
-  .blog-link a {
-    color: #004080;
-    font-weight: 600;
-    text-decoration: none;
-    font-size: 1.5em;
-    transition: color 0.3s ease;
-  }
-
-  .blog-link a:hover {
-    color: #0077cc;
-    text-decoration: underline;
-  }
-
-  footer {
-    background-color: #1f2937;
-    color: #fff;
-    text-align: center;
-    padding: 20px 10px;
-    font-size: 0.9em;
-  }
-
-  @media screen and (max-width: 600px) {
-    header h1 {
-      font-size: 1.6em;
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      color: #e0e0e0;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    .pipeline-wrapper {
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+      background-size: 2px 2px;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.8;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
       padding: 20px;
     }
 
-    .blog-link a {
-      font-size: 1.2em;
+    .page-header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3em;
+      color: #00f0ff;
+      text-shadow: 0 0 15px rgba(0, 240, 255, 0.8), 0 0 25px rgba(0, 240, 255, 0.4);
+      margin-bottom: 10px;
     }
-  }
-</style>
 
+    .page-header p {
+      font-size: 1.2em;
+      color: #b0b0b0;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      width: 100%;
+      padding: 20px;
+    }
+
+    .card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.45);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-link:hover .card {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 55px 0 rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 240, 255, 0.2);
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+
+    .card-link:hover::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      background: linear-gradient(45deg, #00f0ff, #8a2be2, #00f0ff);
+      z-index: 0;
+      border-radius: 20px;
+      filter: blur(15px);
+      opacity: 0.7;
+      transition: opacity 0.3s ease, filter 0.3s ease;
+    }
+
+    .card-link:not(:hover)::before {
+      opacity: 0;
+      filter: blur(0);
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6em;
+      margin-bottom: 15px;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .card-description {
+      font-size: 0.95em;
+      color: #c0c0c0;
+      line-height: 1.6;
+      flex-grow: 1;
+      margin-bottom: 20px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-weight: bold;
+      color: #00f0ff;
+    }
+
+    .card-footer .arrow {
+      font-size: 1.5em;
+      line-height: 1;
+      transition: transform 0.2s ease;
+    }
+
+    .card-link:hover .card-footer .arrow {
+      transform: translateX(5px);
+    }
+
+    .blog-link {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .blog-link a {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4em;
+      color: #00f0ff;
+      text-decoration: none;
+    }
+
+    .blog-link a:hover {
+      text-decoration: underline;
+      color: #8a2be2;
+    }
+
+    footer {
+      text-align: center;
+      color: #888;
+      font-size: 0.9em;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .card-container {
+        grid-template-columns: 1fr;
+      }
+      .page-header h1 {
+        font-size: 2.2em;
+      }
+      .card {
+        padding: 25px;
+      }
+    }
+  </style>
 </head>
-
 <body>
-
-  <!-- Header -->
-  <header>
+  <div class="page-header">
     <h1>Bioinformatics Pipelines</h1>
     <p>Explore our advanced computational suites for genomic and epigenomic analysis</p>
-  </header>
-
-  <!-- Pipeline Grid -->
-  <div class="pipeline-wrapper" id="pipeline-container">
-    <!-- Cards will be dynamically inserted here -->
   </div>
 
-  <!-- Blog Link -->
+  <div class="card-container" id="pipeline-container"></div>
+
   <div class="blog-link">
-    🌐 Visit my main blog at  
-    <a href="https://akhileshkaushal.com" target="_blank" rel="noopener noreferrer">
-      akhileshkaushal.com
-    </a>
+    🌐 Visit my main blog at <a href="https://akhileshkaushal.com" target="_blank">akhileshkaushal.com</a>
   </div>
 
-  <!-- Footer -->
   <footer>
     &copy; 2025 Bioinformatics Suites. All rights reserved.
   </footer>
 
-  <!-- Dynamic Content Script -->
   <script>
-  fetch('pipelines.json')
-    .then(response => response.json())
-    .then(data => {
-      const container = document.getElementById('pipeline-container');
-      const bgClasses = [
-        'bg-soft-blue', 'bg-soft-green', 'bg-soft-yellow',
-        'bg-soft-purple', 'bg-soft-gray', 'bg-soft-rose',
-        'bg-soft-mint', 'bg-soft-lavender', 'bg-soft-teal'
-      ];
-
-      data.forEach((p, i) => {
-        const bgClass = bgClasses[i % bgClasses.length];
-        const card = document.createElement('div');
-        card.className = `pipeline-card-custom ${bgClass}`;
-
-        card.innerHTML = `
-          <h3><a href="${p.link}" target="_blank">${p.name} 🔗</a></h3>
-          <p>${p.description}</p>
-          <div>
-            ${(p.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
-          </div>
-          <small><strong>Version:</strong> ${p.version}</small>
-        `;
-
-        container.appendChild(card);
+    fetch('pipelines.json')
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('pipeline-container');
+        data.forEach((p) => {
+          const card = document.createElement('a');
+          card.href = p.link;
+          card.className = 'card-link';
+          card.target = '_blank';
+          card.innerHTML = `
+            <div class="card">
+              <div class="card-title">${p.name}</div>
+              <div class="card-description">${p.description}</div>
+              <div class="card-footer">
+                <span>Version: ${p.version}</span>
+                <span class="arrow">→</span>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
+        console.error(err);
       });
-    })
-    .catch(err => {
-      document.getElementById('pipeline-container').innerHTML = '<p>Error loading pipelines.</p>';
-      console.error(err);
-    });
-</script>
-
-
+  </script>
 </body>
 </html>
