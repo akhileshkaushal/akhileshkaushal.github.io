@@ -3,12 +3,15 @@ Transcriptomic RNA-seq Pipeline
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
+   :caption: Contents:
 
    installation
    execution
+   visualization
    enrichment
-   dba_case
+   output
+   casestudy
+   references
 
 Overview
 --------

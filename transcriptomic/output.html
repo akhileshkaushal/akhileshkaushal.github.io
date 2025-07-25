@@ -22,6 +22,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)" href="casestudy.html" />
+    <link rel="prev" title="Functional Enrichment Analysis" href="enrichment.html" />
    
   <link rel="icon" href="_static/images/favicon.ico">
 
@@ -46,8 +48,8 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#repository-setup">Repository Setup</a></li>
@@ -65,6 +67,17 @@
 <li class="toctree-l2"><a class="reference internal" href="execution.html#output-structure">Output Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="execution.html#cleaning-and-re-running">Cleaning and Re-running</a></li>
 <li class="toctree-l2"><a class="reference internal" href="execution.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">RNA-seq Visualization Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#purpose">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#plot-types">Plot Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#volcano-plot-deseq2">Volcano Plot (DESeq2)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#heatmap-of-top-degs">Heatmap of Top DEGs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#kegg-pathview-overlay">KEGG Pathview Overlay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#example-output">Example Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#next-steps">Next Steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="enrichment.html">Functional Enrichment Analysis</a><ul>
@@ -88,6 +101,23 @@
 <li class="toctree-l2"><a class="reference internal" href="enrichment.html#related-docs">Related Docs</a></li>
 </ul>
 </li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Output Summary</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#log-files">Log Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#sample-setup">Sample Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#differential-expression-results">Differential Expression Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#enrichment-results">Enrichment Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#kegg-pathview-example">KEGG Pathview Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#biological-interpretation">Biological Interpretation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References:</a></li>
 </ul>
 
         </div>
@@ -139,9 +169,46 @@
 │   └── Group1_vs_Group2_ORA_results.xlsx
 </pre></div>
 </div>
-</section>
-<section id="output-file-descriptions">
-<h2>Output File Descriptions<a class="headerlink" href="#output-file-descriptions" title="Link to this heading"></a></h2>
+<p>📄 Output File Descriptions</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a href="#id1"><span class="problematic" id="id2">*</span></a>_deseq2_results.csv</p></td>
+<td><p>DESeq2 output with log2FC, p-value, padj for all genes</p></td>
+</tr>
+<tr class="row-odd"><td><p><a href="#id3"><span class="problematic" id="id4">*</span></a>_limma_results.csv</p></td>
+<td><p>Limma analysis results with moderated t-statistics</p></td>
+</tr>
+<tr class="row-even"><td><p><a href="#id5"><span class="problematic" id="id6">*</span></a>_upregulated_genes.csv</p></td>
+<td><p>Genes with log2FC &gt; 0.3 and padj &lt; 0.25</p></td>
+</tr>
+<tr class="row-odd"><td><p><a href="#id7"><span class="problematic" id="id8">*</span></a>_downregulated_genes.csv</p></td>
+<td><p>Genes with log2FC &lt; -0.3 and padj &lt; 0.25</p></td>
+</tr>
+<tr class="row-even"><td><p><a href="#id9"><span class="problematic" id="id10">*</span></a>_ranked_genes.rnk</p></td>
+<td><p>Sorted list of genes with log2FC values for GSEA</p></td>
+</tr>
+<tr class="row-odd"><td><p><a href="#id11"><span class="problematic" id="id12">*</span></a>_volcano_plot.tiff</p></td>
+<td><p>Volcano plot highlighting DEGs and key genes</p></td>
+</tr>
+<tr class="row-even"><td><p><a href="#id13"><span class="problematic" id="id14">*</span></a>_heatmap.png</p></td>
+<td><p>Clustered heatmap of top 50 up/down DEGs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a href="#id15"><span class="problematic" id="id16">*</span></a>_ORA_results.xlsx</p></td>
+<td><p>Enrichment results for multiple GMT gene sets</p></td>
+</tr>
+<tr class="row-even"><td><p><em>_KEGG/</em>.png</p></td>
+<td><p>Pathview KEGG overlays (gene expression mapped)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a href="#id17"><span class="problematic" id="id18">*</span></a>_unmapped_symbols.csv</p></td>
+<td><p>Symbols that could not be mapped to ENTREZ IDs</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="log-files">
 <h2>Log Files<a class="headerlink" href="#log-files" title="Link to this heading"></a></h2>
@@ -170,7 +237,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="enrichment.html" class="btn btn-neutral float-left" title="Functional Enrichment Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="casestudy.html" class="btn btn-neutral float-right" title="Transcriptomic Analysis in Diamond-Blackfan Anemia (DBA)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

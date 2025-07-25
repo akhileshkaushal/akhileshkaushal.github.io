@@ -1,3 +1,5 @@
+References:
+==========
 .. \_references:
 
 # References

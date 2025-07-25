@@ -29,23 +29,32 @@ Example Layout:
    │   ├── Group1_vs_Group2_unmapped_symbols.csv
    │   └── Group1_vs_Group2_ORA_results.xlsx
 
-Output File Descriptions
--------------------------
+📄 Output File Descriptions
 
-+-------------------------------+--------------------------------------------------------------+
-| File                          | Description                                                  |
-+===============================+==============================================================+
-| *_deseq2_results.csv          | DESeq2 output with log2FC, p-value, and adjusted p-values    |
-| *_limma_results.csv           | Limma output with moderated t-statistics and p-values        |
-| *_upregulated_genes.csv       | Genes with log2FC > 0.3 and padj < 0.25                      |
-| *_downregulated_genes.csv     | Genes with log2FC < -0.3 and padj < 0.25                     |
-| *_ranked_genes.rnk            | Ranked genes (by log2FC) for GSEA                           |
-| *_volcano_plot.tiff           | Volcano plot highlighting DEGs                              |
-| *_heatmap.png                 | Clustered heatmap of top DEGs                               |
-| *_ORA_results.xlsx            | ORA results (multiple tabs for gene sets and directions)     |
-| *_KEGG/*.png                  | KEGG pathway overlays showing mapped gene expression         |
-| *_unmapped_symbols.csv        | Genes unmapped during SYMBOL ➜ ENTREZ conversion             |
-+-------------------------------+--------------------------------------------------------------+
++-------------------------------+---------------------------------------------------------------+
+| File                          | Description                                                   |
++===============================+===============================================================+
+| *_deseq2_results.csv          | DESeq2 output with log2FC, p-value, padj for all genes        |
++-------------------------------+---------------------------------------------------------------+
+| *_limma_results.csv           | Limma analysis results with moderated t-statistics            |
++-------------------------------+---------------------------------------------------------------+
+| *_upregulated_genes.csv       | Genes with log2FC > 0.3 and padj < 0.25                       |
++-------------------------------+---------------------------------------------------------------+
+| *_downregulated_genes.csv     | Genes with log2FC < -0.3 and padj < 0.25                      |
++-------------------------------+---------------------------------------------------------------+
+| *_ranked_genes.rnk            | Sorted list of genes with log2FC values for GSEA              |
++-------------------------------+---------------------------------------------------------------+
+| *_volcano_plot.tiff           | Volcano plot highlighting DEGs and key genes                  |
++-------------------------------+---------------------------------------------------------------+
+| *_heatmap.png                 | Clustered heatmap of top 50 up/down DEGs                      |
++-------------------------------+---------------------------------------------------------------+
+| *_ORA_results.xlsx            | Enrichment results for multiple GMT gene sets                 |
++-------------------------------+---------------------------------------------------------------+
+| *_KEGG/*.png                  | Pathview KEGG overlays (gene expression mapped)               |
++-------------------------------+---------------------------------------------------------------+
+| *_unmapped_symbols.csv        | Symbols that could not be mapped to ENTREZ IDs                |
++-------------------------------+---------------------------------------------------------------+
+
 
 Log Files
 ---------
