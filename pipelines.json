@@ -24,8 +24,8 @@
     "name": "Methylation-Pipeline",
     "description": "EPIC array preprocessing, normalization, and differential methylation analysis.",
     "version": "0.9.1",
-    "link": "methylation.html",
-    "detail_html": "methylation.html",
+    "link": "methylomic/index.html",
+    "detail_html": "methylomic/index.html",
     "tags": ["Methylation", "Illumina", "EPIC"],
     "details": {
       "steps": [
