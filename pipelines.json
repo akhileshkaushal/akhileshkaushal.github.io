@@ -45,8 +45,8 @@
     "name": "ATAC-seq Pipeline",
     "description": "Analysis of open chromatin accessibility using ATAC-seq data.",
     "version": "1.0.0",
-    "link": "atacseq.html",
-    "detail_html": "atacseq.html",
+    "link": "atacseq/index.html",
+    "detail_html": "atacseq/index.html",
     "tags": ["ATAC-seq", "Chromatin", "Footprinting"],
     "details": {
       "steps": [
