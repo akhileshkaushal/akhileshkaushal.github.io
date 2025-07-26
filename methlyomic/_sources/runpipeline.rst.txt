@@ -1,0 +1,80 @@
+run_pipeline.R Script
+======================
+
+This R script orchestrates the entire methylation analysis pipeline from preprocessing to visualization, using parameters defined in a JSON configuration file.
+
+.. code-block:: r
+
+    #!/usr/bin/env Rscript
+
+    # ---- Load Libraries ----
+    suppressPackageStartupMessages({
+      library(jsonlite)
+      library(minfi)
+      library(limma)
+      library(wateRmelon)
+      library(sva)
+      library(pheatmap)
+      library(ggplot2)
+      library(clusterProfiler)
+      library(org.Hs.eg.db)
+    })
+
+    # ---- Parse Arguments ----
+    args <- commandArgs(trailingOnly = TRUE)
+    config_path <- sub("--config=", "", args[grep("--config=", args)])
+    config <- fromJSON(config_path)
+
+    # ---- 1. Load Data ----
+    # Read IDAT files and sample sheet
+    rgSet <- read.metharray.exp(targets = config$sample_sheet, base = config$input_idat_dir)
+
+    # ---- 2. Quality Control ----
+    # Detection p-values
+    detP <- detectionP(rgSet)
+    keep <- colMeans(detP < config$filtering$detection_pval_threshold) > 0.95
+    rgSet <- rgSet[, keep]
+
+    # ---- 3. Normalization ----
+    if (config$normalization == "funnorm") {
+      mSet <- preprocessFunnorm(rgSet)
+    } else {
+      stop("Unsupported normalization method")
+    }
+
+    # ---- 4. Probe Filtering ----
+    # Remove sex chromosomes, cross-reactive probes, etc.
+    # (Assume appropriate filters implemented in separate utility function)
+    source("scripts/filter_probes.R")
+    mSet <- filter_probes(mSet, config$filtering)
+
+    # ---- 5. Differential Methylation for Each Comparison ----
+    for (cmp in config$comparisons) {
+      g1 <- cmp$group1
+      g2 <- cmp$group2
+      cmp_name <- cmp$name
+
+      source("scripts/differential_analysis.R")
+      run_differential_analysis(mSet, cmp_name, g1, g2, config)
+    }
+
+    # ---- 6. Gene Mapping and Collapsing ----
+    source("scripts/map_cpg_to_gene.R")
+    map_cpg_to_gene(output_dir = "output/", annotation_db = config$annotation_db)
+
+    # ---- 7. Over-Representation Analysis (ORA) ----
+    source("scripts/perform_ora.R")
+    perform_ora(output_dir = "output/", msigdb_category = config$msigdb_category)
+
+    # ---- 8. Visualization ----
+    source("scripts/plot_pca.R")
+    source("scripts/plot_heatmap.R")
+    source("scripts/plot_tss_metaplot.R")
+
+    plot_pca(mSet, config)
+    plot_heatmap(mSet, config)
+    plot_tss_metaplot(mSet, config)
+
+    # ---- 9. Save Final Objects and Log ----
+    saveRDS(mSet, file = file.path("output", "normalized_methylation_set.rds"))
+    writeLines("Pipeline completed successfully.", con = file.path("output", "pipeline.log"))

@@ -1,0 +1,112 @@
+Differential Methylation and Advanced Analysis
+=============================================
+
+This section describes the comprehensive steps used to identify differentially methylated CpG sites (DMPs), differentially methylated regions (DMRs), correct for batch effects, annotate genomic context, and visualize key methylation patterns. Robust modeling, careful annotation, and integrative visualizations are essential for biologically meaningful results.
+
+1. Differentially Methylated Positions (DMPs)
+--------------------------------------------
+
+To identify DMPs, methylation M-values are modeled using ``limma``, a linear modeling framework suited for microarray data. The analysis adjusts for confounding variables such as sex, age, batch, and other covariates.
+
+.. code-block:: r
+
+    design <- model.matrix(~ group + sex + batch, data = targets)
+    fit <- lmFit(mVals, design)
+    fit <- eBayes(fit)
+    dmp_table <- topTable(fit, coef = "groupCase", number = Inf, adjust = "BH")
+
+The resulting table includes:
+
+- Log2 fold changes (logFC)
+- Adjusted p-values (FDR)
+- Average methylation levels per group
+- B-statistics (log-odds of differential methylation)
+
+2. Differentially Methylated Regions (DMRs)
+-------------------------------------------
+
+While individual CpGs offer resolution, aggregating them into regions provides biologically cohesive insights. Several tools are available:
+
+- ``DMRcate`` (recommended for Illumina data)
+- ``Bumphunter`` (included in minfi)
+- ``DMRfinder``
+
+Example with ``DMRcate``:
+
+.. code-block:: r
+
+    myAnnotation <- cpg.annotate(
+      object = mVals,
+      datatype = "array",
+      what = "M",
+      analysis.type = "differential",
+      design = design,
+      coef = "groupCase",
+      arraytype = "EPIC"
+    )
+
+    dmrcoutput <- dmrcate(myAnnotation, lambda = 1000, C = 2)
+    dmr_ranges <- extractRanges(dmrcoutput, genome = "hg38")
+
+Output includes genomic coordinates, mean delta beta, number of probes, and FDR-adjusted p-values.
+
+3. Batch Effect Correction
+--------------------------
+
+Batch effects (e.g., slide, processing date) are common in large datasets. To correct for unwanted technical variation:
+
+- Include batch variables in the ``limma`` model.
+- Optionally apply ``limma::removeBatchEffect()`` on M-values before visualization.
+
+.. code-block:: r
+
+    corrected <- removeBatchEffect(mVals, batch = targets$Slide, covariates = targets$Sex)
+
+This ensures biological signals (e.g., case vs. control) are not confounded by technical noise.
+
+4. Annotation and Genomic Context
+---------------------------------
+
+After identifying DMPs/DMRs, map them to genomic features to interpret their regulatory impact. Use the Illumina annotation package:
+
+- ``IlluminaHumanMethylationEPICanno.ilm10b4.hg38``
+- or ``annotatr`` for broader feature support
+
+Common annotation categories:
+
+- Promoter regions (e.g., TSS200, TSS1500)
+- 5'UTR, gene body, 3'UTR
+- Enhancer and open chromatin (based on ENCODE or ChromHMM)
+- Intergenic
+
+.. code-block:: r
+
+    anno <- getAnnotation(IlluminaHumanMethylationEPICanno.ilm10b4.hg38)
+    annotated <- cbind(dmp_table, anno[rownames(dmp_table), ])
+
+This step enables downstream pathway and region-based aggregation.
+
+5. Visualization
+----------------
+
+Effective visualization provides insight into data quality, sample separation, and significant methylation shifts:
+
+- **Volcano plots**: Highlight logFC vs. adjusted p-values for DMPs.
+- **Heatmaps**: Display top variable or significant CpGs across samples.
+- **PCA plots**: Show sample clustering and detect outliers.
+- **TSS methylation metaplot**: Visualize methylation trend ±2kb around TSS.
+- **ORA / GSEA**: Enrich gene-level DMPs using MSigDB or KEGG.
+
+.. code-block:: r
+
+    library(EnhancedVolcano)
+    EnhancedVolcano(dmp_table,
+                    lab = dmp_table$gene,
+                    x = 'logFC',
+                    y = 'adj.P.Val')
+
+    pheatmap(betaVals[head(order(rowVars(betaVals), decreasing = TRUE), 500), ])
+
+    plotPCA(corrected, targets$group)
+
+All visualization outputs are saved in the ``output/plots/`` directory for inclusion in reports or manuscripts.

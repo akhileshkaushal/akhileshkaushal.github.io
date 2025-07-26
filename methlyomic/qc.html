@@ -1,0 +1,248 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preprocessing and Quality Control &mdash; Methylation Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/methylation/qc.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Differential Methylation and Advanced Analysis" href="dma.html" />
+    <link rel="prev" title="Installation and Setup" href="install.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Methylation Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction and Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Intro.html#dna-methylation-profiling-using-illumina-epic-arrays">DNA Methylation Profiling Using Illumina EPIC Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Intro.html#why-use-epic-arrays">Why Use EPIC Arrays?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Intro.html#biological-applications">Biological Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Intro.html#overview-of-the-analysis-workflow">Overview of the Analysis Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#configuration-file">Configuration File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#execution">Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Preprocessing and Quality Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#idat-import-and-sample-sheet-configuration">1. IDAT Import and Sample Sheet Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quality-control">2. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#probe-filtering">3. Probe Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#normalization">4. Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#beta-and-m-value-extraction">5. Beta and M-value Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dma.html">Differential Methylation and Advanced Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#differentially-methylated-positions-dmps">1. Differentially Methylated Positions (DMPs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#differentially-methylated-regions-dmrs">2. Differentially Methylated Regions (DMRs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#batch-effect-correction">3. Batch Effect Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#annotation-and-genomic-context">4. Annotation and Genomic Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#visualization">5. Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="runpipeline.html">run_pipeline.R Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Pipeline Structure and Containerization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#directory-layout">Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#containerization-options">Containerization Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: DNA Methylation Signatures in Allergy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#study-design">Study Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#key-findings">Key Findings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#differentially-methylated-positions-dmps">1. Differentially Methylated Positions (DMPs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#differentially-methylated-regions-dmrs">2. Differentially Methylated Regions (DMRs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#genomic-annotation-and-regulatory-context">3. Genomic Annotation and Regulatory Context</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#integration-with-external-datasets">Integration with External Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#pathway-enrichment">Pathway Enrichment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#visualization-highlights">Visualization Highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#pipeline-methodology">Pipeline Methodology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#annotation-and-genomic-context">Annotation and Genomic Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#pathway-enrichment-and-visualization">Pathway Enrichment and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#allergy-case-study">Allergy Case Study</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Methylation Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Preprocessing and Quality Control</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/qc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation and Setup" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dma.html" class="btn btn-neutral float-right" title="Differential Methylation and Advanced Analysis" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="preprocessing-and-quality-control">
+<h1>Preprocessing and Quality Control<a class="headerlink" href="#preprocessing-and-quality-control" title="Link to this heading"></a></h1>
+<p>This section outlines the essential steps for importing raw methylation data from IDAT files, performing quality control, filtering probes, and preparing normalized beta and M-values for downstream analysis. Proper QC and preprocessing ensure reliability and reproducibility of methylation results.</p>
+<section id="idat-import-and-sample-sheet-configuration">
+<h2>1. IDAT Import and Sample Sheet Configuration<a class="headerlink" href="#idat-import-and-sample-sheet-configuration" title="Link to this heading"></a></h2>
+<p>Raw methylation data are imported using the <code class="docutils literal notranslate"><span class="pre">minfi::read.metharray.exp()</span></code> function, which reads red and green fluorescence intensities from IDAT files. A well-structured sample sheet (CSV/TSV format) is required to associate array data with sample metadata.</p>
+<p>The sample sheet must contain the following columns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Sample_Name</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Sample_Group</span></code> (e.g., Control, Disease)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Slide</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Array</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Sex</span></code> (optional)</p></li>
+<li><p>Additional covariates (e.g., Batch, CellType) as needed</p></li>
+</ul>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rgSet</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.metharray.exp</span><span class="p">(</span><span class="n">targets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sampleSheet.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="quality-control">
+<h2>2. Quality Control<a class="headerlink" href="#quality-control" title="Link to this heading"></a></h2>
+<p>Initial QC ensures sample integrity and data quality. Two main functions can be used:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">minfi::qcReport()</span></code> – generates PDF with detection p-values, control probes, and signal distributions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ChAMP::champ.QC()</span></code> – includes PCA and clustering plots for sample-level exploration.</p></li>
+</ul>
+<p>Sample filtering is typically based on detection p-values, which assess the confidence of probe detection above background noise. Samples failing &gt;1% of probes (p &gt; 0.01) are removed.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">detP</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">detectionP</span><span class="p">(</span><span class="n">rgSet</span><span class="p">)</span>
+<span class="n">failed</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">colMeans</span><span class="p">(</span><span class="n">detP</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.01</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.01</span>
+<span class="n">rgSet</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rgSet</span><span class="p">[,</span><span class="w"> </span><span class="o">!</span><span class="n">failed</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="probe-filtering">
+<h2>3. Probe Filtering<a class="headerlink" href="#probe-filtering" title="Link to this heading"></a></h2>
+<p>Unreliable probes are filtered to prevent technical artifacts from confounding biological interpretation. Filtering includes:</p>
+<ul class="simple">
+<li><p>Removing non-CpG probes (e.g., CHH, CHG context)</p></li>
+<li><p>Removing probes with SNPs at the CpG or single-base extension sites</p></li>
+<li><p>Removing cross-reactive probes (identified by sequence alignment)</p></li>
+<li><p>Optionally removing sex chromosome probes (for mixed-sex studies)</p></li>
+</ul>
+<p>Useful resources and functions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ChAMP::champ.filter()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">minfiData::dropLociWithSnps()</span></code></p></li>
+<li><p>Blacklist from Zhou et al., 2016 (cross-reactive probes)</p></li>
+</ul>
+</section>
+<section id="normalization">
+<h2>4. Normalization<a class="headerlink" href="#normalization" title="Link to this heading"></a></h2>
+<p>Normalization adjusts for technical variability between arrays and probe types. Choice of method depends on sample heterogeneity:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">preprocessQuantile()</span></code> – best for homogeneous samples (e.g., cell lines, blood)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">preprocessFunnorm()</span></code> – better suited for heterogeneous tissues or multi-batch data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ChAMP::champ.norm(method=&quot;BMIQ&quot;)</span></code> – addresses type I/type II probe bias</p></li>
+</ul>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">mSet</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">preprocessQuantile</span><span class="p">(</span><span class="n">rgSet</span><span class="p">)</span><span class="w">  </span><span class="c1"># or preprocessFunnorm(rgSet)</span>
+</pre></div>
+</div>
+</section>
+<section id="beta-and-m-value-extraction">
+<h2>5. Beta and M-value Extraction<a class="headerlink" href="#beta-and-m-value-extraction" title="Link to this heading"></a></h2>
+<p>Two common measures are used to quantify methylation:</p>
+<ul class="simple">
+<li><p><strong>Beta values</strong>: Represent methylation proportion (range 0–1). Used for visualization.</p></li>
+<li><p><strong>M-values</strong>: Logit-transformed beta values (log2(beta / (1 - beta))). Used for statistical analysis due to better variance homogeneity.</p></li>
+</ul>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">betaVals</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">getBeta</span><span class="p">(</span><span class="n">mSet</span><span class="p">)</span>
+<span class="n">mVals</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">getM</span><span class="p">(</span><span class="n">mSet</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These matrices are used in downstream steps such as differential methylation testing, clustering, and dimensionality reduction (e.g., PCA).</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation and Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dma.html" class="btn btn-neutral float-right" title="Differential Methylation and Advanced Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
