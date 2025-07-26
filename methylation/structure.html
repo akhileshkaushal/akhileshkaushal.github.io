@@ -1,0 +1,244 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline Structure and Containerization &mdash; Methylation Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/methylation/structure.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Case Study: DNA Methylation Signatures in Allergy" href="casestudy.html" />
+    <link rel="prev" title="run_pipeline.R Script" href="runpipeline.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Methylation Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction and Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Intro.html#dna-methylation-profiling-using-illumina-epic-arrays">DNA Methylation Profiling Using Illumina EPIC Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Intro.html#why-use-epic-arrays">Why Use EPIC Arrays?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Intro.html#biological-applications">Biological Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Intro.html#overview-of-the-analysis-workflow">Overview of the Analysis Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#configuration-file">Configuration File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#execution">Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qc.html">Preprocessing and Quality Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qc.html#idat-import-and-sample-sheet-configuration">1. IDAT Import and Sample Sheet Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qc.html#quality-control">2. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qc.html#probe-filtering">3. Probe Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qc.html#normalization">4. Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qc.html#beta-and-m-value-extraction">5. Beta and M-value Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dma.html">Differential Methylation and Advanced Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#differentially-methylated-positions-dmps">1. Differentially Methylated Positions (DMPs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#differentially-methylated-regions-dmrs">2. Differentially Methylated Regions (DMRs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#batch-effect-correction">3. Batch Effect Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#annotation-and-genomic-context">4. Annotation and Genomic Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma.html#visualization">5. Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="runpipeline.html">run_pipeline.R Script</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Structure and Containerization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#directory-layout">Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#containerization-options">Containerization Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: DNA Methylation Signatures in Allergy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#study-design">Study Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#key-findings">Key Findings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#differentially-methylated-positions-dmps">1. Differentially Methylated Positions (DMPs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#differentially-methylated-regions-dmrs">2. Differentially Methylated Regions (DMRs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#genomic-annotation-and-regulatory-context">3. Genomic Annotation and Regulatory Context</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#integration-with-external-datasets">Integration with External Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#pathway-enrichment">Pathway Enrichment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#visualization-highlights">Visualization Highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#pipeline-methodology">Pipeline Methodology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#annotation-and-genomic-context">Annotation and Genomic Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#pathway-enrichment-and-visualization">Pathway Enrichment and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#allergy-case-study">Allergy Case Study</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Methylation Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pipeline Structure and Containerization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/structure.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="runpipeline.html" class="btn btn-neutral float-left" title="run_pipeline.R Script" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="casestudy.html" class="btn btn-neutral float-right" title="Case Study: DNA Methylation Signatures in Allergy" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-structure-and-containerization">
+<h1>Pipeline Structure and Containerization<a class="headerlink" href="#pipeline-structure-and-containerization" title="Link to this heading"></a></h1>
+<p>This section outlines the organizational structure of the methylation analysis pipeline and the available containerization strategies using Docker or Apptainer (formerly Singularity). Proper structuring and containerization ensure reproducibility, portability, and scalability of the analysis across computational environments.</p>
+<section id="directory-layout">
+<h2>Directory Layout<a class="headerlink" href="#directory-layout" title="Link to this heading"></a></h2>
+<p>The pipeline follows a modular and logical directory structure, separating input data, metadata, configuration, scripts, intermediate results, and container assets. This improves maintainability, reusability, and automation in batch processing scenarios.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>methylation-pipeline/
+├── data/
+│   └── IDATs/                    # Raw IDAT files (.idat)
+├── metadata/
+│   └── samples.csv               # Sample sheet with metadata (Sample_ID, Group, Slide, Array, etc.)
+├── results/
+│   ├── qc/                       # QC reports, detection p-value heatmaps, signal boxplots
+│   ├── norm/                     # Normalized beta and M-value matrices
+│   ├── dmp/                      # Differential methylation position (DMP) tables
+│   ├── dmr/                      # Region-level analysis results (e.g., DMRcate or Bumphunter)
+│   └── reports/                  # Summary plots, volcano plots, heatmaps, PCA, TSS metaplots
+├── config/
+│   └── config.yml                # YAML configuration file specifying groups, covariates, thresholds
+├── scripts/
+│   ├── run_methylation_pipeline.R  # Main orchestrator script
+│   └── helper_functions.R         # Utility functions (e.g., QC, filtering, plotting)
+└── container/
+    └── Dockerfile or apptainer.def  # Container definitions for reproducible environments
+</pre></div>
+</div>
+</section>
+<section id="containerization-options">
+<h2>Containerization Options<a class="headerlink" href="#containerization-options" title="Link to this heading"></a></h2>
+<p>Reproducibility and portability are key considerations for modern bioinformatics pipelines. This pipeline supports two containerization strategies:</p>
+<p><strong>Docker</strong></p>
+<p>Docker is ideal for local development and CI/CD systems. A <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code> is provided to build a fully functional R environment with Bioconductor and required CRAN packages.</p>
+<p><em>Key features:</em></p>
+<ul class="simple">
+<li><p>Compatible with Linux, macOS, and Windows (via Docker Desktop)</p></li>
+<li><p>Easy integration with GitHub Actions, GitLab CI, or cloud VMs</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the Docker image</span>
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>methylation-pipeline<span class="w"> </span>-f<span class="w"> </span>container/Dockerfile<span class="w"> </span>.
+
+<span class="c1"># Run the container interactively</span>
+docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span><span class="nv">$PWD</span>:/workspace<span class="w"> </span>-w<span class="w"> </span>/workspace<span class="w"> </span>methylation-pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>Rscript<span class="w"> </span>scripts/run_methylation_pipeline.R<span class="w"> </span>--config<span class="w"> </span>config/config.yml
+</pre></div>
+</div>
+<p><strong>Apptainer (Singularity)</strong></p>
+<p>For use in HPC environments where root access is restricted, Apptainer offers an unprivileged and secure alternative to Docker. The pipeline includes an <code class="docutils literal notranslate"><span class="pre">apptainer.def</span></code> definition file compatible with most cluster modules.</p>
+<p><em>Key features:</em></p>
+<ul class="simple">
+<li><p>No root privileges needed</p></li>
+<li><p>Compatible with SLURM and job schedulers</p></li>
+<li><p>Seamless integration with module environments</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the Apptainer image</span>
+apptainer<span class="w"> </span>build<span class="w"> </span>methylation_pipeline.sif<span class="w"> </span>container/apptainer.def
+
+<span class="c1"># Run the pipeline within the container</span>
+apptainer<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>methylation_pipeline.sif<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>Rscript<span class="w"> </span>scripts/run_methylation_pipeline.R<span class="w"> </span>--config<span class="w"> </span>config/config.yml
+</pre></div>
+</div>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Version-lock your container base images and packages (e.g., Bioconductor release version)</p></li>
+<li><p>Always mount host directories for persistent access to input/output files</p></li>
+<li><p>Use <a href="#id1"><span class="problematic" id="id2">``</span></a>–cl</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="runpipeline.html" class="btn btn-neutral float-left" title="run_pipeline.R Script" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="casestudy.html" class="btn btn-neutral float-right" title="Case Study: DNA Methylation Signatures in Allergy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

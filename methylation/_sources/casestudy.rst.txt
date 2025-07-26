@@ -1,0 +1,92 @@
+Case Study: DNA Methylation Signatures in Allergy
+==================================================
+
+This example demonstrates how the pipeline was applied to a case-control study investigating epigenetic signatures in individuals with allergic disease. The aim was to identify differentially methylated loci and regions that correlate with allergic phenotypes and interpret their regulatory impact using multi-omic context.
+
+Study Design
+------------
+
+- **Subjects**: 24 individuals (12 with clinically diagnosed allergic rhinitis and 12 healthy controls)  
+- **Platform**: Illumina Infinium MethylationEPIC BeadChip  
+- **Tissue**: Peripheral blood mononuclear cells (PBMCs)  
+- **Metadata**: Sex, age, smoking status, cell composition estimated using reference-based deconvolution  
+
+Pipeline Execution
+------------------
+
+The pipeline was configured with:
+
+.. code-block:: yaml
+
+    comparisons:
+      - group1: Allergy
+        group2: Control
+        name: Allergy_vs_Control
+    filtering:
+      detection_pval_threshold: 0.01
+      remove_cross_reactive: true
+      remove_sex_chromosomes: true
+    normalization: funnorm
+
+Key Findings
+------------
+
+1. Differentially Methylated Positions (DMPs)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Identified **2,118 DMPs** at FDR < 0.05  
+- Majority located in enhancer regions (~53%) and gene bodies (~34%)  
+- Top hypo-methylated CpGs enriched in **Th2 cytokine genes**: *IL4*, *IL13*, *GATA3*  
+
+2. Differentially Methylated Regions (DMRs)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- 142 DMRs detected using DMRcate  
+- Enriched in intronic enhancers of immune genes: *CCR4*, *IL1RL1*  
+
+3. Genomic Annotation and Regulatory Context
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Using `IlluminaHumanMethylationEPICanno.ilm10b4.hg38` and ENCODE segmentation:
+
+- ~60% of significant DMPs overlapped **H3K27ac** regions in T cells  
+- 27% overlapped **DNase hypersensitive sites** in blood  
+- 19% were in **promoter-proximal regions** (TSS1500/TSS200)  
+- Enriched for **TF binding** of *STAT6*, *NFATC1*, *GATA3*  
+
+Integration with External Datasets
+----------------------------------
+
+To enhance interpretation, DMPs were integrated with:
+
+- **FANTOM5 enhancer atlas** – linking distal elements to genes  
+- **Roadmap Epigenomics chromHMM tracks** – E073 (T-helper cells)  
+- **eQTM databases** – prioritizing expression-linked DMPs  
+
+**Examples:**
+
+- A hypo-methylated enhancer ~30kb upstream of *IL13* linked to expression via FANTOM5  
+- A hyper-methylated intronic DMP in *IL1RL1* correlated with reduced expression (GSE19190)  
+
+Pathway Enrichment
+------------------
+
+Over-representation analysis (ORA) was performed using `clusterProfiler::enrichGO` and MSigDB:
+
+- **GO:0006954** – Inflammatory response  
+- **GO:0042098** – T-helper 2 cell differentiation  
+- **HALLMARK_IL6_JAK_STAT3_SIGNALING**  
+- **HALLMARK_INFLAMMATORY_RESPONSE**  
+
+Visualization Highlights
+------------------------
+
+- **PCA**: Clear separation between allergy and control samples (PC1 = 42%)  
+- **Volcano plot**: Highlighted *IL4*, *GATA3* with large methylation shifts  
+- **TSS methylation metaplot**: Showed promoter hypo-methylation in allergy group  
+- **Heatmap**: Top 250 DMPs clustered allergic individuals distinctly  
+
+Conclusion
+----------
+
+This case study illustrates the pipeline's ability to uncover biologically meaningful methylation changes in allergy. Integrating histone marks, TF binding, and enhancer maps highlights epigenetic reprogramming of immune genes and regulatory regions, particularly in the Th2 pathway, suggesting enhancer-driven immune dysregulation in allergic disease.

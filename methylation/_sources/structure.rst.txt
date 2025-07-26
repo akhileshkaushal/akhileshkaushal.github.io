@@ -1,0 +1,79 @@
+Pipeline Structure and Containerization
+=======================================
+
+This section outlines the organizational structure of the methylation analysis pipeline and the available containerization strategies using Docker or Apptainer (formerly Singularity). Proper structuring and containerization ensure reproducibility, portability, and scalability of the analysis across computational environments.
+
+Directory Layout
+----------------
+
+The pipeline follows a modular and logical directory structure, separating input data, metadata, configuration, scripts, intermediate results, and container assets. This improves maintainability, reusability, and automation in batch processing scenarios.
+
+.. code-block:: text
+
+    methylation-pipeline/
+    ├── data/
+    │   └── IDATs/                    # Raw IDAT files (.idat)
+    ├── metadata/
+    │   └── samples.csv               # Sample sheet with metadata (Sample_ID, Group, Slide, Array, etc.)
+    ├── results/
+    │   ├── qc/                       # QC reports, detection p-value heatmaps, signal boxplots
+    │   ├── norm/                     # Normalized beta and M-value matrices
+    │   ├── dmp/                      # Differential methylation position (DMP) tables
+    │   ├── dmr/                      # Region-level analysis results (e.g., DMRcate or Bumphunter)
+    │   └── reports/                  # Summary plots, volcano plots, heatmaps, PCA, TSS metaplots
+    ├── config/
+    │   └── config.yml                # YAML configuration file specifying groups, covariates, thresholds
+    ├── scripts/
+    │   ├── run_methylation_pipeline.R  # Main orchestrator script
+    │   └── helper_functions.R         # Utility functions (e.g., QC, filtering, plotting)
+    └── container/
+        └── Dockerfile or apptainer.def  # Container definitions for reproducible environments
+
+Containerization Options
+------------------------
+
+Reproducibility and portability are key considerations for modern bioinformatics pipelines. This pipeline supports two containerization strategies:
+
+**Docker**
+
+Docker is ideal for local development and CI/CD systems. A ``Dockerfile`` is provided to build a fully functional R environment with Bioconductor and required CRAN packages.
+
+*Key features:*
+
+- Compatible with Linux, macOS, and Windows (via Docker Desktop)
+- Easy integration with GitHub Actions, GitLab CI, or cloud VMs
+
+.. code-block:: bash
+
+    # Build the Docker image
+    docker build -t methylation-pipeline -f container/Dockerfile .
+
+    # Run the container interactively
+    docker run -v $PWD:/workspace -w /workspace methylation-pipeline \
+      Rscript scripts/run_methylation_pipeline.R --config config/config.yml
+
+**Apptainer (Singularity)**
+
+For use in HPC environments where root access is restricted, Apptainer offers an unprivileged and secure alternative to Docker. The pipeline includes an ``apptainer.def`` definition file compatible with most cluster modules.
+
+*Key features:*
+
+- No root privileges needed
+- Compatible with SLURM and job schedulers
+- Seamless integration with module environments
+
+.. code-block:: bash
+
+    # Build the Apptainer image
+    apptainer build methylation_pipeline.sif container/apptainer.def
+
+    # Run the pipeline within the container
+    apptainer exec methylation_pipeline.sif \
+      Rscript scripts/run_methylation_pipeline.R --config config/config.yml
+
+Best Practices
+--------------
+
+- Version-lock your container base images and packages (e.g., Bioconductor release version)
+- Always mount host directories for persistent access to input/output files
+- Use ``--cl
