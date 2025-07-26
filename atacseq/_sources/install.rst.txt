@@ -1,0 +1,141 @@
+.. _installation:
+
+Installation and Setup
+======================
+
+This section describes how to install all necessary dependencies, set up the recommended directory structure, configure the ATAC-seq pipeline, and execute it efficiently across environments.
+
+Environment Setup
+------------------
+
+The pipeline supports execution via:
+
+- Conda (recommended for reproducibility)
+- Apptainer/Singularity (for HPC or containerized deployments)
+- Docker (optional for local runs)
+
+### Option 1: Using Conda
+
+Create an environment from the provided `environment.yml`:
+
+.. code-block:: bash
+
+   conda env create -f environment.yml
+   conda activate atacseq-pipeline
+
+### Option 2: Using Apptainer/Singularity
+
+Ensure Apptainer or Singularity is installed:
+
+.. code-block:: bash
+
+   singularity --version
+
+Use the provided `atacseq_container.sif` or build it from the definition file:
+
+.. code-block:: bash
+
+   singularity build atacseq_container.sif atacseq.def
+
+### Option 3: Using Docker (for local testing)
+
+.. code-block:: bash
+
+   docker build -t atacseq-pipeline -f Dockerfile .
+   docker run -v $(pwd):/data atacseq-pipeline
+
+Directory Structure
+--------------------
+
+A standardized directory structure is recommended:
+
+.. code-block:: text
+
+   atacseq_project/
+   ├── raw_data/                 # Input FASTQ files
+   ├── metadata/                 # Sample sheet and group info
+   ├── results/                  # Output folder
+   │   ├── qc/
+   │   ├── aligned/
+   │   ├── peaks/
+   │   ├── bigwig/
+   │   └── differential/
+   ├── scripts/                  # Custom R/Python scripts
+   ├── config/                   # Configuration files
+   │   └── atacseq_config.yaml
+   ├── logs/                     # Log files for all jobs
+   └── atacseq_pipeline.nf       # Nextflow or Snakemake script (optional)
+
+Configuration File
+------------------
+
+The pipeline is configured via a YAML file. Below is a template `atacseq_config.yaml`:
+
+.. code-block:: yaml
+
+   samplesheet: metadata/samples.csv
+   genome: hg38
+   fastq_dir: raw_data/
+   output_dir: results/
+   adapters: config/adapters.fa
+
+   trimming:
+     tool: fastp
+     min_len: 30
+     quality: 20
+
+   alignment:
+     tool: bowtie2
+     max_mismatch: 2
+     remove_mito: true
+
+   peak_calling:
+     tool: macs2
+     pvalue: 1e-5
+     shift_correction: true
+
+   differential:
+     method: DESeq2
+     fdr_threshold: 0.05
+
+   containers:
+     enabled: true
+     path: containers/atacseq_container.sif
+
+Execution
+---------
+
+Once the environment and config are ready, run the pipeline using the master script:
+
+.. code-block:: bash
+
+   bash run_atacseq_pipeline.sh --config config/atacseq_config.yaml
+
+Or optionally, using Snakemake or Nextflow:
+
+.. code-block:: bash
+
+   snakemake --cores 8 --configfile config/atacseq_config.yaml
+
+   nextflow run atacseq_pipeline.nf -c config/atacseq_config.yaml
+
+The pipeline will generate:
+
+- Aligned BAM files
+- Deduplicated reads
+- QC reports
+- Peak calls
+- BigWig tracks
+- Differential peak analysis tables
+
+Log files and a full audit trail are stored in the `logs/` directory.
+
+Reproducibility Tips
+---------------------
+
+- Always use a fixed `environment.yml` or container image hash
+- Document software versions using `conda list --explicit` or `pip freeze`
+- Use version control (`git`) to manage pipeline scripts and configs
+- Run `MultiQC` on the `results/qc/` directory for a combined summary report
+
+This modular setup ensures the pipeline is portable, scalable, and reproducible across platforms and collaborators.

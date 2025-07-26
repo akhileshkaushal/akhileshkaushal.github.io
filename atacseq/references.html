@@ -1,0 +1,230 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>References &mdash; ATAC-seq Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/atacseq/references.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)" href="casestudy.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ATAC-seq Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">ATAC-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#detailed-workflow-overview">Detailed Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#biological-applications">Biological Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#comparison-with-related-chromatin-accessibility-assays">Comparison with Related Chromatin Accessibility Assays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-configurations">Supported Configurations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#configuration-file">Configuration File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#execution">Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#reproducibility-tips">Reproducibility Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessqc.html">Preprocessing and Quality Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#adapter-and-quality-trimming">2. Adapter and Quality Trimming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#alignment-to-genome">3. Alignment to Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#tn5-shift-correction">4. Tn5 Shift Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#remove-duplicates-and-mitochondrial-reads">5. Remove Duplicates and Mitochondrial Reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#peak-calling">6. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#generate-signal-tracks">7. Generate Signal Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#output-files">Output Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Pipeline Structure and Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#containerization">Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#directory-layout">Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#logging-and-runtime">Logging and Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#execution-tips">Execution Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basicadvanalysis.html">Analysis: Basic and Advanced ATAC-seq Steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basicadvanalysis.html#basic-analysis-steps">Basic Analysis Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#differential-accessibility-analysis">1. Differential Accessibility Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#principal-component-analysis-pca">2. Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#clustering-and-heatmaps">3. Clustering and Heatmaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#annotation-of-peaks">4. Annotation of Peaks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="basicadvanalysis.html#advanced-analysis-and-quality-metrics">Advanced Analysis and Quality Metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#tss-enrichment-score">1. TSS Enrichment Score</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#frip-score-fraction-of-reads-in-peaks">2. FRiP Score (Fraction of Reads in Peaks)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#reproducibility-across-replicates">3. Reproducibility Across Replicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#transcription-factor-footprinting-optional">4. Transcription Factor Footprinting (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#motif-enrichment-analysis">5. Motif Enrichment Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#track-visualization">6. Track Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#multi-omics-integration">7. Multi-Omics Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#reporting-and-export">8. Reporting and Export</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#pipeline-summary">Pipeline Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#results-and-interpretation">Results and Interpretation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#global-chromatin-accessibility-changes">1. Global Chromatin Accessibility Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#peak-annotation">2. Peak Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#integration-with-histone-modifications">3. Integration with Histone Modifications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#transcription-factor-binding-analysis">4. Transcription Factor Binding Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#methylation-integration">5. Methylation Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#regulatory-modules-and-pathways">6. Regulatory Modules and Pathways</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#multi-omics-visualization">7. Multi-Omics Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-publications">Key Publications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#software-and-tools">Software and Tools</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ATAC-seq Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">References</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/references.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="casestudy.html" class="btn btn-neutral float-left" title="Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="references">
+<span id="id1"></span><h1>References<a class="headerlink" href="#references" title="Link to this heading"></a></h1>
+<section id="key-publications">
+<h2>Key Publications<a class="headerlink" href="#key-publications" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Buenrostro, J. D., et al. (2013). <em>Transposition of native chromatin for fast and sensitive epigenomic profiling of open chromatin, DNA-binding proteins and nucleosome position.</em> Nature Methods, 10(12), 1213–1218. <a class="reference external" href="https://doi.org/10.1038/nmeth.2688">https://doi.org/10.1038/nmeth.2688</a></p></li>
+<li><p>Corces, M. R., et al. (2017). <em>An improved ATAC-seq protocol reduces background and enables interrogation of frozen tissues.</em> Nature Methods, 14(10), 959–962. <a class="reference external" href="https://doi.org/10.1038/nmeth.4396">https://doi.org/10.1038/nmeth.4396</a></p></li>
+<li><p>Zhang, Y., et al. (2008). <em>Model-based analysis of ChIP-Seq (MACS).</em> Genome Biology, 9(9), R137. <a class="reference external" href="https://doi.org/10.1186/gb-2008-9-9-r137">https://doi.org/10.1186/gb-2008-9-9-r137</a></p></li>
+<li><p>Heinz, S., et al. (2010). <em>Simple combinations of lineage-determining transcription factors prime cis-regulatory elements required for macrophage and B cell identities.</em> Molecular Cell, 38(4), 576–589. <a class="reference external" href="https://doi.org/10.1016/j.molcel.2010.05.004">https://doi.org/10.1016/j.molcel.2010.05.004</a></p></li>
+<li><p>Ramírez, F., et al. (2016). <em>deepTools2: a next generation web server for deep-sequencing data analysis.</em> Nucleic Acids Research, 44(W1), W160–W165. <a class="reference external" href="https://doi.org/10.1093/nar/gkw257">https://doi.org/10.1093/nar/gkw257</a></p></li>
+<li><p>Yu, G., Wang, L.-G., &amp; He, Q.-Y. (2015). <em>ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization.</em> Bioinformatics, 31(14), 2382–2383. <a class="reference external" href="https://doi.org/10.1093/bioinformatics/btv145">https://doi.org/10.1093/bioinformatics/btv145</a></p></li>
+<li><p>Li, Q., Brown, J. B., Huang, H., &amp; Bickel, P. J. (2011). <em>Measuring reproducibility of high-throughput experiments.</em> The Annals of Applied Statistics, 5(3), 1752–1779. <a class="reference external" href="https://doi.org/10.1214/11-AOAS466">https://doi.org/10.1214/11-AOAS466</a></p></li>
+<li><p>Meuleman, W., et al. (2020). <em>Index and biological spectrum of human DNase I hypersensitive sites.</em> Nature, 584(7820), 244–251. <a class="reference external" href="https://doi.org/10.1038/s41586-020-2559-3">https://doi.org/10.1038/s41586-020-2559-3</a></p></li>
+<li><p>Schep, A. N., et al. (2015). <em>Structured nucleosome fingerprints enable high-resolution mapping of chromatin architecture within regulatory regions.</em> Genome Research, 25(11), 1757–1770. <a class="reference external" href="https://doi.org/10.1101/gr.192294.115">https://doi.org/10.1101/gr.192294.115</a></p></li>
+<li><p>Zentner, G. E., &amp; Henikoff, S. (2013). <em>Regulatory architecture of the human genome.</em> Nature Reviews Genetics, 14(2), 71–84. <a class="reference external" href="https://doi.org/10.1038/nrg3367">https://doi.org/10.1038/nrg3367</a></p></li>
+</ol>
+</section>
+<section id="software-and-tools">
+<h2>Software and Tools<a class="headerlink" href="#software-and-tools" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Bowtie2</strong>: <a class="reference external" href="http://bowtie-bio.sourceforge.net/bowtie2">http://bowtie-bio.sourceforge.net/bowtie2</a></p></li>
+<li><p><strong>MACS2</strong>: <a class="reference external" href="https://github.com/macs3-project/MACS">https://github.com/macs3-project/MACS</a></p></li>
+<li><p><strong>FastQC</strong>: <a class="reference external" href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">https://www.bioinformatics.babraham.ac.uk/projects/fastqc/</a></p></li>
+<li><p><strong>MultiQC</strong>: <a class="reference external" href="https://multiqc.info/">https://multiqc.info/</a></p></li>
+<li><p><strong>deepTools</strong>: <a class="reference external" href="https://deeptools.readthedocs.io">https://deeptools.readthedocs.io</a></p></li>
+<li><p><strong>ChIPseeker</strong>: <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/ChIPseeker.html">https://bioconductor.org/packages/release/bioc/html/ChIPseeker.html</a></p></li>
+<li><p><strong>TOBIAS</strong>: <a class="reference external" href="https://github.com/loosolab/TOBIAS">https://github.com/loosolab/TOBIAS</a></p></li>
+<li><p><strong>Picard Tools</strong>: <a class="reference external" href="https://broadinstitute.github.io/picard/">https://broadinstitute.github.io/picard/</a></p></li>
+<li><p><strong>Samtools</strong>: <a class="reference external" href="http://www.htslib.org">http://www.htslib.org</a></p></li>
+<li><p><strong>BEDTools</strong>: <a class="reference external" href="https://bedtools.readthedocs.io">https://bedtools.readthedocs.io</a></p></li>
+<li><p><strong>featureCounts</strong>: <a class="reference external" href="http://bioinf.wehi.edu.au/featureCounts/">http://bioinf.wehi.edu.au/featureCounts/</a></p></li>
+<li><p><strong>GREAT</strong>: <a class="reference external" href="http://great.stanford.edu">http://great.stanford.edu</a></p></li>
+<li><p><strong>LOLA</strong>: <a class="reference external" href="https://databio.org/lola">https://databio.org/lola</a></p></li>
+<li><p><strong>HOMER</strong>: <a class="reference external" href="http://homer.ucsd.edu">http://homer.ucsd.edu</a></p></li>
+<li><p><strong>UCSC Genome Browser</strong>: <a class="reference external" href="https://genome.ucsc.edu">https://genome.ucsc.edu</a></p></li>
+<li><p><strong>IGV</strong>: <a class="reference external" href="https://software.broadinstitute.org/software/igv">https://software.broadinstitute.org/software/igv</a></p></li>
+</ul>
+<p>These references support the methods and best practices used throughout the ATAC-seq pipeline documentation.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="casestudy.html" class="btn btn-neutral float-left" title="Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

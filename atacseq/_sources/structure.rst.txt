@@ -1,0 +1,138 @@
+.. _pipeline_structure:
+
+Pipeline Structure and Execution
+=================================
+
+This section explains the structure of the ATAC-seq analysis pipeline, outlines how to execute it end-to-end, and describes the expected directory organization and container support for reproducible deployments.
+
+Usage
+-----
+
+The ATAC-seq pipeline can be executed using a wrapper shell script, Snakemake/Nextflow engine, or manually step-by-step. For most users, the wrapper script is the recommended method:
+
+.. code-block:: bash
+
+   bash run_atacseq_pipeline.sh --config config/atacseq_config.yaml
+
+This script performs the following sequential steps:
+
+1. Pre-run checks and validation of the YAML config file
+2. FastQC and adapter trimming using `fastp` or `Trim Galore`
+3. Alignment using `Bowtie2`
+4. Sorting, indexing, filtering, and Tn5 shift correction
+5. Deduplication and chrM read removal
+6. Peak calling with `MACS2`
+7. Signal track generation using `deepTools`
+8. Fragment size distribution and insert size metrics
+9. MultiQC aggregation
+10. (Optional) Differential accessibility and annotation
+
+Example invocation using Nextflow:
+
+.. code-block:: bash
+
+   nextflow run atacseq_pipeline.nf -c config/atacseq_config.yaml -with-singularity containers/atacseq_container.sif
+
+Containerization
+----------------
+
+This pipeline supports reproducible containerized execution via:
+
+- **Apptainer/Singularity** (recommended for HPC)
+- **Docker** (for local development)
+
+The container image includes all required tools:
+
+- `fastp`, `FastQC`, `MultiQC`
+- `Bowtie2`, `SAMtools`, `Picard`
+- `MACS2`, `deepTools`, `bedtools`, `R` with `DESeq2`, `ChIPseeker`
+
+Example container:
+
+.. code-block:: text
+
+   ghcr.io/akhileshkaushal/atacseq-pipeline:latest
+
+Running with Apptainer:
+
+.. code-block:: bash
+
+   apptainer exec --bind $(pwd):/mnt \
+     containers/atacseq_container.sif \
+     bash run_atacseq_pipeline.sh --config /mnt/config/atacseq_config.yaml
+
+Directory Layout
+----------------
+
+It is important to maintain a consistent folder structure:
+
+.. code-block:: text
+
+   atacseq_project/
+   ├── config/
+   │   └── atacseq_config.yaml
+   ├── containers/
+   │   └── atacseq_container.sif
+   ├── metadata/
+   │   └── samples.csv
+   ├── raw_data/
+   │   ├── sample1_R1.fastq.gz
+   │   └── sample1_R2.fastq.gz
+   ├── scripts/
+   │   └── custom_plots.R
+   ├── run_atacseq_pipeline.sh
+   ├── atacseq_pipeline.nf
+   └── results/
+       ├── qc/
+       │   ├── fastqc/
+       │   ├── multiqc/
+       │   └── metrics/
+       ├── trimmed/
+       ├── aligned/
+       │   ├── filtered/
+       │   ├── shifted/
+       │   └── dedup/
+       ├── peaks/
+       ├── bigwig/
+       ├── differential/
+       ├── annotation/
+       └── figures/
+
+Output Files
+-------------
+
+- **FASTQC reports**: HTML and zip in `results/qc/fastqc/`
+- **Trimmed FASTQ**: in `results/trimmed/`
+- **Aligned BAM**: sorted, filtered, and Tn5-corrected in `results/aligned/`
+- **Peak files**: `narrowPeak`, `summits.bed` in `results/peaks/`
+- **Signal tracks**: bigWig files in `results/bigwig/`
+- **MultiQC**: aggregated HTML in `results/qc/multiqc/`
+- **Metrics**: duplication rates, insert size histograms in `results/qc/metrics/`
+- **Differential analysis**: DESeq2 results in `results/differential/`
+- **Annotation files**: peak-to-gene annotations in `results/annotation/`
+
+Logging and Runtime
+-------------------
+
+Each step creates a `.log` file inside `logs/` (auto-generated) containing the full command, timestamps, and stdout/stderr. Recommended to run on Slurm or another job scheduler with job submission templates.
+
+Example log structure:
+
+.. code-block:: text
+
+   logs/
+   ├── fastqc/sample1.log
+   ├── trimming/sample1.log
+   ├── alignment/sample1.log
+   ├── macs2/sample1.log
+   └── multiqc/multiqc.log
+
+Execution Tips
+---------------
+
+- Always verify config path and genome index location
+- Use `--dry-run` or `--resume` for Snakemake or Nextflow respectively
+- Parallelize by samples with `snakemake -j 8` or `nextflow -with-trace`
+- Review MultiQC and logs before proceeding to downstream steps
+
+This pipeline ensures traceable, reproducible, and modular ATAC-seq data analysis that can scale from local laptops to HPC clusters or cloud platforms.

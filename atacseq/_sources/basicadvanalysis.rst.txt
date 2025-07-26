@@ -1,0 +1,179 @@
+.. _analysis_steps:
+
+Analysis: Basic and Advanced ATAC-seq Steps
+===========================================
+
+This section describes both the core and advanced downstream analyses for ATAC-seq data after preprocessing. It includes differential accessibility, peak annotation, motif analysis, footprinting, reproducibility, and multi-omics integration.
+
+Basic Analysis Steps
+---------------------
+
+1. Differential Accessibility Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Quantify read counts over consensus peaks using `featureCounts` or `bedtools multicov`:
+
+.. code-block:: bash
+
+   bedtools multicov -bams sample1.bam sample2.bam \
+     -bed merged_consensus_peaks.bed > counts.txt
+
+Alternatively, use `featureCounts`:
+
+.. code-block:: bash
+
+   featureCounts -a merged_consensus_peaks.bed \
+     -o counts.txt -F SAF -T 4 \
+     -p -B -C -M sample1.bam sample2.bam
+
+Perform normalization and statistical testing using R packages such as `DESeq2`:
+
+.. code-block:: r
+
+   library(DESeq2)
+   count_data <- read.table("counts.txt", header=TRUE, row.names=1)
+   col_data <- read.csv("metadata.csv")
+   dds <- DESeqDataSetFromMatrix(count_data, col_data, design=~ condition)
+   dds <- DESeq(dds)
+   res <- results(dds)
+   write.csv(res, file="differential_results.csv")
+
+2. Principal Component Analysis (PCA)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Visualize sample clustering using PCA based on transformed read counts:
+
+.. code-block:: r
+
+   vsd <- vst(dds, blind=TRUE)
+   plotPCA(vsd, intgroup="condition")
+
+3. Clustering and Heatmaps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Generate heatmaps of top variable peaks or significant differential peaks:
+
+.. code-block:: r
+
+   library(pheatmap)
+   select <- order(rowVars(assay(vsd)), decreasing=TRUE)[1:500]
+   pheatmap(assay(vsd)[select,], cluster_rows=TRUE, cluster_cols=TRUE)
+
+4. Annotation of Peaks
+~~~~~~~~~~~~~~~~~~~~~~
+
+Assign peaks to genomic features using `ChIPseeker` or `HOMER`:
+
+.. code-block:: r
+
+   library(ChIPseeker)
+   peak <- readPeakFile("sample_peaks.narrowPeak")
+   txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+   peakAnno <- annotatePeak(peak, tssRegion=c(-2000, 2000), TxDb=txdb, annoDb="org.Hs.eg.db")
+   plotAnnoPie(peakAnno)
+   write.csv(as.data.frame(peakAnno), "annotated_peaks.csv")
+
+Advanced Analysis and Quality Metrics
+-------------------------------------
+
+1. TSS Enrichment Score
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use deepTools to quantify TSS signal enrichment:
+
+.. code-block:: bash
+
+   computeMatrix reference-point -S sample.bw -R tss.bed \
+     -a 2000 -b 2000 -out matrix.gz --referencePoint TSS
+
+   plotProfile -m matrix.gz -out TSS_enrichment_profile.pdf
+
+TSS enrichment > 6 is acceptable, > 10 is excellent.
+
+2. FRiP Score (Fraction of Reads in Peaks)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   total_reads=$(samtools view -c aligned.bam)
+   reads_in_peaks=$(bedtools intersect -a aligned.bam -b peaks.narrowPeak | samtools view -c)
+   echo "scale=2; $reads_in_peaks / $total_reads" | bc
+
+FRiP > 0.2 indicates good enrichment in bulk ATAC-seq.
+
+3. Reproducibility Across Replicates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use IDR to assess peak consistency:
+
+.. code-block:: bash
+
+   idr --samples rep1_peaks.narrowPeak rep2_peaks.narrowPeak \
+       --output-file results/idr/idr_results.txt
+
+Visualize with:
+
+.. code-block:: bash
+
+   multiBamSummary bins -b rep1.bam rep2.bam -out readCounts.npz
+   plotCorrelation -in readCounts.npz --corMethod spearman \
+     --whatToPlot heatmap -o correlation_heatmap.pdf
+
+4. Transcription Factor Footprinting (Optional)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Estimate TF binding sites with TOBIAS:
+
+.. code-block:: bash
+
+   TOBIAS ATACorrect --bam shifted.bam --genome genome.fa \
+     --peaks peaks.bed -o corrected.bw
+
+   TOBIAS FootprintScores --signal corrected.bw \
+     --regions peaks.bed -o footprint.bw
+
+5. Motif Enrichment Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Identify enriched sequence motifs:
+
+.. code-block:: bash
+
+   findMotifsGenome.pl sample_peaks.narrowPeak hg38 results/motifs/ -size given
+
+6. Track Visualization
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Load `.bigWig` and `.bed` files in:
+
+- IGV (https://software.broadinstitute.org/software/igv)
+- UCSC Genome Browser (custom tracks)
+
+Example configuration for IGV batch script:
+
+.. code-block:: text
+
+   new
+   genome hg38
+   load sample1.bw
+   load sample2_peaks.bed
+   snapshotDirectory snapshots/
+   snapshot
+
+7. Multi-Omics Integration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Combine ATAC-seq with matched RNA-seq or ChIP-seq:
+
+- Correlate promoter accessibility with gene expression
+- Overlay ATAC peaks with histone marks (e.g., H3K27ac)
+- Integrate with chromatin states (e.g., ChromHMM)
+
+8. Reporting and Export
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Volcano plots, fragment size histograms, and PCA biplots
+- MultiQC summary for preprocessing
+- Export BigWig, peak lists, and annotated CSVs for publication and GEO
+
+This comprehensive analysis suite transforms raw ATAC-seq reads into interpretable regulatory maps and facilitates biological discovery.

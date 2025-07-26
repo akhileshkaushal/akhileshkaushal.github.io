@@ -1,0 +1,316 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preprocessing and Quality Control &mdash; ATAC-seq Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/atacseq/preprocessqc.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Pipeline Structure and Execution" href="structure.html" />
+    <link rel="prev" title="Installation and Setup" href="install.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ATAC-seq Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">ATAC-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#detailed-workflow-overview">Detailed Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#biological-applications">Biological Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#comparison-with-related-chromatin-accessibility-assays">Comparison with Related Chromatin Accessibility Assays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-configurations">Supported Configurations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#configuration-file">Configuration File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#execution">Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#reproducibility-tips">Reproducibility Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Preprocessing and Quality Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adapter-and-quality-trimming">2. Adapter and Quality Trimming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alignment-to-genome">3. Alignment to Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tn5-shift-correction">4. Tn5 Shift Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remove-duplicates-and-mitochondrial-reads">5. Remove Duplicates and Mitochondrial Reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#peak-calling">6. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generate-signal-tracks">7. Generate Signal Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-requirements">Input Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Pipeline Structure and Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#containerization">Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#directory-layout">Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#logging-and-runtime">Logging and Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#execution-tips">Execution Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basicadvanalysis.html">Analysis: Basic and Advanced ATAC-seq Steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basicadvanalysis.html#basic-analysis-steps">Basic Analysis Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#differential-accessibility-analysis">1. Differential Accessibility Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#principal-component-analysis-pca">2. Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#clustering-and-heatmaps">3. Clustering and Heatmaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#annotation-of-peaks">4. Annotation of Peaks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="basicadvanalysis.html#advanced-analysis-and-quality-metrics">Advanced Analysis and Quality Metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#tss-enrichment-score">1. TSS Enrichment Score</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#frip-score-fraction-of-reads-in-peaks">2. FRiP Score (Fraction of Reads in Peaks)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#reproducibility-across-replicates">3. Reproducibility Across Replicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#transcription-factor-footprinting-optional">4. Transcription Factor Footprinting (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#motif-enrichment-analysis">5. Motif Enrichment Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#track-visualization">6. Track Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#multi-omics-integration">7. Multi-Omics Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#reporting-and-export">8. Reporting and Export</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#pipeline-summary">Pipeline Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#results-and-interpretation">Results and Interpretation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#global-chromatin-accessibility-changes">1. Global Chromatin Accessibility Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#peak-annotation">2. Peak Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#integration-with-histone-modifications">3. Integration with Histone Modifications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#transcription-factor-binding-analysis">4. Transcription Factor Binding Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#methylation-integration">5. Methylation Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#regulatory-modules-and-pathways">6. Regulatory Modules and Pathways</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#multi-omics-visualization">7. Multi-Omics Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#key-publications">Key Publications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#software-and-tools">Software and Tools</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ATAC-seq Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Preprocessing and Quality Control</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/preprocessqc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation and Setup" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="structure.html" class="btn btn-neutral float-right" title="Pipeline Structure and Execution" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="preprocessing-and-quality-control">
+<span id="preprocessing"></span><h1>Preprocessing and Quality Control<a class="headerlink" href="#preprocessing-and-quality-control" title="Link to this heading"></a></h1>
+<p>This section outlines the complete preprocessing workflow for ATAC-seq data, including quality control, trimming, alignment, Tn5 correction, and generation of signal tracks. All steps are modular and can be executed independently or as part of the automated pipeline.</p>
+<section id="quality-control">
+<h2>1. Quality Control<a class="headerlink" href="#quality-control" title="Link to this heading"></a></h2>
+<p>Run FastQC on raw FASTQ files to evaluate sequence quality:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>results/qc/fastqc
+fastqc<span class="w"> </span>raw_data/*.fastq.gz<span class="w"> </span>-o<span class="w"> </span>results/qc/fastqc
+</pre></div>
+</div>
+<p>Aggregate reports using MultiQC:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>multiqc<span class="w"> </span>results/qc/fastqc<span class="w"> </span>-o<span class="w"> </span>results/qc/multiqc
+</pre></div>
+</div>
+</section>
+<section id="adapter-and-quality-trimming">
+<h2>2. Adapter and Quality Trimming<a class="headerlink" href="#adapter-and-quality-trimming" title="Link to this heading"></a></h2>
+<p>Use <cite>Trim Galore</cite> or <cite>fastp</cite> to remove adapter contamination and low-quality bases. For paired-end reads:</p>
+<p><strong>Using fastp</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fastp<span class="w"> </span>-i<span class="w"> </span>raw_data/sample_R1.fastq.gz<span class="w"> </span>-I<span class="w"> </span>raw_data/sample_R2.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>-o<span class="w"> </span>results/trimmed/sample_R1.trimmed.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>-O<span class="w"> </span>results/trimmed/sample_R2.trimmed.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--length_required<span class="w"> </span><span class="m">35</span><span class="w"> </span>--detect_adapter_for_pe<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--html<span class="w"> </span>results/qc/sample_fastp.html<span class="w"> </span>--json<span class="w"> </span>results/qc/sample_fastp.json
+</pre></div>
+</div>
+</section>
+<section id="alignment-to-genome">
+<h2>3. Alignment to Genome<a class="headerlink" href="#alignment-to-genome" title="Link to this heading"></a></h2>
+<p>Use <cite>Bowtie2</cite> for alignment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bowtie2<span class="w"> </span>-X2000<span class="w"> </span>--very-sensitive<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-x<span class="w"> </span>genome/hg38<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-1<span class="w"> </span>results/trimmed/sample_R1.trimmed.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-2<span class="w"> </span>results/trimmed/sample_R2.trimmed.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-S<span class="w"> </span>results/aligned/sample.sam
+</pre></div>
+</div>
+<p>Convert and sort:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>samtools<span class="w"> </span>view<span class="w"> </span>-bS<span class="w"> </span>results/aligned/sample.sam<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+samtools<span class="w"> </span>sort<span class="w"> </span>-o<span class="w"> </span>results/aligned/sample.sorted.bam
+</pre></div>
+</div>
+<p>Index and filter by mapping quality:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>samtools<span class="w"> </span>index<span class="w"> </span>results/aligned/sample.sorted.bam
+samtools<span class="w"> </span>view<span class="w"> </span>-b<span class="w"> </span>-q<span class="w"> </span><span class="m">30</span><span class="w"> </span>results/aligned/sample.sorted.bam<span class="w"> </span>&gt;<span class="w"> </span>results/aligned/sample.filtered.bam
+</pre></div>
+</div>
+</section>
+<section id="tn5-shift-correction">
+<h2>4. Tn5 Shift Correction<a class="headerlink" href="#tn5-shift-correction" title="Link to this heading"></a></h2>
+<p>Correct for Tn5 insertion using <cite>alignmentSieve</cite> from deepTools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alignmentSieve<span class="w"> </span>-b<span class="w"> </span>results/aligned/sample.filtered.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">               </span>-o<span class="w"> </span>results/aligned/sample.shifted.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">               </span>--ATACshift<span class="w"> </span>--smartLabels<span class="w"> </span>--numberOfProcessors<span class="w"> </span><span class="m">4</span>
+</pre></div>
+</div>
+</section>
+<section id="remove-duplicates-and-mitochondrial-reads">
+<h2>5. Remove Duplicates and Mitochondrial Reads<a class="headerlink" href="#remove-duplicates-and-mitochondrial-reads" title="Link to this heading"></a></h2>
+<p>Use Picard or samtools to mark/remove PCR duplicates:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>picard<span class="w"> </span>MarkDuplicates<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="nv">I</span><span class="o">=</span>results/aligned/sample.shifted.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="nv">O</span><span class="o">=</span>results/aligned/sample.dedup.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="nv">M</span><span class="o">=</span>results/qc/sample.dup_metrics.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="nv">REMOVE_DUPLICATES</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+<p>Filter out chrM reads:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>samtools<span class="w"> </span>idxstats<span class="w"> </span>results/aligned/sample.dedup.bam<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>chrM<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+xargs<span class="w"> </span>samtools<span class="w"> </span>view<span class="w"> </span>-b<span class="w"> </span>results/aligned/sample.dedup.bam<span class="w"> </span>&gt;<span class="w"> </span>results/aligned/sample.clean.bam
+
+samtools<span class="w"> </span>index<span class="w"> </span>results/aligned/sample.clean.bam
+</pre></div>
+</div>
+</section>
+<section id="peak-calling">
+<h2>6. Peak Calling<a class="headerlink" href="#peak-calling" title="Link to this heading"></a></h2>
+<p>Use MACS2 for peak detection (optimized for paired-end):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>macs2<span class="w"> </span>callpeak<span class="w"> </span>-f<span class="w"> </span>BAMPE<span class="w"> </span>-t<span class="w"> </span>results/aligned/sample.clean.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">               </span>-n<span class="w"> </span>sample<span class="w"> </span>--keep-dup<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+<span class="w">               </span>--nomodel<span class="w"> </span>--shift<span class="w"> </span>-100<span class="w"> </span>--extsize<span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="se">\</span>
+<span class="w">               </span>-g<span class="w"> </span>hs<span class="w"> </span>-B<span class="w"> </span>--outdir<span class="w"> </span>results/peaks
+</pre></div>
+</div>
+</section>
+<section id="generate-signal-tracks">
+<h2>7. Generate Signal Tracks<a class="headerlink" href="#generate-signal-tracks" title="Link to this heading"></a></h2>
+<p>Create normalized BigWig tracks using deepTools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bamCoverage<span class="w"> </span>-b<span class="w"> </span>results/aligned/sample.clean.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>-o<span class="w"> </span>results/bigwig/sample.bw<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--normalizeUsing<span class="w"> </span>RPGC<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--effectiveGenomeSize<span class="w"> </span><span class="m">2913022398</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--binSize<span class="w"> </span><span class="m">10</span><span class="w"> </span>--extendReads<span class="w"> </span><span class="m">200</span><span class="w"> </span>--ignoreDuplicates
+</pre></div>
+</div>
+<p>Visualize with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>plotProfile<span class="w"> </span>-m<span class="w"> </span>matrix.gz<span class="w"> </span>-out<span class="w"> </span>results/figures/aggregate_profile.pdf
+plotHeatmap<span class="w"> </span>-m<span class="w"> </span>matrix.gz<span class="w"> </span>-out<span class="w"> </span>results/figures/heatmap.pdf
+</pre></div>
+</div>
+</section>
+<section id="input-requirements">
+<h2>Input Requirements<a class="headerlink" href="#input-requirements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Raw FASTQ files (single- or paired-end)</p></li>
+<li><p>Bowtie2 index of reference genome (e.g., <cite>genome/hg38</cite>)</p></li>
+<li><p>Sample metadata file (CSV or TSV format)</p></li>
+<li><p>ENCODE blacklist file (optional)</p></li>
+<li><p>Adapter sequences (e.g., Nextera, TruSeq)</p></li>
+</ul>
+</section>
+<section id="output-files">
+<h2>Output Files<a class="headerlink" href="#output-files" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Aligned BAM files</strong>: sorted, filtered, deduplicated, and Tn5-corrected</p></li>
+<li><p><strong>Peak files</strong>: narrowPeak, summits, and bed format from MACS2</p></li>
+<li><p><strong>Signal tracks</strong>: BigWig files normalized to RPGC or CPM</p></li>
+<li><p><strong>QC reports</strong>: FastQC/MultiQC HTML, duplication metrics, insert size plots</p></li>
+<li><p><strong>Plots</strong>: Fragment size histograms, heatmaps, signal profiles</p></li>
+</ul>
+<p>These outputs provide a robust starting point for downstream analyses such as differential accessibility and motif enrichment.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation and Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="structure.html" class="btn btn-neutral float-right" title="Pipeline Structure and Execution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

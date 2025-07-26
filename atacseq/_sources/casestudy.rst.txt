@@ -1,0 +1,102 @@
+.. _dba_case_study:
+
+Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)
+=====================================================================
+
+This case study demonstrates how the ATAC-seq pipeline was applied to uncover regulatory disruptions in hematopoietic stem and progenitor cells (HSPCs) from patients with Diamond-Blackfan Anemia (DBA), a rare congenital bone marrow failure syndrome.
+
+Overview
+--------
+
+**Study Design**:
+
+- **Samples**: 6 DBA patients and 6 healthy controls
+- **Cell type**: CD34+ enriched HSPCs isolated from peripheral blood
+- **Platform**: Illumina NovaSeq 6000, 50M paired-end reads/sample
+- **Reference Genome**: hg38
+- **Additional Omics**: Matched H3K27ac ChIP-seq and DNA methylation (EPIC array)
+
+Pipeline Summary
+-----------------
+
+The raw FASTQ files were processed using the full ATAC-seq pipeline:
+
+- Adapter trimming: `fastp`
+- Alignment: `bowtie2` with chrM filtering
+- Tn5 shift correction: `alignmentSieve`
+- Deduplication: `Picard`
+- Peak calling: `MACS2` with `--nomodel --shift -100 --extsize 200`
+- Differential analysis: `DESeq2` on consensus peaks
+- Signal tracks: `bamCoverage` with RPGC normalization
+- Annotation: `ChIPseeker`, `annotatr`, and `LOLA`
+
+Results and Interpretation
+---------------------------
+
+1. Global Chromatin Accessibility Changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- PCA and hierarchical clustering revealed strong separation between DBA and control samples.
+- Over 2,100 differentially accessible regions (DARs) were identified (FDR < 0.05).
+- Volcano plot showed enrichment of up-accessible peaks in promoters and down-accessible peaks in enhancers.
+
+2. Peak Annotation
+~~~~~~~~~~~~~~~~~~~
+
+- 42% of DARs mapped to promoters (±2 kb from TSS)
+- 31% overlapped distal enhancers (as defined by H3K27ac marks)
+- Genes with promoter DARs included: *GATA1*, *RPS19*, *FUBP1*, *SPI1*
+
+3. Integration with Histone Modifications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- DARs were intersected with public and matched H3K27ac ChIP-seq data (ENCODE and study-derived).
+- ~60% of down-accessible enhancers in DBA overlapped with H3K27ac-depleted regions.
+- Up-accessible sites in DBA were often devoid of H3K27me3, suggesting loss of Polycomb repression.
+
+4. Transcription Factor Binding Analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- HOMER motif enrichment on DARs revealed:
+  - **Enriched in DBA up-DARs**: SPI1 (PU.1), GFI1, IRF8
+  - **Enriched in DBA down-DARs**: GATA1, KLF1, TAL1
+- TOBIAS footprinting confirmed decreased occupancy of GATA1 at promoter-proximal sites.
+
+5. Methylation Integration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- DARs were intersected with differentially methylated regions (DMRs) from EPIC array analysis:
+  - 340 DARs overlapped with hypomethylated regions (mostly in up-accessible promoters)
+  - 412 DARs overlapped with hypermethylated regions (primarily down-accessible enhancers)
+- These results suggest epigenetic silencing of regulatory elements in DBA.
+
+6. Regulatory Modules and Pathways
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Enrichment analysis (GO/KEGG):
+  - Up-accessible: inflammatory response, myeloid differentiation
+  - Down-accessible: erythrocyte development, ribosome biogenesis
+- LOLA and GREAT identified enrichment of DARs in hematopoietic enhancer clusters and MYB/SPI1-regulated loci.
+
+7. Multi-Omics Visualization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- UCSC Genome Browser snapshots showed coordinated changes:
+  - *GATA1* promoter: decreased ATAC signal, loss of H3K27ac, increased methylation
+  - *IRF8* enhancer: increased ATAC signal, gain of H3K27ac, demethylated CpG island
+
+.. figure:: _static/images/dba_case_gata1_irf8_snapshot.png
+   :figwidth: 90%
+   :align: center
+
+   *Source: Voit, Richard A. et al.,*  
+   *Regulated GATA1 expression as a universal gene therapy for Diamond-Blackfan anemia.*
+   *Cell stem cell vol. 32,1 (2025): 38-52.e6. doi:10.1016/j.stem.2024.10.012*
+
+
+Conclusion
+----------
+
+The integrative ATAC-seq analysis revealed widespread remodeling of cis-regulatory elements in DBA. Specifically, the data highlighted repression of erythroid transcriptional programs through enhancer and promoter silencing, and compensatory activation of immune-related regulators. These results support a model where DBA pathogenesis involves epigenetic interference in lineage-specific transcription factor networks.
+
+This case illustrates the value of multi-layered ATAC-seq analysis—including motif, histone mark, and methylation overlays—for deciphering complex hematopoietic disorders.

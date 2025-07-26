@@ -1,0 +1,20 @@
+.. ATAC-seq Pipeline Documentation
+
+ATAC-seq Analysis Pipeline
+===========================
+
+This documentation provides a complete guide to processing and analyzing ATAC-seq data using a modular and reproducible pipeline. The pipeline covers raw data preprocessing, quality control, alignment, peak calling, differential accessibility, annotation, and multi-omics integration.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   intro
+   install
+   preprocessqc
+   structure
+   basicadvanalysis
+   casestudy
+   references
+   
+

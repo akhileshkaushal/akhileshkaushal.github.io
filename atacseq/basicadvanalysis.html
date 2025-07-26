@@ -1,0 +1,343 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analysis: Basic and Advanced ATAC-seq Steps &mdash; ATAC-seq Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/atacseq/basicadvanalysis.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)" href="casestudy.html" />
+    <link rel="prev" title="Pipeline Structure and Execution" href="structure.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ATAC-seq Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">ATAC-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#detailed-workflow-overview">Detailed Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#biological-applications">Biological Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#comparison-with-related-chromatin-accessibility-assays">Comparison with Related Chromatin Accessibility Assays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-configurations">Supported Configurations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#configuration-file">Configuration File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#execution">Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#reproducibility-tips">Reproducibility Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessqc.html">Preprocessing and Quality Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#adapter-and-quality-trimming">2. Adapter and Quality Trimming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#alignment-to-genome">3. Alignment to Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#tn5-shift-correction">4. Tn5 Shift Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#remove-duplicates-and-mitochondrial-reads">5. Remove Duplicates and Mitochondrial Reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#peak-calling">6. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#generate-signal-tracks">7. Generate Signal Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#output-files">Output Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Pipeline Structure and Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#containerization">Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#directory-layout">Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#logging-and-runtime">Logging and Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#execution-tips">Execution Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis: Basic and Advanced ATAC-seq Steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-analysis-steps">Basic Analysis Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#differential-accessibility-analysis">1. Differential Accessibility Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#principal-component-analysis-pca">2. Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clustering-and-heatmaps">3. Clustering and Heatmaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#annotation-of-peaks">4. Annotation of Peaks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-analysis-and-quality-metrics">Advanced Analysis and Quality Metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tss-enrichment-score">1. TSS Enrichment Score</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frip-score-fraction-of-reads-in-peaks">2. FRiP Score (Fraction of Reads in Peaks)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reproducibility-across-replicates">3. Reproducibility Across Replicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transcription-factor-footprinting-optional">4. Transcription Factor Footprinting (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#motif-enrichment-analysis">5. Motif Enrichment Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#track-visualization">6. Track Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-omics-integration">7. Multi-Omics Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reporting-and-export">8. Reporting and Export</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#pipeline-summary">Pipeline Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#results-and-interpretation">Results and Interpretation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#global-chromatin-accessibility-changes">1. Global Chromatin Accessibility Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#peak-annotation">2. Peak Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#integration-with-histone-modifications">3. Integration with Histone Modifications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#transcription-factor-binding-analysis">4. Transcription Factor Binding Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#methylation-integration">5. Methylation Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#regulatory-modules-and-pathways">6. Regulatory Modules and Pathways</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#multi-omics-visualization">7. Multi-Omics Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#key-publications">Key Publications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#software-and-tools">Software and Tools</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ATAC-seq Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Analysis: Basic and Advanced ATAC-seq Steps</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/basicadvanalysis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="structure.html" class="btn btn-neutral float-left" title="Pipeline Structure and Execution" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="casestudy.html" class="btn btn-neutral float-right" title="Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="analysis-basic-and-advanced-atac-seq-steps">
+<span id="analysis-steps"></span><h1>Analysis: Basic and Advanced ATAC-seq Steps<a class="headerlink" href="#analysis-basic-and-advanced-atac-seq-steps" title="Link to this heading"></a></h1>
+<p>This section describes both the core and advanced downstream analyses for ATAC-seq data after preprocessing. It includes differential accessibility, peak annotation, motif analysis, footprinting, reproducibility, and multi-omics integration.</p>
+<section id="basic-analysis-steps">
+<h2>Basic Analysis Steps<a class="headerlink" href="#basic-analysis-steps" title="Link to this heading"></a></h2>
+<section id="differential-accessibility-analysis">
+<h3>1. Differential Accessibility Analysis<a class="headerlink" href="#differential-accessibility-analysis" title="Link to this heading"></a></h3>
+<p>Quantify read counts over consensus peaks using <cite>featureCounts</cite> or <cite>bedtools multicov</cite>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bedtools<span class="w"> </span>multicov<span class="w"> </span>-bams<span class="w"> </span>sample1.bam<span class="w"> </span>sample2.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-bed<span class="w"> </span>merged_consensus_peaks.bed<span class="w"> </span>&gt;<span class="w"> </span>counts.txt
+</pre></div>
+</div>
+<p>Alternatively, use <cite>featureCounts</cite>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>featureCounts<span class="w"> </span>-a<span class="w"> </span>merged_consensus_peaks.bed<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>counts.txt<span class="w"> </span>-F<span class="w"> </span>SAF<span class="w"> </span>-T<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span>-B<span class="w"> </span>-C<span class="w"> </span>-M<span class="w"> </span>sample1.bam<span class="w"> </span>sample2.bam
+</pre></div>
+</div>
+<p>Perform normalization and statistical testing using R packages such as <cite>DESeq2</cite>:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">DESeq2</span><span class="p">)</span>
+<span class="n">count_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.table</span><span class="p">(</span><span class="s">&quot;counts.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="o">=</span><span class="m">1</span><span class="p">)</span>
+<span class="n">col_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;metadata.csv&quot;</span><span class="p">)</span>
+<span class="n">dds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">DESeqDataSetFromMatrix</span><span class="p">(</span><span class="n">count_data</span><span class="p">,</span><span class="w"> </span><span class="n">col_data</span><span class="p">,</span><span class="w"> </span><span class="n">design</span><span class="o">=~</span><span class="w"> </span><span class="n">condition</span><span class="p">)</span>
+<span class="n">dds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">DESeq</span><span class="p">(</span><span class="n">dds</span><span class="p">)</span>
+<span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">results</span><span class="p">(</span><span class="n">dds</span><span class="p">)</span>
+<span class="nf">write.csv</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="o">=</span><span class="s">&quot;differential_results.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="principal-component-analysis-pca">
+<h3>2. Principal Component Analysis (PCA)<a class="headerlink" href="#principal-component-analysis-pca" title="Link to this heading"></a></h3>
+<p>Visualize sample clustering using PCA based on transformed read counts:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">vsd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">vst</span><span class="p">(</span><span class="n">dds</span><span class="p">,</span><span class="w"> </span><span class="n">blind</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="nf">plotPCA</span><span class="p">(</span><span class="n">vsd</span><span class="p">,</span><span class="w"> </span><span class="n">intgroup</span><span class="o">=</span><span class="s">&quot;condition&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="clustering-and-heatmaps">
+<h3>3. Clustering and Heatmaps<a class="headerlink" href="#clustering-and-heatmaps" title="Link to this heading"></a></h3>
+<p>Generate heatmaps of top variable peaks or significant differential peaks:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">pheatmap</span><span class="p">)</span>
+<span class="n">select</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="nf">rowVars</span><span class="p">(</span><span class="nf">assay</span><span class="p">(</span><span class="n">vsd</span><span class="p">)),</span><span class="w"> </span><span class="n">decreasing</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="m">500</span><span class="p">]</span>
+<span class="nf">pheatmap</span><span class="p">(</span><span class="nf">assay</span><span class="p">(</span><span class="n">vsd</span><span class="p">)[</span><span class="n">select</span><span class="p">,],</span><span class="w"> </span><span class="n">cluster_rows</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">cluster_cols</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="annotation-of-peaks">
+<h3>4. Annotation of Peaks<a class="headerlink" href="#annotation-of-peaks" title="Link to this heading"></a></h3>
+<p>Assign peaks to genomic features using <cite>ChIPseeker</cite> or <cite>HOMER</cite>:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">ChIPseeker</span><span class="p">)</span>
+<span class="n">peak</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">readPeakFile</span><span class="p">(</span><span class="s">&quot;sample_peaks.narrowPeak&quot;</span><span class="p">)</span>
+<span class="n">txdb</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">TxDb.Hsapiens.UCSC.hg38.knownGene</span>
+<span class="n">peakAnno</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">annotatePeak</span><span class="p">(</span><span class="n">peak</span><span class="p">,</span><span class="w"> </span><span class="n">tssRegion</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">-2000</span><span class="p">,</span><span class="w"> </span><span class="m">2000</span><span class="p">),</span><span class="w"> </span><span class="n">TxDb</span><span class="o">=</span><span class="n">txdb</span><span class="p">,</span><span class="w"> </span><span class="n">annoDb</span><span class="o">=</span><span class="s">&quot;org.Hs.eg.db&quot;</span><span class="p">)</span>
+<span class="nf">plotAnnoPie</span><span class="p">(</span><span class="n">peakAnno</span><span class="p">)</span>
+<span class="nf">write.csv</span><span class="p">(</span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">peakAnno</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;annotated_peaks.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-analysis-and-quality-metrics">
+<h2>Advanced Analysis and Quality Metrics<a class="headerlink" href="#advanced-analysis-and-quality-metrics" title="Link to this heading"></a></h2>
+<section id="tss-enrichment-score">
+<h3>1. TSS Enrichment Score<a class="headerlink" href="#tss-enrichment-score" title="Link to this heading"></a></h3>
+<p>Use deepTools to quantify TSS signal enrichment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>computeMatrix<span class="w"> </span>reference-point<span class="w"> </span>-S<span class="w"> </span>sample.bw<span class="w"> </span>-R<span class="w"> </span>tss.bed<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-a<span class="w"> </span><span class="m">2000</span><span class="w"> </span>-b<span class="w"> </span><span class="m">2000</span><span class="w"> </span>-out<span class="w"> </span>matrix.gz<span class="w"> </span>--referencePoint<span class="w"> </span>TSS
+
+plotProfile<span class="w"> </span>-m<span class="w"> </span>matrix.gz<span class="w"> </span>-out<span class="w"> </span>TSS_enrichment_profile.pdf
+</pre></div>
+</div>
+<p>TSS enrichment &gt; 6 is acceptable, &gt; 10 is excellent.</p>
+</section>
+<section id="frip-score-fraction-of-reads-in-peaks">
+<h3>2. FRiP Score (Fraction of Reads in Peaks)<a class="headerlink" href="#frip-score-fraction-of-reads-in-peaks" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">total_reads</span><span class="o">=</span><span class="k">$(</span>samtools<span class="w"> </span>view<span class="w"> </span>-c<span class="w"> </span>aligned.bam<span class="k">)</span>
+<span class="nv">reads_in_peaks</span><span class="o">=</span><span class="k">$(</span>bedtools<span class="w"> </span>intersect<span class="w"> </span>-a<span class="w"> </span>aligned.bam<span class="w"> </span>-b<span class="w"> </span>peaks.narrowPeak<span class="w"> </span><span class="p">|</span><span class="w"> </span>samtools<span class="w"> </span>view<span class="w"> </span>-c<span class="k">)</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;scale=2; </span><span class="nv">$reads_in_peaks</span><span class="s2"> / </span><span class="nv">$total_reads</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc
+</pre></div>
+</div>
+<p>FRiP &gt; 0.2 indicates good enrichment in bulk ATAC-seq.</p>
+</section>
+<section id="reproducibility-across-replicates">
+<h3>3. Reproducibility Across Replicates<a class="headerlink" href="#reproducibility-across-replicates" title="Link to this heading"></a></h3>
+<p>Use IDR to assess peak consistency:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>idr<span class="w"> </span>--samples<span class="w"> </span>rep1_peaks.narrowPeak<span class="w"> </span>rep2_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output-file<span class="w"> </span>results/idr/idr_results.txt
+</pre></div>
+</div>
+<p>Visualize with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>multiBamSummary<span class="w"> </span>bins<span class="w"> </span>-b<span class="w"> </span>rep1.bam<span class="w"> </span>rep2.bam<span class="w"> </span>-out<span class="w"> </span>readCounts.npz
+plotCorrelation<span class="w"> </span>-in<span class="w"> </span>readCounts.npz<span class="w"> </span>--corMethod<span class="w"> </span>spearman<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--whatToPlot<span class="w"> </span>heatmap<span class="w"> </span>-o<span class="w"> </span>correlation_heatmap.pdf
+</pre></div>
+</div>
+</section>
+<section id="transcription-factor-footprinting-optional">
+<h3>4. Transcription Factor Footprinting (Optional)<a class="headerlink" href="#transcription-factor-footprinting-optional" title="Link to this heading"></a></h3>
+<p>Estimate TF binding sites with TOBIAS:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>TOBIAS<span class="w"> </span>ATACorrect<span class="w"> </span>--bam<span class="w"> </span>shifted.bam<span class="w"> </span>--genome<span class="w"> </span>genome.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--peaks<span class="w"> </span>peaks.bed<span class="w"> </span>-o<span class="w"> </span>corrected.bw
+
+TOBIAS<span class="w"> </span>FootprintScores<span class="w"> </span>--signal<span class="w"> </span>corrected.bw<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--regions<span class="w"> </span>peaks.bed<span class="w"> </span>-o<span class="w"> </span>footprint.bw
+</pre></div>
+</div>
+</section>
+<section id="motif-enrichment-analysis">
+<h3>5. Motif Enrichment Analysis<a class="headerlink" href="#motif-enrichment-analysis" title="Link to this heading"></a></h3>
+<p>Identify enriched sequence motifs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>findMotifsGenome.pl<span class="w"> </span>sample_peaks.narrowPeak<span class="w"> </span>hg38<span class="w"> </span>results/motifs/<span class="w"> </span>-size<span class="w"> </span>given
+</pre></div>
+</div>
+</section>
+<section id="track-visualization">
+<h3>6. Track Visualization<a class="headerlink" href="#track-visualization" title="Link to this heading"></a></h3>
+<p>Load <cite>.bigWig</cite> and <cite>.bed</cite> files in:</p>
+<ul class="simple">
+<li><p>IGV (<a class="reference external" href="https://software.broadinstitute.org/software/igv">https://software.broadinstitute.org/software/igv</a>)</p></li>
+<li><p>UCSC Genome Browser (custom tracks)</p></li>
+</ul>
+<p>Example configuration for IGV batch script:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>new
+genome hg38
+load sample1.bw
+load sample2_peaks.bed
+snapshotDirectory snapshots/
+snapshot
+</pre></div>
+</div>
+</section>
+<section id="multi-omics-integration">
+<h3>7. Multi-Omics Integration<a class="headerlink" href="#multi-omics-integration" title="Link to this heading"></a></h3>
+<p>Combine ATAC-seq with matched RNA-seq or ChIP-seq:</p>
+<ul class="simple">
+<li><p>Correlate promoter accessibility with gene expression</p></li>
+<li><p>Overlay ATAC peaks with histone marks (e.g., H3K27ac)</p></li>
+<li><p>Integrate with chromatin states (e.g., ChromHMM)</p></li>
+</ul>
+</section>
+<section id="reporting-and-export">
+<h3>8. Reporting and Export<a class="headerlink" href="#reporting-and-export" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Volcano plots, fragment size histograms, and PCA biplots</p></li>
+<li><p>MultiQC summary for preprocessing</p></li>
+<li><p>Export BigWig, peak lists, and annotated CSVs for publication and GEO</p></li>
+</ul>
+<p>This comprehensive analysis suite transforms raw ATAC-seq reads into interpretable regulatory maps and facilitates biological discovery.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="structure.html" class="btn btn-neutral float-left" title="Pipeline Structure and Execution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="casestudy.html" class="btn btn-neutral float-right" title="Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

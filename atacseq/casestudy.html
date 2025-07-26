@@ -1,0 +1,297 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA) &mdash; ATAC-seq Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/atacseq/casestudy.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References" href="references.html" />
+    <link rel="prev" title="Analysis: Basic and Advanced ATAC-seq Steps" href="basicadvanalysis.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ATAC-seq Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">ATAC-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#detailed-workflow-overview">Detailed Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#biological-applications">Biological Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#comparison-with-related-chromatin-accessibility-assays">Comparison with Related Chromatin Accessibility Assays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-configurations">Supported Configurations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#configuration-file">Configuration File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#execution">Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#reproducibility-tips">Reproducibility Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessqc.html">Preprocessing and Quality Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#adapter-and-quality-trimming">2. Adapter and Quality Trimming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#alignment-to-genome">3. Alignment to Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#tn5-shift-correction">4. Tn5 Shift Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#remove-duplicates-and-mitochondrial-reads">5. Remove Duplicates and Mitochondrial Reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#peak-calling">6. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#generate-signal-tracks">7. Generate Signal Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#output-files">Output Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Pipeline Structure and Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#containerization">Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#directory-layout">Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#logging-and-runtime">Logging and Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html#execution-tips">Execution Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basicadvanalysis.html">Analysis: Basic and Advanced ATAC-seq Steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basicadvanalysis.html#basic-analysis-steps">Basic Analysis Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#differential-accessibility-analysis">1. Differential Accessibility Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#principal-component-analysis-pca">2. Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#clustering-and-heatmaps">3. Clustering and Heatmaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#annotation-of-peaks">4. Annotation of Peaks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="basicadvanalysis.html#advanced-analysis-and-quality-metrics">Advanced Analysis and Quality Metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#tss-enrichment-score">1. TSS Enrichment Score</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#frip-score-fraction-of-reads-in-peaks">2. FRiP Score (Fraction of Reads in Peaks)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#reproducibility-across-replicates">3. Reproducibility Across Replicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#transcription-factor-footprinting-optional">4. Transcription Factor Footprinting (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#motif-enrichment-analysis">5. Motif Enrichment Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#track-visualization">6. Track Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#multi-omics-integration">7. Multi-Omics Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#reporting-and-export">8. Reporting and Export</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-summary">Pipeline Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#results-and-interpretation">Results and Interpretation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#global-chromatin-accessibility-changes">1. Global Chromatin Accessibility Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#peak-annotation">2. Peak Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-with-histone-modifications">3. Integration with Histone Modifications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transcription-factor-binding-analysis">4. Transcription Factor Binding Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#methylation-integration">5. Methylation Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regulatory-modules-and-pathways">6. Regulatory Modules and Pathways</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-omics-visualization">7. Multi-Omics Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#key-publications">Key Publications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#software-and-tools">Software and Tools</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ATAC-seq Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/casestudy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="basicadvanalysis.html" class="btn btn-neutral float-left" title="Analysis: Basic and Advanced ATAC-seq Steps" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="case-study-chromatin-accessibility-in-diamond-blackfan-anemia-dba">
+<span id="dba-case-study"></span><h1>Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)<a class="headerlink" href="#case-study-chromatin-accessibility-in-diamond-blackfan-anemia-dba" title="Link to this heading"></a></h1>
+<p>This case study demonstrates how the ATAC-seq pipeline was applied to uncover regulatory disruptions in hematopoietic stem and progenitor cells (HSPCs) from patients with Diamond-Blackfan Anemia (DBA), a rare congenital bone marrow failure syndrome.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p><strong>Study Design</strong>:</p>
+<ul class="simple">
+<li><p><strong>Samples</strong>: 6 DBA patients and 6 healthy controls</p></li>
+<li><p><strong>Cell type</strong>: CD34+ enriched HSPCs isolated from peripheral blood</p></li>
+<li><p><strong>Platform</strong>: Illumina NovaSeq 6000, 50M paired-end reads/sample</p></li>
+<li><p><strong>Reference Genome</strong>: hg38</p></li>
+<li><p><strong>Additional Omics</strong>: Matched H3K27ac ChIP-seq and DNA methylation (EPIC array)</p></li>
+</ul>
+</section>
+<section id="pipeline-summary">
+<h2>Pipeline Summary<a class="headerlink" href="#pipeline-summary" title="Link to this heading"></a></h2>
+<p>The raw FASTQ files were processed using the full ATAC-seq pipeline:</p>
+<ul class="simple">
+<li><p>Adapter trimming: <cite>fastp</cite></p></li>
+<li><p>Alignment: <cite>bowtie2</cite> with chrM filtering</p></li>
+<li><p>Tn5 shift correction: <cite>alignmentSieve</cite></p></li>
+<li><p>Deduplication: <cite>Picard</cite></p></li>
+<li><p>Peak calling: <cite>MACS2</cite> with <cite>–nomodel –shift -100 –extsize 200</cite></p></li>
+<li><p>Differential analysis: <cite>DESeq2</cite> on consensus peaks</p></li>
+<li><p>Signal tracks: <cite>bamCoverage</cite> with RPGC normalization</p></li>
+<li><p>Annotation: <cite>ChIPseeker</cite>, <cite>annotatr</cite>, and <cite>LOLA</cite></p></li>
+</ul>
+</section>
+<section id="results-and-interpretation">
+<h2>Results and Interpretation<a class="headerlink" href="#results-and-interpretation" title="Link to this heading"></a></h2>
+<section id="global-chromatin-accessibility-changes">
+<h3>1. Global Chromatin Accessibility Changes<a class="headerlink" href="#global-chromatin-accessibility-changes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>PCA and hierarchical clustering revealed strong separation between DBA and control samples.</p></li>
+<li><p>Over 2,100 differentially accessible regions (DARs) were identified (FDR &lt; 0.05).</p></li>
+<li><p>Volcano plot showed enrichment of up-accessible peaks in promoters and down-accessible peaks in enhancers.</p></li>
+</ul>
+</section>
+<section id="peak-annotation">
+<h3>2. Peak Annotation<a class="headerlink" href="#peak-annotation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>42% of DARs mapped to promoters (±2 kb from TSS)</p></li>
+<li><p>31% overlapped distal enhancers (as defined by H3K27ac marks)</p></li>
+<li><p>Genes with promoter DARs included: <em>GATA1</em>, <em>RPS19</em>, <em>FUBP1</em>, <em>SPI1</em></p></li>
+</ul>
+</section>
+<section id="integration-with-histone-modifications">
+<h3>3. Integration with Histone Modifications<a class="headerlink" href="#integration-with-histone-modifications" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>DARs were intersected with public and matched H3K27ac ChIP-seq data (ENCODE and study-derived).</p></li>
+<li><p>~60% of down-accessible enhancers in DBA overlapped with H3K27ac-depleted regions.</p></li>
+<li><p>Up-accessible sites in DBA were often devoid of H3K27me3, suggesting loss of Polycomb repression.</p></li>
+</ul>
+</section>
+<section id="transcription-factor-binding-analysis">
+<h3>4. Transcription Factor Binding Analysis<a class="headerlink" href="#transcription-factor-binding-analysis" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>HOMER motif enrichment on DARs revealed:
+- <strong>Enriched in DBA up-DARs</strong>: SPI1 (PU.1), GFI1, IRF8
+- <strong>Enriched in DBA down-DARs</strong>: GATA1, KLF1, TAL1</p></li>
+<li><p>TOBIAS footprinting confirmed decreased occupancy of GATA1 at promoter-proximal sites.</p></li>
+</ul>
+</section>
+<section id="methylation-integration">
+<h3>5. Methylation Integration<a class="headerlink" href="#methylation-integration" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>DARs were intersected with differentially methylated regions (DMRs) from EPIC array analysis:
+- 340 DARs overlapped with hypomethylated regions (mostly in up-accessible promoters)
+- 412 DARs overlapped with hypermethylated regions (primarily down-accessible enhancers)</p></li>
+<li><p>These results suggest epigenetic silencing of regulatory elements in DBA.</p></li>
+</ul>
+</section>
+<section id="regulatory-modules-and-pathways">
+<h3>6. Regulatory Modules and Pathways<a class="headerlink" href="#regulatory-modules-and-pathways" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Enrichment analysis (GO/KEGG):
+- Up-accessible: inflammatory response, myeloid differentiation
+- Down-accessible: erythrocyte development, ribosome biogenesis</p></li>
+<li><p>LOLA and GREAT identified enrichment of DARs in hematopoietic enhancer clusters and MYB/SPI1-regulated loci.</p></li>
+</ul>
+</section>
+<section id="multi-omics-visualization">
+<h3>7. Multi-Omics Visualization<a class="headerlink" href="#multi-omics-visualization" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>UCSC Genome Browser snapshots showed coordinated changes:
+- <em>GATA1</em> promoter: decreased ATAC signal, loss of H3K27ac, increased methylation
+- <em>IRF8</em> enhancer: increased ATAC signal, gain of H3K27ac, demethylated CpG island</p></li>
+</ul>
+<figure class="align-center" id="id1" style="width: 90%">
+<img alt="_images/dba_case_gata1_irf8_snapshot.png" src="_images/dba_case_gata1_irf8_snapshot.png" />
+<figcaption>
+<p><span class="caption-text"><em>Source: Voit, Richard A. et al.,</em>
+<em>Regulated GATA1 expression as a universal gene therapy for Diamond-Blackfan anemia.</em>
+<em>Cell stem cell vol. 32,1 (2025): 38-52.e6. doi:10.1016/j.stem.2024.10.012</em></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
+<p>The integrative ATAC-seq analysis revealed widespread remodeling of cis-regulatory elements in DBA. Specifically, the data highlighted repression of erythroid transcriptional programs through enhancer and promoter silencing, and compensatory activation of immune-related regulators. These results support a model where DBA pathogenesis involves epigenetic interference in lineage-specific transcription factor networks.</p>
+<p>This case illustrates the value of multi-layered ATAC-seq analysis—including motif, histone mark, and methylation overlays—for deciphering complex hematopoietic disorders.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basicadvanalysis.html" class="btn btn-neutral float-left" title="Analysis: Basic and Advanced ATAC-seq Steps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

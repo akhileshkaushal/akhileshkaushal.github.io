@@ -1,0 +1,317 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline Structure and Execution &mdash; ATAC-seq Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/atacseq/structure.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Analysis: Basic and Advanced ATAC-seq Steps" href="basicadvanalysis.html" />
+    <link rel="prev" title="Preprocessing and Quality Control" href="preprocessqc.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ATAC-seq Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">ATAC-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#detailed-workflow-overview">Detailed Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#biological-applications">Biological Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#comparison-with-related-chromatin-accessibility-assays">Comparison with Related Chromatin Accessibility Assays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-configurations">Supported Configurations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#configuration-file">Configuration File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#execution">Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#reproducibility-tips">Reproducibility Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessqc.html">Preprocessing and Quality Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#adapter-and-quality-trimming">2. Adapter and Quality Trimming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#alignment-to-genome">3. Alignment to Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#tn5-shift-correction">4. Tn5 Shift Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#remove-duplicates-and-mitochondrial-reads">5. Remove Duplicates and Mitochondrial Reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#peak-calling">6. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#generate-signal-tracks">7. Generate Signal Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessqc.html#output-files">Output Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Structure and Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#containerization">Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#directory-layout">Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logging-and-runtime">Logging and Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#execution-tips">Execution Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basicadvanalysis.html">Analysis: Basic and Advanced ATAC-seq Steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basicadvanalysis.html#basic-analysis-steps">Basic Analysis Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#differential-accessibility-analysis">1. Differential Accessibility Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#principal-component-analysis-pca">2. Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#clustering-and-heatmaps">3. Clustering and Heatmaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#annotation-of-peaks">4. Annotation of Peaks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="basicadvanalysis.html#advanced-analysis-and-quality-metrics">Advanced Analysis and Quality Metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#tss-enrichment-score">1. TSS Enrichment Score</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#frip-score-fraction-of-reads-in-peaks">2. FRiP Score (Fraction of Reads in Peaks)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#reproducibility-across-replicates">3. Reproducibility Across Replicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#transcription-factor-footprinting-optional">4. Transcription Factor Footprinting (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#motif-enrichment-analysis">5. Motif Enrichment Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#track-visualization">6. Track Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#multi-omics-integration">7. Multi-Omics Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basicadvanalysis.html#reporting-and-export">8. Reporting and Export</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: Chromatin Accessibility in Diamond-Blackfan Anemia (DBA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#pipeline-summary">Pipeline Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#results-and-interpretation">Results and Interpretation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#global-chromatin-accessibility-changes">1. Global Chromatin Accessibility Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#peak-annotation">2. Peak Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#integration-with-histone-modifications">3. Integration with Histone Modifications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#transcription-factor-binding-analysis">4. Transcription Factor Binding Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#methylation-integration">5. Methylation Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#regulatory-modules-and-pathways">6. Regulatory Modules and Pathways</a></li>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html#multi-omics-visualization">7. Multi-Omics Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#key-publications">Key Publications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#software-and-tools">Software and Tools</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ATAC-seq Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pipeline Structure and Execution</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/structure.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="preprocessqc.html" class="btn btn-neutral float-left" title="Preprocessing and Quality Control" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="basicadvanalysis.html" class="btn btn-neutral float-right" title="Analysis: Basic and Advanced ATAC-seq Steps" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-structure-and-execution">
+<span id="pipeline-structure"></span><h1>Pipeline Structure and Execution<a class="headerlink" href="#pipeline-structure-and-execution" title="Link to this heading"></a></h1>
+<p>This section explains the structure of the ATAC-seq analysis pipeline, outlines how to execute it end-to-end, and describes the expected directory organization and container support for reproducible deployments.</p>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<p>The ATAC-seq pipeline can be executed using a wrapper shell script, Snakemake/Nextflow engine, or manually step-by-step. For most users, the wrapper script is the recommended method:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>run_atacseq_pipeline.sh<span class="w"> </span>--config<span class="w"> </span>config/atacseq_config.yaml
+</pre></div>
+</div>
+<p>This script performs the following sequential steps:</p>
+<ol class="arabic simple">
+<li><p>Pre-run checks and validation of the YAML config file</p></li>
+<li><p>FastQC and adapter trimming using <cite>fastp</cite> or <cite>Trim Galore</cite></p></li>
+<li><p>Alignment using <cite>Bowtie2</cite></p></li>
+<li><p>Sorting, indexing, filtering, and Tn5 shift correction</p></li>
+<li><p>Deduplication and chrM read removal</p></li>
+<li><p>Peak calling with <cite>MACS2</cite></p></li>
+<li><p>Signal track generation using <cite>deepTools</cite></p></li>
+<li><p>Fragment size distribution and insert size metrics</p></li>
+<li><p>MultiQC aggregation</p></li>
+<li><p>(Optional) Differential accessibility and annotation</p></li>
+</ol>
+<p>Example invocation using Nextflow:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>atacseq_pipeline.nf<span class="w"> </span>-c<span class="w"> </span>config/atacseq_config.yaml<span class="w"> </span>-with-singularity<span class="w"> </span>containers/atacseq_container.sif
+</pre></div>
+</div>
+</section>
+<section id="containerization">
+<h2>Containerization<a class="headerlink" href="#containerization" title="Link to this heading"></a></h2>
+<p>This pipeline supports reproducible containerized execution via:</p>
+<ul class="simple">
+<li><p><strong>Apptainer/Singularity</strong> (recommended for HPC)</p></li>
+<li><p><strong>Docker</strong> (for local development)</p></li>
+</ul>
+<p>The container image includes all required tools:</p>
+<ul class="simple">
+<li><p><cite>fastp</cite>, <cite>FastQC</cite>, <cite>MultiQC</cite></p></li>
+<li><p><cite>Bowtie2</cite>, <cite>SAMtools</cite>, <cite>Picard</cite></p></li>
+<li><p><cite>MACS2</cite>, <cite>deepTools</cite>, <cite>bedtools</cite>, <cite>R</cite> with <cite>DESeq2</cite>, <cite>ChIPseeker</cite></p></li>
+</ul>
+<p>Example container:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ghcr.io/akhileshkaushal/atacseq-pipeline:latest
+</pre></div>
+</div>
+<p>Running with Apptainer:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apptainer<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--bind<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/mnt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>containers/atacseq_container.sif<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>bash<span class="w"> </span>run_atacseq_pipeline.sh<span class="w"> </span>--config<span class="w"> </span>/mnt/config/atacseq_config.yaml
+</pre></div>
+</div>
+</section>
+<section id="directory-layout">
+<h2>Directory Layout<a class="headerlink" href="#directory-layout" title="Link to this heading"></a></h2>
+<p>It is important to maintain a consistent folder structure:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>atacseq_project/
+├── config/
+│   └── atacseq_config.yaml
+├── containers/
+│   └── atacseq_container.sif
+├── metadata/
+│   └── samples.csv
+├── raw_data/
+│   ├── sample1_R1.fastq.gz
+│   └── sample1_R2.fastq.gz
+├── scripts/
+│   └── custom_plots.R
+├── run_atacseq_pipeline.sh
+├── atacseq_pipeline.nf
+└── results/
+    ├── qc/
+    │   ├── fastqc/
+    │   ├── multiqc/
+    │   └── metrics/
+    ├── trimmed/
+    ├── aligned/
+    │   ├── filtered/
+    │   ├── shifted/
+    │   └── dedup/
+    ├── peaks/
+    ├── bigwig/
+    ├── differential/
+    ├── annotation/
+    └── figures/
+</pre></div>
+</div>
+</section>
+<section id="output-files">
+<h2>Output Files<a class="headerlink" href="#output-files" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>FASTQC reports</strong>: HTML and zip in <cite>results/qc/fastqc/</cite></p></li>
+<li><p><strong>Trimmed FASTQ</strong>: in <cite>results/trimmed/</cite></p></li>
+<li><p><strong>Aligned BAM</strong>: sorted, filtered, and Tn5-corrected in <cite>results/aligned/</cite></p></li>
+<li><p><strong>Peak files</strong>: <cite>narrowPeak</cite>, <cite>summits.bed</cite> in <cite>results/peaks/</cite></p></li>
+<li><p><strong>Signal tracks</strong>: bigWig files in <cite>results/bigwig/</cite></p></li>
+<li><p><strong>MultiQC</strong>: aggregated HTML in <cite>results/qc/multiqc/</cite></p></li>
+<li><p><strong>Metrics</strong>: duplication rates, insert size histograms in <cite>results/qc/metrics/</cite></p></li>
+<li><p><strong>Differential analysis</strong>: DESeq2 results in <cite>results/differential/</cite></p></li>
+<li><p><strong>Annotation files</strong>: peak-to-gene annotations in <cite>results/annotation/</cite></p></li>
+</ul>
+</section>
+<section id="logging-and-runtime">
+<h2>Logging and Runtime<a class="headerlink" href="#logging-and-runtime" title="Link to this heading"></a></h2>
+<p>Each step creates a <cite>.log</cite> file inside <cite>logs/</cite> (auto-generated) containing the full command, timestamps, and stdout/stderr. Recommended to run on Slurm or another job scheduler with job submission templates.</p>
+<p>Example log structure:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>logs/
+├── fastqc/sample1.log
+├── trimming/sample1.log
+├── alignment/sample1.log
+├── macs2/sample1.log
+└── multiqc/multiqc.log
+</pre></div>
+</div>
+</section>
+<section id="execution-tips">
+<h2>Execution Tips<a class="headerlink" href="#execution-tips" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Always verify config path and genome index location</p></li>
+<li><p>Use <cite>–dry-run</cite> or <cite>–resume</cite> for Snakemake or Nextflow respectively</p></li>
+<li><p>Parallelize by samples with <cite>snakemake -j 8</cite> or <cite>nextflow -with-trace</cite></p></li>
+<li><p>Review MultiQC and logs before proceeding to downstream steps</p></li>
+</ul>
+<p>This pipeline ensures traceable, reproducible, and modular ATAC-seq data analysis that can scale from local laptops to HPC clusters or cloud platforms.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="preprocessqc.html" class="btn btn-neutral float-left" title="Preprocessing and Quality Control" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="basicadvanalysis.html" class="btn btn-neutral float-right" title="Analysis: Basic and Advanced ATAC-seq Steps" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

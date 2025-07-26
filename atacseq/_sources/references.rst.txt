@@ -1,0 +1,49 @@
+.. _references:
+
+References
+==========
+
+Key Publications
+-----------------
+
+1. Buenrostro, J. D., et al. (2013). *Transposition of native chromatin for fast and sensitive epigenomic profiling of open chromatin, DNA-binding proteins and nucleosome position.* Nature Methods, 10(12), 1213–1218. https://doi.org/10.1038/nmeth.2688
+
+2. Corces, M. R., et al. (2017). *An improved ATAC-seq protocol reduces background and enables interrogation of frozen tissues.* Nature Methods, 14(10), 959–962. https://doi.org/10.1038/nmeth.4396
+
+3. Zhang, Y., et al. (2008). *Model-based analysis of ChIP-Seq (MACS).* Genome Biology, 9(9), R137. https://doi.org/10.1186/gb-2008-9-9-r137
+
+4. Heinz, S., et al. (2010). *Simple combinations of lineage-determining transcription factors prime cis-regulatory elements required for macrophage and B cell identities.* Molecular Cell, 38(4), 576–589. https://doi.org/10.1016/j.molcel.2010.05.004
+
+5. Ramírez, F., et al. (2016). *deepTools2: a next generation web server for deep-sequencing data analysis.* Nucleic Acids Research, 44(W1), W160–W165. https://doi.org/10.1093/nar/gkw257
+
+6. Yu, G., Wang, L.-G., & He, Q.-Y. (2015). *ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization.* Bioinformatics, 31(14), 2382–2383. https://doi.org/10.1093/bioinformatics/btv145
+
+7. Li, Q., Brown, J. B., Huang, H., & Bickel, P. J. (2011). *Measuring reproducibility of high-throughput experiments.* The Annals of Applied Statistics, 5(3), 1752–1779. https://doi.org/10.1214/11-AOAS466
+
+8. Meuleman, W., et al. (2020). *Index and biological spectrum of human DNase I hypersensitive sites.* Nature, 584(7820), 244–251. https://doi.org/10.1038/s41586-020-2559-3
+
+9. Schep, A. N., et al. (2015). *Structured nucleosome fingerprints enable high-resolution mapping of chromatin architecture within regulatory regions.* Genome Research, 25(11), 1757–1770. https://doi.org/10.1101/gr.192294.115
+
+10. Zentner, G. E., & Henikoff, S. (2013). *Regulatory architecture of the human genome.* Nature Reviews Genetics, 14(2), 71–84. https://doi.org/10.1038/nrg3367
+
+Software and Tools
+-------------------
+
+- **Bowtie2**: http://bowtie-bio.sourceforge.net/bowtie2
+- **MACS2**: https://github.com/macs3-project/MACS
+- **FastQC**: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+- **MultiQC**: https://multiqc.info/
+- **deepTools**: https://deeptools.readthedocs.io
+- **ChIPseeker**: https://bioconductor.org/packages/release/bioc/html/ChIPseeker.html
+- **TOBIAS**: https://github.com/loosolab/TOBIAS
+- **Picard Tools**: https://broadinstitute.github.io/picard/
+- **Samtools**: http://www.htslib.org
+- **BEDTools**: https://bedtools.readthedocs.io
+- **featureCounts**: http://bioinf.wehi.edu.au/featureCounts/
+- **GREAT**: http://great.stanford.edu
+- **LOLA**: https://databio.org/lola
+- **HOMER**: http://homer.ucsd.edu
+- **UCSC Genome Browser**: https://genome.ucsc.edu
+- **IGV**: https://software.broadinstitute.org/software/igv
+
+These references support the methods and best practices used throughout the ATAC-seq pipeline documentation.

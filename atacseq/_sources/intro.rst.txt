@@ -1,0 +1,136 @@
+.. _introduction:
+
+ATAC-seq Pipeline
+=================
+
+**Author**: Akhilesh Kaushal
+
+The Assay for Transposase-Accessible Chromatin using sequencing (**ATAC-seq**) is a powerful technique designed to map genome-wide chromatin accessibility at high resolution using minimal input material. By leveraging the hyperactive Tn5 transposase to insert sequencing adapters into open regions of chromatin, ATAC-seq allows researchers to rapidly and efficiently profile regulatory DNA in a variety of biological contexts.
+
+This pipeline provides a comprehensive, modular framework for processing and analyzing ATAC-seq data—from raw FASTQ files through to differential peak analysis and integrative visualizations. Built with scalability, reproducibility, and clarity in mind, it supports a wide range of experimental designs and computational environments.
+
+Overview
+--------
+
+The ATAC-seq pipeline includes the following key steps:
+
+- Quality control and preprocessing of sequencing reads
+
+- Alignment to reference genomes (e.g., hg38, mm10, rn6)
+
+- Deduplication and filtering of reads
+
+- Peak calling to identify accessible chromatin regions
+
+- Differential accessibility analysis across conditions
+
+- Peak annotation and visualization
+
+- Optional footprinting and transcription factor binding inference
+
+Detailed Workflow Overview
+--------------------------
+
+1. **Input Preparation**: Accepts raw FASTQ files (single-end or paired-end) and sample metadata.
+
+2. **Quality Control (QC)**:
+
+- Adapter trimming using fastp or Trim Galore
+
+- Pre-alignment QC reports with FastQC and summary with MultiQC
+
+3. **Read Alignment**:
+
+- High-speed alignment with BWA-MEM or Bowtie2
+
+- Optional mitochondrial DNA filtering
+
+4. **Post-alignment Processing**:
+
+- Sorting and indexing with Samtools
+
+- Deduplication using Picard MarkDuplicates or Samtools rmdup
+
+- Tn5 shift correction for proper read centering on insertion site
+
+5. **Peak Calling**:
+
+- Using MACS2 with parameters optimized for narrow peaks
+
+- Generates narrowPeak files and summit positions
+
+6. **Signal Track Generation**:
+
+- BigWig files via deepTools for genome browser visualization
+
+- Normalization using CPM, RPGC, or RPKM
+
+7. **Quality Metrics Aggregation**:
+
+- FRiP scores, insert size distribution, duplication rate, alignment rate, etc.
+
+8. **Differential Accessibility Analysis**:
+
+- Peak matrix construction with featureCounts or bedtools multicov
+
+- Statistical testing using DESeq2, edgeR, or limma
+
+9. **Peak Annotation**:
+
+- Assign peaks to nearest genes using ChIPseeker, HOMER, or annotatePeaks.pl
+
+10. **Optional Footprinting & Motif Analysis**:
+
+- HINT-ATAC or TOBIAS for footprinting
+
+- Motif enrichment using HOMER, MEME, or PWMScan
+
+11. **Integrative Visualization**:
+
+- Genome browser tracks, heatmaps, metaplots using deepTools
+
+- Volcano plots and PCA plots for accessibility differences
+
+Biological Applications
+-----------------------
+
+ATAC-seq has a broad range of biological applications, including:
+
+- Mapping genome-wide chromatin accessibility
+
+- Identifying enhancers, promoters, and other cis-regulatory elements
+
+- Inferring transcription factor occupancy through footprinting
+
+- Studying dynamic chromatin remodeling across cell types or conditions
+
+- Integrating with RNA-seq and ChIP-seq for regulatory network inference
+
+Comparison with Related Chromatin Accessibility Assays
+------------------------------------------------------
+
++-------------+--------------------+------------------+---------------+------------------------------------------------+
+| **Assay**   | **Target**         | **Input**        | **Resolution**| **Notes**                                      |
++=============+====================+==================+===============+================================================+
+| ATAC-seq    | Open chromatin     | < 50,000 cells   | Base-pair     | Fast protocol, captures TF footprints          |
++-------------+--------------------+------------------+---------------+------------------------------------------------+
+| DNase-seq   | Accessible DNA     | 10–50 million    | High          | Enzymatic digestion, complex library prep      |
++-------------+--------------------+------------------+---------------+------------------------------------------------+
+| MNase-seq   | Nucleosome DNA     | Low–moderate     | Base-pair     | Focus on histone-bound DNA                     |
++-------------+--------------------+------------------+---------------+------------------------------------------------+
+
+
+Supported Configurations
+------------------------
+
+The pipeline is flexible and supports various configurations:
+
+- Single-end and paired-end read formats
+
+- Multiple biological replicates and experimental batches
+
+- Normalization using CPM, RPKM, or RPGC (deepTools)
+
+- Custom and standard reference genomes including hg38, mm10, rn6
+
+This pipeline serves as a foundational tool for researchers studying gene regulation, chromatin structure, and epigenetic mechanisms in diverse biological systems.

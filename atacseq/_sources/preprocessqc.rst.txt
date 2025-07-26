@@ -1,0 +1,142 @@
+.. _preprocessing:
+
+Preprocessing and Quality Control
+=================================
+
+This section outlines the complete preprocessing workflow for ATAC-seq data, including quality control, trimming, alignment, Tn5 correction, and generation of signal tracks. All steps are modular and can be executed independently or as part of the automated pipeline.
+
+1. Quality Control
+------------------
+Run FastQC on raw FASTQ files to evaluate sequence quality:
+
+.. code-block:: bash
+
+   mkdir -p results/qc/fastqc
+   fastqc raw_data/*.fastq.gz -o results/qc/fastqc
+
+Aggregate reports using MultiQC:
+
+.. code-block:: bash
+
+   multiqc results/qc/fastqc -o results/qc/multiqc
+
+2. Adapter and Quality Trimming
+-------------------------------
+Use `Trim Galore` or `fastp` to remove adapter contamination and low-quality bases. For paired-end reads:
+
+**Using fastp**:
+
+.. code-block:: bash
+
+   fastp -i raw_data/sample_R1.fastq.gz -I raw_data/sample_R2.fastq.gz \
+         -o results/trimmed/sample_R1.trimmed.fastq.gz \
+         -O results/trimmed/sample_R2.trimmed.fastq.gz \
+         --length_required 35 --detect_adapter_for_pe \
+         --html results/qc/sample_fastp.html --json results/qc/sample_fastp.json
+
+3. Alignment to Genome
+----------------------
+Use `Bowtie2` for alignment:
+
+.. code-block:: bash
+
+   bowtie2 -X2000 --very-sensitive \
+           -x genome/hg38 \
+           -1 results/trimmed/sample_R1.trimmed.fastq.gz \
+           -2 results/trimmed/sample_R2.trimmed.fastq.gz \
+           -S results/aligned/sample.sam
+
+Convert and sort:
+
+.. code-block:: bash
+
+   samtools view -bS results/aligned/sample.sam | \
+   samtools sort -o results/aligned/sample.sorted.bam
+
+Index and filter by mapping quality:
+
+.. code-block:: bash
+
+   samtools index results/aligned/sample.sorted.bam
+   samtools view -b -q 30 results/aligned/sample.sorted.bam > results/aligned/sample.filtered.bam
+
+4. Tn5 Shift Correction
+------------------------
+Correct for Tn5 insertion using `alignmentSieve` from deepTools:
+
+.. code-block:: bash
+
+   alignmentSieve -b results/aligned/sample.filtered.bam \
+                  -o results/aligned/sample.shifted.bam \
+                  --ATACshift --smartLabels --numberOfProcessors 4
+
+5. Remove Duplicates and Mitochondrial Reads
+--------------------------------------------
+Use Picard or samtools to mark/remove PCR duplicates:
+
+.. code-block:: bash
+
+   picard MarkDuplicates \
+     I=results/aligned/sample.shifted.bam \
+     O=results/aligned/sample.dedup.bam \
+     M=results/qc/sample.dup_metrics.txt \
+     REMOVE_DUPLICATES=true
+
+Filter out chrM reads:
+
+.. code-block:: bash
+
+   samtools idxstats results/aligned/sample.dedup.bam | cut -f 1 | grep -v chrM | \
+   xargs samtools view -b results/aligned/sample.dedup.bam > results/aligned/sample.clean.bam
+
+   samtools index results/aligned/sample.clean.bam
+
+6. Peak Calling
+---------------
+Use MACS2 for peak detection (optimized for paired-end):
+
+.. code-block:: bash
+
+   macs2 callpeak -f BAMPE -t results/aligned/sample.clean.bam \
+                  -n sample --keep-dup all \
+                  --nomodel --shift -100 --extsize 200 \
+                  -g hs -B --outdir results/peaks
+
+7. Generate Signal Tracks
+--------------------------
+Create normalized BigWig tracks using deepTools:
+
+.. code-block:: bash
+
+   bamCoverage -b results/aligned/sample.clean.bam \
+               -o results/bigwig/sample.bw \
+               --normalizeUsing RPGC \
+               --effectiveGenomeSize 2913022398 \
+               --binSize 10 --extendReads 200 --ignoreDuplicates
+
+Visualize with:
+
+.. code-block:: bash
+
+   plotProfile -m matrix.gz -out results/figures/aggregate_profile.pdf
+   plotHeatmap -m matrix.gz -out results/figures/heatmap.pdf
+
+Input Requirements
+-------------------
+
+- Raw FASTQ files (single- or paired-end)
+- Bowtie2 index of reference genome (e.g., `genome/hg38`)
+- Sample metadata file (CSV or TSV format)
+- ENCODE blacklist file (optional)
+- Adapter sequences (e.g., Nextera, TruSeq)
+
+Output Files
+-------------
+
+- **Aligned BAM files**: sorted, filtered, deduplicated, and Tn5-corrected
+- **Peak files**: narrowPeak, summits, and bed format from MACS2
+- **Signal tracks**: BigWig files normalized to RPGC or CPM
+- **QC reports**: FastQC/MultiQC HTML, duplication metrics, insert size plots
+- **Plots**: Fragment size histograms, heatmaps, signal profiles
+
+These outputs provide a robust starting point for downstream analyses such as differential accessibility and motif enrichment.
