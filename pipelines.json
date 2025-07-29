@@ -65,8 +65,8 @@
     "name": "ChIP-seq Pipeline",
     "description": "ChIP-seq pipeline for transcription factor binding or histone modification profiling.",
     "version": "1.0.0",
-    "link": "chipseq.html",
-    "detail_html": "chipseq.html",
+    "link": "chipseq/index.html",
+    "detail_html": "chipseq/index.html",
     "tags": ["ChIP-seq", "Transcription Factor", "Histone Marks"],
     "details": {
       "steps": [
@@ -76,7 +76,7 @@
         "Differential binding analysis",
         "Genome browser track generation"
       ],
-      "repo": "https://github.com/akhileshkaushal/chipseq-pipeline",
+      "repo": "https://github.com/akhileshkaushal/chipseq",
       "usage": "bash run_chipseq.sh --config chip_config.yaml"
     }
   },

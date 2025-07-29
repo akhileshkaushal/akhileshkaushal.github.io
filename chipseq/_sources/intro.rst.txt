@@ -1,0 +1,79 @@
+.. _introduction:
+
+ChIP-seq Pre-processing and Analysis Pipeline
+=============================================
+
+**Author**: Akhilesh Kaushal
+
+Overview
+--------
+
+This pipeline offers an end-to-end solution for the analysis of Chromatin Immunoprecipitation sequencing (ChIP-seq) data, supporting both transcription factor (TF) and histone modification profiling. It is built for reproducibility, scalability, and flexibility across a variety of experimental designs and platforms. The pipeline adheres to best practices established by the ENCODE Consortium and is optimized for both single-end and paired-end sequencing data.
+
+It automates essential processing steps, from raw read quality control through to peak calling and differential enrichment analysis, ensuring consistent and robust results suitable for publication and downstream interpretation.
+
+Scope and Applications
+----------------------
+
+The pipeline supports a wide range of applications in epigenomics and transcriptional regulation research, including:
+
+- **Transcription factor binding site profiling**  
+  Identify and quantify TF occupancy across the genome.
+
+- **Histone mark landscape analysis**  
+  Map histone modifications such as H3K27ac, H3K4me3, H3K36me3, and H3K27me3 to infer chromatin states.
+
+- **Differential binding analysis**  
+  Detect changes in chromatin occupancy between experimental conditions, time points, or treatments.
+
+- **Chromatin state annotation and genome segmentation**  
+  Integrate peak data with chromatin annotation tools for regulatory landscape modeling.
+
+- **Integration with RNA-seq and ATAC-seq**  
+  Designed to interface with transcriptomic and chromatin accessibility datasets for multi-omic analysis.
+
+Pipeline Highlights
+-------------------
+
+- **Standards-compliant**: Built using guidelines from ENCODE, modENCODE, and other community standards.
+- **Portable and scalable**: Can run on local machines, HPC environments, or in the cloud using containerized environments (Apptainer/Docker).
+- **Modular**: Easily customizable at each stage depending on experimental needs.
+- **Extensible**: Designed to integrate with downstream functional enrichment tools such as GREAT, ChIPseeker, and clusterProfiler.
+
+Pipeline Modules
+----------------
+
+The pipeline is organized into modular components that can be independently configured and executed:
+
+1. **Quality Control & Adapter Trimming**  
+   - Tools: `FastQC`, `Trim Galore`, `cutadapt`  
+   - Remove adapters and low-quality bases, and assess sequencing quality.
+
+2. **Genome Alignment & Filtering**  
+   - Tools: `BWA`, `Bowtie2`, `SAMtools`  
+   - Align reads to the reference genome, remove duplicates, and retain uniquely mapping reads.
+
+3. **Peak Detection & Annotation**  
+   - Tools: `MACS2`, `SEACR`, `HOMER`, `ChIPseeker`  
+   - Identify enriched regions (peaks) and annotate them with gene features or custom annotations.
+
+4. **Signal Track Generation**  
+   - Tools: `deepTools`, `bedGraphToBigWig`  
+   - Generate normalized signal profiles (bigWig) for visualization in genome browsers like UCSC or IGV.
+
+5. **Differential Enrichment Analysis**  
+   - Tools: `DiffBind`, `csaw`, `DESeq2`  
+   - Compare ChIP enrichment across experimental groups, accounting for replicates and batch effects.
+
+6. **(Optional) Blacklist Filtering and Quality Metrics**  
+   - Remove ENCODE blacklisted regions and assess signal-to-noise ratios.
+
+Next Steps
+----------
+
+Continue to the :doc:`run_pipeline` for direct usage examples.
+
+.. toctree::
+   :hidden:
+
+   run_pipeline

@@ -1,0 +1,310 @@
+.. _run_pipeline:
+
+Running the ChIP-seq Pipeline
+=============================
+
+This section outlines the complete step-by-step process for running the ChIP-seq pipeline. Each stage is modular and customizable, enabling flexible adaptation to various experimental conditions and biological contexts. The recommended tools and parameters are based on ENCODE guidelines and best practices in the field.
+
+.. contents::
+   :local:
+   :depth: 1
+
+1. Quality Control
+------------------
+
+**Objective**: Assess the quality of raw sequencing reads to identify potential issues like low base quality, GC bias, or contamination.
+
+- **Tools**: `FastQC`, `MultiQC`
+- **Steps**:
+  - Run `FastQC` on all raw FASTQ files (paired or single-end).
+  - Summarize and visualize the reports with `MultiQC`.
+
+.. code-block:: bash
+
+   fastqc *.fastq.gz -o fastqc_reports/
+   multiqc fastqc_reports/ -o qc_summary/
+
+**Key metrics to review**:
+- Per base sequence quality
+- Per sequence GC content
+- Sequence duplication levels
+- Adapter content and overrepresented sequences
+
+2. Adapter Trimming and Filtering
+---------------------------------
+
+**Objective**: Remove adapter contamination and low-quality bases to improve alignment efficiency and accuracy.
+
+- **Tools**: `Trim Galore` (wrapper for `Cutadapt` + `FastQC`), or `fastp`
+- **Recommended Parameters**:
+  - Minimum read length: 30 bp
+  - Quality cutoff: Phred score ≥ 20
+  - Optional: remove polyG tails (common in Illumina NovaSeq)
+
+.. code-block:: bash
+
+   trim_galore --paired --length 30 --quality 20 sample_R1.fastq.gz sample_R2.fastq.gz
+
+or with `fastp`:
+
+.. code-block:: bash
+
+   fastp -i sample_R1.fastq.gz -I sample_R2.fastq.gz -o trimmed_R1.fastq.gz -O trimmed_R2.fastq.gz --length_required 30 --qualified_quality_phred 20 --detect_adapter_for_pe
+
+3. Alignment to Reference Genome
+--------------------------------
+
+**Objective**: Map high-quality reads to a reference genome to identify genomic locations of enriched regions.
+
+- **Tools**: `BWA-MEM`, `Bowtie2`, `SAMtools`
+- **Reference genomes**: hg38, mm10, or custom
+
+.. code-block:: bash
+
+   bwa mem -t 8 hg38.fa trimmed_R1.fastq.gz trimmed_R2.fastq.gz | samtools sort -@ 4 -o aligned_sorted.bam
+
+- Remove low-quality alignments (MAPQ < 30):
+
+.. code-block:: bash
+
+   samtools view -b -q 30 aligned_sorted.bam > high_quality.bam
+
+4. Deduplication
+----------------
+
+**Objective**: Remove PCR duplicates to avoid artificial signal inflation.
+
+- **Tools**: `Picard MarkDuplicates`, `sambamba markdup`
+
+.. code-block:: bash
+
+   picard MarkDuplicates I=high_quality.bam O=dedup.bam M=metrics.txt REMOVE_DUPLICATES=true
+
+or
+
+.. code-block:: bash
+
+   sambamba markdup -r high_quality.bam dedup.bam
+
+- Index the final BAM:
+
+.. code-block:: bash
+
+   samtools index dedup.bam
+
+5. Peak Calling
+---------------
+
+**Objective**: Identify regions of the genome enriched for ChIP signal (peaks).
+
+- **Tool**: `MACS2`
+
+.. code-block:: bash
+
+   # For transcription factors (narrow peaks)
+   macs2 callpeak -t dedup.bam -c input.bam -f BAMPE -g hs -n TF_peaks --outdir macs2_peaks --nomodel --shift -100 --extsize 200
+
+   # For histone marks (broad peaks)
+   macs2 callpeak -t dedup.bam -c input.bam -f BAMPE -g hs -n H3K27me3_peaks --outdir macs2_peaks --broad
+
+- Use input control samples to reduce background noise and false positives.
+
+6. Peak Annotation
+------------------
+
+**Objective**: Functionally annotate peaks to genomic features and associate them with nearby genes.
+
+- **Tools**: `ChIPseeker`, `HOMER`, `annotatePeaks.pl`
+
+.. code-block:: R
+
+   library(ChIPseeker)
+   peak <- readPeakFile("TF_peaks_peaks.narrowPeak")
+   anno <- annotatePeak(peak, tssRegion=c(-3000, 3000), TxDb=txdb, annoDb="org.Hs.eg.db")
+   plotAnnoPie(anno)
+
+- Categories: promoter, exon, intron, intergenic
+- Annotate to nearest genes, enhancers, or regulatory elements.
+
+7. Signal Track Generation
+--------------------------
+
+**Objective**: Create genome browser–friendly signal tracks for visualization and quantitative comparisons.
+
+- **Tool**: `deepTools`
+
+.. code-block:: bash
+
+   bamCoverage -b dedup.bam -o sample.bw --normalizeUsing CPM --binSize 10 --extendReads
+
+- Visualization:
+
+.. code-block:: bash
+
+   computeMatrix reference-point -S sample.bw -R promoters.bed -a 2000 -b 2000 -out matrix.gz
+   plotHeatmap -m matrix.gz -out heatmap_TSS.pdf
+   plotProfile -m matrix.gz -out profile_TSS.pdf
+
+8. Differential Binding Analysis
+--------------------------------
+
+**Objective**: Identify peaks that differ significantly between conditions (e.g., treatment vs control).
+
+- **Tool**: `DiffBind` (R/Bioconductor)
+
+.. code-block:: R
+
+   library(DiffBind)
+   samples <- read.csv("sample_sheet.csv")
+   dbaObj <- dba(sampleSheet=samples)
+   dbaObj <- dba.count(dbaObj)
+   dbaObj <- dba.contrast(dbaObj, categories=DBA_CONDITION)
+   dbaObj <- dba.analyze(dbaObj, method=DBA_DESEQ2)
+   dba.report(dbaObj)
+
+- **Visualizations**:
+  - Principal Component Analysis (PCA) plots
+  - Correlation heatmaps
+  - MA plots and Volcano plots
+
+- **Best practices**:
+  - Use consensus peaks across replicates
+  - Normalize by library size and sequencing depth
+  - Consider replicate correlation and experimental batch
+
+Inputs, Outputs, and Example Usage
+==================================
+
+Inputs
+------
+
+The pipeline requires the following input files:
+
+1. **ChIP-seq and Control FASTQ Files**  
+   - Single-end (`*.fastq.gz`) or paired-end reads (`*_R1.fastq.gz`, `*_R2.fastq.gz`)
+   - One or more ChIP samples
+   - One or more matched input control samples (optional but recommended)
+
+2. **Reference Genome and Index**
+
+   - FASTA file of the reference genome (e.g., ``hg38.fa``, ``mm10.fa``)
+   - Index files for the aligner of choice:
+
+     * **BWA**:
+       - ``.amb``, ``.ann``, ``.bwt``, ``.pac``, ``.sa``
+
+     * **Bowtie2**:
+       - ``.bt2`` index files
+
+3. **Gene Annotation**  
+   - GTF file from Ensembl, GENCODE, or UCSC  
+   - Optional BED files for custom annotations or enhancer/promoter regions
+
+4. **(Optional) Blacklist Regions**  
+   - ENCODE blacklisted regions (`.bed` format) to mask regions prone to false signal (e.g., telomeric/repetitive regions)
+
+5. **(Optional) Sample Sheet for Differential Binding Analysis**
+
+   A tabular CSV file containing sample metadata used by DiffBind.
+
+   Example columns:
+
+   - ``SampleID``
+   - ``Condition``
+   - ``Replicate``
+   - ``bamReads``
+   - ``ControlID``
+   - ``Peaks``
+   - ``PeakCaller``
+
+
+.. tip::
+   All paths should be relative or absolute and readable within the environment used for execution (local or HPC cluster).
+
+Outputs
+-------
+
+Upon successful completion, the pipeline generates:
+
+1. **Cleaned and Aligned BAM Files**  
+   - Sorted and indexed (`.bam`, `.bai`)
+   - Deduplicated or duplicate-marked files
+   - Alignment statistics
+
+2. **Peak Files**
+
+   MACS2 output includes:
+
+   - ``*_peaks.narrowPeak`` (for transcription factors)
+   - ``*_peaks.broadPeak`` (for histone modifications)
+   - ``*_peaks.xls`` (summary statistics)
+
+
+3. **Signal Tracks**  
+   - Normalized signal coverage files (`*.bw`, bigWig format)
+   - Can be viewed in genome browsers like IGV or UCSC
+
+4. **Quality Control Reports**  
+   - Per-sample FastQC HTML reports
+   - Aggregated MultiQC summary
+   - Peak-level quality metrics: FRiP score, cross-correlation plots, and duplication rates
+
+5. **Peak Annotation Files**  
+   - Tables linking peaks to genes and genomic features
+   - Distribution of peaks across promoters, exons, introns, intergenic regions
+
+6. **Differential Binding Outputs**  
+   - Read count matrices across peak sets
+   - Statistical test results (`DESeq2` or `edgeR`)
+   - Visualization files (PDFs for PCA, heatmaps, volcano plots)
+
+7. **Logs and Intermediate Files**  
+   - Tool-specific log files for error tracking
+   - Intermediate BED, BAM, and QC files for transparency and troubleshooting
+
+Example Usage
+-------------
+
+Below is an example shell script to run the pipeline in a Unix environment using standard tools. This assumes the necessary software and genome indices are already installed.
+
+.. code-block:: bash
+
+   # Step 1: Quality Control
+   mkdir qc && fastqc *.fastq.gz -o qc/
+   multiqc qc/ -o qc/
+
+   # Step 2: Adapter Trimming (Paired-end)
+   trim_galore --paired chip_R1.fastq.gz chip_R2.fastq.gz -o trimmed/
+   trim_galore --paired input_R1.fastq.gz input_R2.fastq.gz -o trimmed/
+
+   # Step 3: Alignment (using BWA)
+   bwa mem -t 8 hg38.fa trimmed/chip_R1_val_1.fq.gz trimmed/chip_R2_val_2.fq.gz | samtools sort -o chip.bam
+   bwa mem -t 8 hg38.fa trimmed/input_R1_val_1.fq.gz trimmed/input_R2_val_2.fq.gz | samtools sort -o input.bam
+
+   # Step 4: Deduplication
+   sambamba markdup -r chip.bam chip.dedup.bam
+   sambamba markdup -r input.bam input.dedup.bam
+
+   # Step 5: Peak Calling
+   macs2 callpeak -t chip.dedup.bam -c input.dedup.bam -f BAMPE -g hs -n TF_peak --outdir macs2_peaks --nomodel --shift -100 --extsize 200
+
+   # Step 6: Generate bigWig
+   bamCoverage -b chip.dedup.bam -o chip.bw --normalizeUsing CPM
+
+   # Step 7: Peak Annotation (in R)
+   Rscript -e "
+   library(ChIPseeker);
+   peak <- readPeakFile('macs2_peaks/TF_peak_peaks.narrowPeak');
+   txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene;
+   peakAnno <- annotatePeak(peak, TxDb=txdb, tssRegion=c(-3000,3000));
+   plotAnnoPie(peakAnno);
+   "
+
+   # Step 8: Differential Binding (in R)
+   Rscript diffbind_analysis.R
+
+.. note::
+   For HPC environments, consider wrapping these steps in a Snakemake, Nextflow, or SLURM-compatible workflow script.
+
+Continue to :doc:`structure_and_containerisation` to learn about recommended pipeline folder structure and containerized environment setup.
+

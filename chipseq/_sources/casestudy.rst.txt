@@ -1,0 +1,88 @@
+.. _casestudy:
+
+Case Study: Oncogenic Enhancers in Leukemia
+============================================
+
+This case study is derived from the review article “Oncogenic Enhancers in Leukemia” by Mulet-Lazaro and Delwel (2024, *Blood Cancer Discovery*). It highlights the critical role of enhancer dysfunction in leukemogenesis, outlines different enhancer-altering mechanisms, and discusses ChIP-seq–based approaches for mapping such regulatory aberrations.
+
+Background
+----------
+
+While the traditional study of leukemia has centered on protein-coding mutations, emerging evidence points to **enhancer dysregulation** as a key oncogenic mechanism. Enhancers are distal regulatory elements that orchestrate cell-type specific transcription programs. Alterations in enhancer landscape can misregulate proto-oncogenes or suppress tumor suppressors, leading to malignancy.
+
+Types of Enhancer Aberrations
+-----------------------------
+
+**1. Enhancer Hijacking via Structural Rearrangement**
+
+- Structural variations (e.g. inversions, translocations) can reposition strong enhancers next to oncogenes.
+- Example: Inversion inv(3)(q21q26) in AML relocates a GATA2 enhancer upstream of the **EVI1** locus, causing its ectopic expression.
+- Similar rearrangements are implicated in B-cell precursor ALL, T-ALL, and mixed-lineage leukemias.
+
+**2. Enhancer Creation via Non-coding Mutations**
+
+- Point mutations or small indels can create de novo transcription factor binding motifs within normally inert DNA.
+- This may lead to **gain-of-function enhancers** that activate oncogenes in a cell-specific manner.
+- Reported in T-ALL (e.g. TAL1 enhancer creation) and other lymphoid malignancies.
+
+**3. Copy Number Amplification of Enhancers**
+
+- Amplification of enhancer-containing regions can create **super-enhancers** that drive high-level oncogene expression.
+- Example: MYC locus in T-ALL and AML with super-enhancer clusters identified via H3K27ac ChIP-seq.
+
+**4. Epigenetic Enhancer Dysregulation**
+
+- Mutations in epigenetic regulators (e.g. TET2, DNMT3A, EZH2) can alter enhancer activity by affecting H3K27ac, H3K4me1, or DNA methylation.
+- TET2-deficient AMLs show hypermethylation and repression of tumor-suppressor enhancers.
+
+ChIP-seq Strategy for Enhancer Mapping
+--------------------------------------
+
+Enhancer detection requires high-quality chromatin immunoprecipitation followed by sequencing (ChIP-seq), targeting **H3K27ac** and **H3K4me1**. The standard ChIP-seq pipeline includes:
+
+1. **Sample preparation**: Crosslinking, chromatin shearing, immunoprecipitation with enhancer-specific histone antibodies.
+2. **Sequencing & preprocessing**: Adapter trimming, quality filtering, and alignment (e.g., BWA or Bowtie2).
+3. **Peak calling**: MACS2 or SEACR to define narrow and broad regions of enrichment.
+4. **Annotation**: Identify genomic regions as enhancers (distal to TSS) and classify super-enhancers via tools like ROSE or LILY.
+5. **Comparative analysis**: Identify differentially active enhancers between normal vs leukemic cells or between subtypes.
+6. **Visualization**: Use IGV, deepTools (plotHeatmap, plotProfile), and bigWig tracks for enhancer intensity maps.
+
+Biological and Clinical Implications
+------------------------------------
+
+**EVI1 Activation via Enhancer Hijacking**  
+- Found in 3q-rearranged AML cases, where a GATA2 enhancer is relocated and activates EVI1.
+- EVI1 activation is associated with poor prognosis and resistance to chemotherapy.
+
+**MYC and BCL11A Enhancer Dysregulation**  
+- Super-enhancer amplification or enhancer hijacking contributes to persistent expression of MYC in multiple subtypes.
+- BCL11A is similarly regulated via non-coding duplications in pediatric AML.
+
+**CTCF/Cohesin Boundary Disruption**  
+- Deletion or mutation of boundary elements can merge topologically associated domains (TADs), creating neo-enhancer–gene contacts.
+- Example: Cohesin mutations in AML affect chromatin looping and gene regulation.
+
+**Therapeutic Opportunities**  
+- BET inhibitors (e.g. JQ1) target BRD4, a key enhancer-bound coactivator.
+- CDK7/CDK9 inhibitors suppress transcription of super-enhancer–driven oncogenes.
+- Emerging approaches include targeted epigenetic editing of enhancers (e.g. CRISPR-dCas9-HDAC fusion).
+
+Suggested Analysis Workflow
+---------------------------
+
+1. **Obtain ChIP-seq for H3K27ac and input** from AML patient samples and controls.
+2. **Run peak calling and enhancer classification** using MACS2 and ROSE.
+3. **Annotate enhancer-gene links** with ChIPseeker or GREAT.
+4. **Compare enhancer profiles** using DiffBind or custom limma/DESeq2 frameworks.
+5. **Overlay expression data** (RNA-seq) to validate enhancer-driven transcription.
+6. **Visualize critical loci** (e.g., EVI1, MYC) to confirm enhancer engagement.
+
+Concluding Remarks
+------------------
+
+Enhancer-centric analysis provides insights into previously hidden oncogenic mechanisms in leukemia. Incorporating ChIP-seq into diagnostic or classification efforts may help identify novel biomarkers or therapeutic targets, especially in genomically “quiet” cases. In the future, enhancer editing or degradation may represent a new frontier in leukemia therapy.
+
+References
+----------
+
+Mulet-Lazaro R, Delwel R. Oncogenic Enhancers in Leukemia. *Blood Cancer Discovery*. 2024;5(5):303–317. doi:10.1158/2643-3230.BCD-23-0211

@@ -1,0 +1,18 @@
+.. ChIP-seq Documentation Index
+
+ChIP-seq Analysis Pipeline
+===========================
+
+This documentation provides a complete overview of the ChIP-seq analysis pipeline based on ENCODE and modENCODE best practices. It includes setup, preprocessing, statistical modeling, peak annotation, visualization, and example case studies for regulatory interpretation.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   intro.rst
+   chipseq_guidelines.rst
+   run_pipeline.rst
+   structure_and_containerisation.rst
+   visualization.rst
+   casestudy.rst
+   references.rst

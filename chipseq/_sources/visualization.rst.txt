@@ -1,0 +1,207 @@
+.. _visualization:
+
+Visualization and Reporting
+===========================
+
+Effective visualization is critical for interpreting ChIP-seq results and ensuring high-quality, reproducible findings. This section outlines recommended plots and tools to visualize read quality, genome-wide enrichment, signal distribution, and differential binding across experimental conditions.
+
+.. contents::
+   :local:
+   :depth: 1
+
+1. Quality Control Visualization
+--------------------------------
+
+Before analysis, use `FastQC` and `MultiQC` to assess sequencing read quality, duplication levels, adapter contamination, and other potential issues.
+
+- **FastQC HTML Reports**
+  - Output: `*_fastqc.html`
+  - View in browser to inspect per-base quality, k-mer content, GC content, etc.
+
+- **MultiQC Summary**
+  - Combines all FastQC reports into a single interactive HTML page.
+  - Output: `multiqc_report.html`
+
+.. code-block:: bash
+
+   fastqc *.fastq.gz -o qc/
+   multiqc qc/ -o qc/
+
+- **Recommended checks:**
+  - Overrepresented sequences (adapter contamination)
+  - Duplication levels
+  - Mean quality score across cycles
+
+2. Alignment Metrics and Fragment Size
+--------------------------------------
+
+Use cross-correlation and insert size plots to assess signal quality, enrichment strength, and expected fragment length.
+
+- **Tools**: `phantompeakqualtools`, `Picard CollectInsertSizeMetrics`, `deepTools`
+
+.. code-block:: bash
+
+   Rscript run_spp.R -c=chip.bam -savp -out=chip_spp.txt
+
+   picard CollectInsertSizeMetrics \
+      I=chip.bam \
+      O=insert_metrics.txt \
+      H=insert_size_histogram.pdf
+
+- **Key metrics:**
+  - Normalized Strand Cross-correlation Coefficient (NSC)
+  - Relative Strand Cross-correlation Coefficient (RSC)
+  - Fragment length peak
+
+3. Signal Track Visualization
+-----------------------------
+
+Generate normalized signal tracks in `bigWig` format using `deepTools` for visualization in genome browsers (UCSC, IGV).
+
+- **bigWig generation**:
+
+.. code-block:: bash
+
+   bamCoverage -b chip.dedup.bam -o chip.bw \
+     --normalizeUsing CPM --binSize 10 --extendReads
+
+- **Compare signal tracks**:
+  - Load `.bw` files into UCSC or IGV genome browser
+  - Inspect ChIP vs Input and between replicates/conditions
+
+4. Heatmaps and Profiles around Genomic Features
+------------------------------------------------
+
+Visualize signal distribution around regions of interest (TSS, enhancers, etc.) using `deepTools`.
+
+- **Input**: bigWig signal + BED regions (e.g., TSS, peaks)
+
+.. code-block:: bash
+
+   computeMatrix reference-point \
+     -S chip.bw input.bw \
+     -R tss_regions.bed \
+     --beforeRegionStartLength 2000 \
+     --afterRegionStartLength 2000 \
+     --binSize 20 \
+     -out matrix.gz
+
+- **Heatmap**:
+
+.. code-block:: bash
+
+   plotHeatmap -m matrix.gz -out chip_TSS_heatmap.pdf \
+     --colorMap RdBu --refPointLabel TSS
+
+- **Profile plot**:
+
+.. code-block:: bash
+
+   plotProfile -m matrix.gz -out chip_TSS_profile.pdf \
+     --perGroup --colors red blue
+
+- **Alternative regions**:
+  - Promoters, gene bodies, enhancers, super-enhancers, DHS sites
+
+5. Peak Annotation Visuals
+---------------------------
+
+Use `ChIPseeker` to generate high-level plots describing the genomic distribution of peaks.
+
+- **Example in R**:
+
+.. code-block:: R
+
+   library(ChIPseeker)
+   peak <- readPeakFile("TF_peaks.narrowPeak")
+   txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+   peakAnno <- annotatePeak(peak, TxDb=txdb, tssRegion=c(-3000, 3000))
+   plotAnnoPie(peakAnno)
+   plotAnnoBar(peakAnno)
+   plotDistToTSS(peakAnno)
+
+- **Outputs**:
+  - Pie chart of peak genomic location
+  - Bar plot of functional classes
+  - TSS distance distribution
+
+6. Differential Binding Visualization
+-------------------------------------
+
+After `DiffBind` or other differential analysis, generate plots to assess replicate consistency and binding changes.
+
+- **PCA Plot**:
+
+.. code-block:: R
+
+   dba.plotPCA(dbaObj, DBA_CONDITION, label=DBA_ID)
+
+- **Heatmap of correlations**:
+
+.. code-block:: R
+
+   dba.plotHeatmap(dbaObj, correlations=TRUE)
+
+- **MA Plot**:
+
+.. code-block:: R
+
+   dba.plotMA(dbaObj)
+
+- **Volcano Plot** (custom example):
+
+.. code-block:: R
+
+   library(ggplot2)
+   res <- dba.report(dbaObj)
+   res$log10padj <- -log10(res$FDR)
+   ggplot(res, aes(x=log2Fold, y=log10padj)) +
+       geom_point(alpha=0.6) +
+       geom_hline(yintercept=-log10(0.05), col="red") +
+       theme_minimal() +
+       labs(title="Differential Binding Volcano Plot")
+
+- **Export significant peaks**:
+
+.. code-block:: R
+
+   sig_peaks <- dba.report(dbaObj, th=0.05, method=DBA_DESEQ2)
+   write.table(sig_peaks, "diffbind_significant_peaks.tsv", sep="\t", quote=FALSE)
+
+7. Additional Suggestions
+-------------------------
+
+- Use `IGV` batch mode to create snapshots of specific loci across conditions.
+- Combine ChIP-seq signal tracks with RNA-seq or ATAC-seq data for integrative visualizations.
+- Automate figure generation via `Snakemake` or R Markdown reports.
+
+8. Final Report Assembly
+------------------------
+
+Generate a comprehensive output folder or PDF report summarizing:
+
+- QC metrics and read stats (FastQC + MultiQC)
+- Coverage tracks and snapshots
+- Heatmaps and profiles
+- Peak annotation summaries
+- Volcano/PCA/MA plots
+- Tables of annotated differential peaks
+
+Consider combining all figures and tables using:
+
+- `RMarkdown` or `Quarto`
+- `Jupyter Notebook`
+- LaTeX + `knitr`
+- `pandoc` for Markdown to PDF conversion
+
+Next Steps
+----------
+
+For real-world examples, see the :doc:`casestudy` section. For references and citations, proceed to :doc:`references`.
+
+.. toctree::
+   :hidden:
+
+   casestudy
+   references

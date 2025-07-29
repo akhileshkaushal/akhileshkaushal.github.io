@@ -1,0 +1,538 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Running the ChIP-seq Pipeline &mdash; Chip-seq Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/chipseq/run_pipeline.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ChIP-seq Bioinformatics Guidelines" href="chipseq_guidelines.html" />
+    <link rel="prev" title="ChIP-seq Pre-processing and Analysis Pipeline" href="intro.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Chip-seq Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="intro.html">ChIP-seq Pre-processing and Analysis Pipeline</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#scope-and-applications">Scope and Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#pipeline-highlights">Pipeline Highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#pipeline-modules">Pipeline Modules</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="intro.html#next-steps">Next Steps</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Running the ChIP-seq Pipeline</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quality-control">1. Quality Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adapter-trimming-and-filtering">2. Adapter Trimming and Filtering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#alignment-to-reference-genome">3. Alignment to Reference Genome</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deduplication">4. Deduplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#peak-calling">5. Peak Calling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#peak-annotation">6. Peak Annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#signal-track-generation">7. Signal Track Generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#differential-binding-analysis">8. Differential Binding Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#inputs-outputs-and-example-usage">Inputs, Outputs, and Example Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#outputs">Outputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-usage">Example Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chipseq_guidelines.html">ChIP-seq Bioinformatics Guidelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#input-files">Input Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#pipeline-steps">Pipeline Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#adapter-trimming">2. Adapter Trimming</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#genome-alignment">3. Genome Alignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#deduplication">4. Deduplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#peak-calling">5. Peak Calling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#peak-annotation">6. Peak Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#signal-track-generation">7. Signal Track Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#differential-binding">8. Differential Binding</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#quality-metrics">Quality Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#reproducibility">Reproducibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#data-submission">Data Submission</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Running the ChIP-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adapter-trimming-and-filtering">2. Adapter Trimming and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alignment-to-reference-genome">3. Alignment to Reference Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deduplication">4. Deduplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#peak-calling">5. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#peak-annotation">6. Peak Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#signal-track-generation">7. Signal Track Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#differential-binding-analysis">8. Differential Binding Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#inputs-outputs-and-example-usage">Inputs, Outputs, and Example Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#inputs">Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#outputs">Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#folder-organization">Folder Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#containerisation">Containerisation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#using-apptainer-singularity">Using Apptainer/Singularity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#version-control-and-documentation">Version Control and Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#next-steps">Next Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="visualization.html">Visualization and Reporting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#quality-control-visualization">1. Quality Control Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#alignment-metrics-and-fragment-size">2. Alignment Metrics and Fragment Size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#signal-track-visualization">3. Signal Track Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#heatmaps-and-profiles-around-genomic-features">4. Heatmaps and Profiles around Genomic Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#peak-annotation-visuals">5. Peak Annotation Visuals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#differential-binding-visualization">6. Differential Binding Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#additional-suggestions">7. Additional Suggestions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#final-report-assembly">8. Final Report Assembly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization and Reporting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#quality-control-visualization">1. Quality Control Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#alignment-metrics-and-fragment-size">2. Alignment Metrics and Fragment Size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#signal-track-visualization">3. Signal Track Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#heatmaps-and-profiles-around-genomic-features">4. Heatmaps and Profiles around Genomic Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#peak-annotation-visuals">5. Peak Annotation Visuals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#differential-binding-visualization">6. Differential Binding Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#additional-suggestions">7. Additional Suggestions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#final-report-assembly">8. Final Report Assembly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#next-steps">Next Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="casestudy.html">Case Study: Oncogenic Enhancers in Leukemia</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="casestudy.html#background">Background</a></li>
+<li class="toctree-l4"><a class="reference internal" href="casestudy.html#types-of-enhancer-aberrations">Types of Enhancer Aberrations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="casestudy.html#chip-seq-strategy-for-enhancer-mapping">ChIP-seq Strategy for Enhancer Mapping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="casestudy.html#biological-and-clinical-implications">Biological and Clinical Implications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="casestudy.html#suggested-analysis-workflow">Suggested Analysis Workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="casestudy.html#concluding-remarks">Concluding Remarks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="casestudy.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: Oncogenic Enhancers in Leukemia</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#types-of-enhancer-aberrations">Types of Enhancer Aberrations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#chip-seq-strategy-for-enhancer-mapping">ChIP-seq Strategy for Enhancer Mapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#biological-and-clinical-implications">Biological and Clinical Implications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#suggested-analysis-workflow">Suggested Analysis Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#concluding-remarks">Concluding Remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Chip-seq Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="intro.html">ChIP-seq Pre-processing and Analysis Pipeline</a></li>
+      <li class="breadcrumb-item active">Running the ChIP-seq Pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/run_pipeline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="intro.html" class="btn btn-neutral float-left" title="ChIP-seq Pre-processing and Analysis Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="chipseq_guidelines.html" class="btn btn-neutral float-right" title="ChIP-seq Bioinformatics Guidelines" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="running-the-chip-seq-pipeline">
+<span id="run-pipeline"></span><h1>Running the ChIP-seq Pipeline<a class="headerlink" href="#running-the-chip-seq-pipeline" title="Link to this heading"></a></h1>
+<p>This section outlines the complete step-by-step process for running the ChIP-seq pipeline. Each stage is modular and customizable, enabling flexible adaptation to various experimental conditions and biological contexts. The recommended tools and parameters are based on ENCODE guidelines and best practices in the field.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#quality-control" id="id1">1. Quality Control</a></p></li>
+<li><p><a class="reference internal" href="#adapter-trimming-and-filtering" id="id2">2. Adapter Trimming and Filtering</a></p></li>
+<li><p><a class="reference internal" href="#alignment-to-reference-genome" id="id3">3. Alignment to Reference Genome</a></p></li>
+<li><p><a class="reference internal" href="#deduplication" id="id4">4. Deduplication</a></p></li>
+<li><p><a class="reference internal" href="#peak-calling" id="id5">5. Peak Calling</a></p></li>
+<li><p><a class="reference internal" href="#peak-annotation" id="id6">6. Peak Annotation</a></p></li>
+<li><p><a class="reference internal" href="#signal-track-generation" id="id7">7. Signal Track Generation</a></p></li>
+<li><p><a class="reference internal" href="#differential-binding-analysis" id="id8">8. Differential Binding Analysis</a></p></li>
+</ul>
+</nav>
+<section id="quality-control">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">1. Quality Control</a><a class="headerlink" href="#quality-control" title="Link to this heading"></a></h2>
+<p><strong>Objective</strong>: Assess the quality of raw sequencing reads to identify potential issues like low base quality, GC bias, or contamination.</p>
+<ul class="simple">
+<li><p><strong>Tools</strong>: <cite>FastQC</cite>, <cite>MultiQC</cite></p></li>
+<li><p><strong>Steps</strong>:
+- Run <cite>FastQC</cite> on all raw FASTQ files (paired or single-end).
+- Summarize and visualize the reports with <cite>MultiQC</cite>.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fastqc<span class="w"> </span>*.fastq.gz<span class="w"> </span>-o<span class="w"> </span>fastqc_reports/
+multiqc<span class="w"> </span>fastqc_reports/<span class="w"> </span>-o<span class="w"> </span>qc_summary/
+</pre></div>
+</div>
+<p><strong>Key metrics to review</strong>:
+- Per base sequence quality
+- Per sequence GC content
+- Sequence duplication levels
+- Adapter content and overrepresented sequences</p>
+</section>
+<section id="adapter-trimming-and-filtering">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">2. Adapter Trimming and Filtering</a><a class="headerlink" href="#adapter-trimming-and-filtering" title="Link to this heading"></a></h2>
+<p><strong>Objective</strong>: Remove adapter contamination and low-quality bases to improve alignment efficiency and accuracy.</p>
+<ul class="simple">
+<li><p><strong>Tools</strong>: <cite>Trim Galore</cite> (wrapper for <cite>Cutadapt</cite> + <cite>FastQC</cite>), or <cite>fastp</cite></p></li>
+<li><p><strong>Recommended Parameters</strong>:
+- Minimum read length: 30 bp
+- Quality cutoff: Phred score ≥ 20
+- Optional: remove polyG tails (common in Illumina NovaSeq)</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>trim_galore<span class="w"> </span>--paired<span class="w"> </span>--length<span class="w"> </span><span class="m">30</span><span class="w"> </span>--quality<span class="w"> </span><span class="m">20</span><span class="w"> </span>sample_R1.fastq.gz<span class="w"> </span>sample_R2.fastq.gz
+</pre></div>
+</div>
+<p>or with <cite>fastp</cite>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fastp<span class="w"> </span>-i<span class="w"> </span>sample_R1.fastq.gz<span class="w"> </span>-I<span class="w"> </span>sample_R2.fastq.gz<span class="w"> </span>-o<span class="w"> </span>trimmed_R1.fastq.gz<span class="w"> </span>-O<span class="w"> </span>trimmed_R2.fastq.gz<span class="w"> </span>--length_required<span class="w"> </span><span class="m">30</span><span class="w"> </span>--qualified_quality_phred<span class="w"> </span><span class="m">20</span><span class="w"> </span>--detect_adapter_for_pe
+</pre></div>
+</div>
+</section>
+<section id="alignment-to-reference-genome">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">3. Alignment to Reference Genome</a><a class="headerlink" href="#alignment-to-reference-genome" title="Link to this heading"></a></h2>
+<p><strong>Objective</strong>: Map high-quality reads to a reference genome to identify genomic locations of enriched regions.</p>
+<ul class="simple">
+<li><p><strong>Tools</strong>: <cite>BWA-MEM</cite>, <cite>Bowtie2</cite>, <cite>SAMtools</cite></p></li>
+<li><p><strong>Reference genomes</strong>: hg38, mm10, or custom</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bwa<span class="w"> </span>mem<span class="w"> </span>-t<span class="w"> </span><span class="m">8</span><span class="w"> </span>hg38.fa<span class="w"> </span>trimmed_R1.fastq.gz<span class="w"> </span>trimmed_R2.fastq.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>samtools<span class="w"> </span>sort<span class="w"> </span>-@<span class="w"> </span><span class="m">4</span><span class="w"> </span>-o<span class="w"> </span>aligned_sorted.bam
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Remove low-quality alignments (MAPQ &lt; 30):</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>samtools<span class="w"> </span>view<span class="w"> </span>-b<span class="w"> </span>-q<span class="w"> </span><span class="m">30</span><span class="w"> </span>aligned_sorted.bam<span class="w"> </span>&gt;<span class="w"> </span>high_quality.bam
+</pre></div>
+</div>
+</section>
+<section id="deduplication">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">4. Deduplication</a><a class="headerlink" href="#deduplication" title="Link to this heading"></a></h2>
+<p><strong>Objective</strong>: Remove PCR duplicates to avoid artificial signal inflation.</p>
+<ul class="simple">
+<li><p><strong>Tools</strong>: <cite>Picard MarkDuplicates</cite>, <cite>sambamba markdup</cite></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>picard<span class="w"> </span>MarkDuplicates<span class="w"> </span><span class="nv">I</span><span class="o">=</span>high_quality.bam<span class="w"> </span><span class="nv">O</span><span class="o">=</span>dedup.bam<span class="w"> </span><span class="nv">M</span><span class="o">=</span>metrics.txt<span class="w"> </span><span class="nv">REMOVE_DUPLICATES</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sambamba<span class="w"> </span>markdup<span class="w"> </span>-r<span class="w"> </span>high_quality.bam<span class="w"> </span>dedup.bam
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Index the final BAM:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>samtools<span class="w"> </span>index<span class="w"> </span>dedup.bam
+</pre></div>
+</div>
+</section>
+<section id="peak-calling">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">5. Peak Calling</a><a class="headerlink" href="#peak-calling" title="Link to this heading"></a></h2>
+<p><strong>Objective</strong>: Identify regions of the genome enriched for ChIP signal (peaks).</p>
+<ul class="simple">
+<li><p><strong>Tool</strong>: <cite>MACS2</cite></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For transcription factors (narrow peaks)</span>
+macs2<span class="w"> </span>callpeak<span class="w"> </span>-t<span class="w"> </span>dedup.bam<span class="w"> </span>-c<span class="w"> </span>input.bam<span class="w"> </span>-f<span class="w"> </span>BAMPE<span class="w"> </span>-g<span class="w"> </span>hs<span class="w"> </span>-n<span class="w"> </span>TF_peaks<span class="w"> </span>--outdir<span class="w"> </span>macs2_peaks<span class="w"> </span>--nomodel<span class="w"> </span>--shift<span class="w"> </span>-100<span class="w"> </span>--extsize<span class="w"> </span><span class="m">200</span>
+
+<span class="c1"># For histone marks (broad peaks)</span>
+macs2<span class="w"> </span>callpeak<span class="w"> </span>-t<span class="w"> </span>dedup.bam<span class="w"> </span>-c<span class="w"> </span>input.bam<span class="w"> </span>-f<span class="w"> </span>BAMPE<span class="w"> </span>-g<span class="w"> </span>hs<span class="w"> </span>-n<span class="w"> </span>H3K27me3_peaks<span class="w"> </span>--outdir<span class="w"> </span>macs2_peaks<span class="w"> </span>--broad
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Use input control samples to reduce background noise and false positives.</p></li>
+</ul>
+</section>
+<section id="peak-annotation">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">6. Peak Annotation</a><a class="headerlink" href="#peak-annotation" title="Link to this heading"></a></h2>
+<p><strong>Objective</strong>: Functionally annotate peaks to genomic features and associate them with nearby genes.</p>
+<ul class="simple">
+<li><p><strong>Tools</strong>: <cite>ChIPseeker</cite>, <cite>HOMER</cite>, <cite>annotatePeaks.pl</cite></p></li>
+</ul>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">ChIPseeker</span><span class="p">)</span>
+<span class="n">peak</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">readPeakFile</span><span class="p">(</span><span class="s">&quot;TF_peaks_peaks.narrowPeak&quot;</span><span class="p">)</span>
+<span class="n">anno</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">annotatePeak</span><span class="p">(</span><span class="n">peak</span><span class="p">,</span><span class="w"> </span><span class="n">tssRegion</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">-3000</span><span class="p">,</span><span class="w"> </span><span class="m">3000</span><span class="p">),</span><span class="w"> </span><span class="n">TxDb</span><span class="o">=</span><span class="n">txdb</span><span class="p">,</span><span class="w"> </span><span class="n">annoDb</span><span class="o">=</span><span class="s">&quot;org.Hs.eg.db&quot;</span><span class="p">)</span>
+<span class="nf">plotAnnoPie</span><span class="p">(</span><span class="n">anno</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Categories: promoter, exon, intron, intergenic</p></li>
+<li><p>Annotate to nearest genes, enhancers, or regulatory elements.</p></li>
+</ul>
+</section>
+<section id="signal-track-generation">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">7. Signal Track Generation</a><a class="headerlink" href="#signal-track-generation" title="Link to this heading"></a></h2>
+<p><strong>Objective</strong>: Create genome browser–friendly signal tracks for visualization and quantitative comparisons.</p>
+<ul class="simple">
+<li><p><strong>Tool</strong>: <cite>deepTools</cite></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bamCoverage<span class="w"> </span>-b<span class="w"> </span>dedup.bam<span class="w"> </span>-o<span class="w"> </span>sample.bw<span class="w"> </span>--normalizeUsing<span class="w"> </span>CPM<span class="w"> </span>--binSize<span class="w"> </span><span class="m">10</span><span class="w"> </span>--extendReads
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Visualization:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>computeMatrix<span class="w"> </span>reference-point<span class="w"> </span>-S<span class="w"> </span>sample.bw<span class="w"> </span>-R<span class="w"> </span>promoters.bed<span class="w"> </span>-a<span class="w"> </span><span class="m">2000</span><span class="w"> </span>-b<span class="w"> </span><span class="m">2000</span><span class="w"> </span>-out<span class="w"> </span>matrix.gz
+plotHeatmap<span class="w"> </span>-m<span class="w"> </span>matrix.gz<span class="w"> </span>-out<span class="w"> </span>heatmap_TSS.pdf
+plotProfile<span class="w"> </span>-m<span class="w"> </span>matrix.gz<span class="w"> </span>-out<span class="w"> </span>profile_TSS.pdf
+</pre></div>
+</div>
+</section>
+<section id="differential-binding-analysis">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">8. Differential Binding Analysis</a><a class="headerlink" href="#differential-binding-analysis" title="Link to this heading"></a></h2>
+<p><strong>Objective</strong>: Identify peaks that differ significantly between conditions (e.g., treatment vs control).</p>
+<ul class="simple">
+<li><p><strong>Tool</strong>: <cite>DiffBind</cite> (R/Bioconductor)</p></li>
+</ul>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">DiffBind</span><span class="p">)</span>
+<span class="n">samples</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;sample_sheet.csv&quot;</span><span class="p">)</span>
+<span class="n">dbaObj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">dba</span><span class="p">(</span><span class="n">sampleSheet</span><span class="o">=</span><span class="n">samples</span><span class="p">)</span>
+<span class="n">dbaObj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">dba.count</span><span class="p">(</span><span class="n">dbaObj</span><span class="p">)</span>
+<span class="n">dbaObj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">dba.contrast</span><span class="p">(</span><span class="n">dbaObj</span><span class="p">,</span><span class="w"> </span><span class="n">categories</span><span class="o">=</span><span class="n">DBA_CONDITION</span><span class="p">)</span>
+<span class="n">dbaObj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">dba.analyze</span><span class="p">(</span><span class="n">dbaObj</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="n">DBA_DESEQ2</span><span class="p">)</span>
+<span class="nf">dba.report</span><span class="p">(</span><span class="n">dbaObj</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Visualizations</strong>:
+- Principal Component Analysis (PCA) plots
+- Correlation heatmaps
+- MA plots and Volcano plots</p></li>
+<li><p><strong>Best practices</strong>:
+- Use consensus peaks across replicates
+- Normalize by library size and sequencing depth
+- Consider replicate correlation and experimental batch</p></li>
+</ul>
+</section>
+</section>
+<section id="inputs-outputs-and-example-usage">
+<h1>Inputs, Outputs, and Example Usage<a class="headerlink" href="#inputs-outputs-and-example-usage" title="Link to this heading"></a></h1>
+<section id="inputs">
+<h2>Inputs<a class="headerlink" href="#inputs" title="Link to this heading"></a></h2>
+<p>The pipeline requires the following input files:</p>
+<ol class="arabic">
+<li><p><strong>ChIP-seq and Control FASTQ Files</strong>
+- Single-end (<cite>*.fastq.gz</cite>) or paired-end reads (<cite>*_R1.fastq.gz</cite>, <cite>*_R2.fastq.gz</cite>)
+- One or more ChIP samples
+- One or more matched input control samples (optional but recommended)</p></li>
+<li><p><strong>Reference Genome and Index</strong></p>
+<ul class="simple">
+<li><p>FASTA file of the reference genome (e.g., <code class="docutils literal notranslate"><span class="pre">hg38.fa</span></code>, <code class="docutils literal notranslate"><span class="pre">mm10.fa</span></code>)</p></li>
+<li><p>Index files for the aligner of choice:</p>
+<ul>
+<li><p><strong>BWA</strong>:
+- <code class="docutils literal notranslate"><span class="pre">.amb</span></code>, <code class="docutils literal notranslate"><span class="pre">.ann</span></code>, <code class="docutils literal notranslate"><span class="pre">.bwt</span></code>, <code class="docutils literal notranslate"><span class="pre">.pac</span></code>, <code class="docutils literal notranslate"><span class="pre">.sa</span></code></p></li>
+<li><p><strong>Bowtie2</strong>:
+- <code class="docutils literal notranslate"><span class="pre">.bt2</span></code> index files</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Gene Annotation</strong>
+- GTF file from Ensembl, GENCODE, or UCSC
+- Optional BED files for custom annotations or enhancer/promoter regions</p></li>
+<li><p><strong>(Optional) Blacklist Regions</strong>
+- ENCODE blacklisted regions (<cite>.bed</cite> format) to mask regions prone to false signal (e.g., telomeric/repetitive regions)</p></li>
+<li><p><strong>(Optional) Sample Sheet for Differential Binding Analysis</strong></p>
+<p>A tabular CSV file containing sample metadata used by DiffBind.</p>
+<p>Example columns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SampleID</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Condition</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Replicate</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bamReads</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ControlID</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Peaks</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PeakCaller</span></code></p></li>
+</ul>
+</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>All paths should be relative or absolute and readable within the environment used for execution (local or HPC cluster).</p>
+</div>
+</section>
+<section id="outputs">
+<h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h2>
+<p>Upon successful completion, the pipeline generates:</p>
+<ol class="arabic">
+<li><p><strong>Cleaned and Aligned BAM Files</strong>
+- Sorted and indexed (<cite>.bam</cite>, <cite>.bai</cite>)
+- Deduplicated or duplicate-marked files
+- Alignment statistics</p></li>
+<li><p><strong>Peak Files</strong></p>
+<p>MACS2 output includes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">*_peaks.narrowPeak</span></code> (for transcription factors)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*_peaks.broadPeak</span></code> (for histone modifications)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*_peaks.xls</span></code> (summary statistics)</p></li>
+</ul>
+</li>
+<li><p><strong>Signal Tracks</strong>
+- Normalized signal coverage files (<cite>*.bw</cite>, bigWig format)
+- Can be viewed in genome browsers like IGV or UCSC</p></li>
+<li><p><strong>Quality Control Reports</strong>
+- Per-sample FastQC HTML reports
+- Aggregated MultiQC summary
+- Peak-level quality metrics: FRiP score, cross-correlation plots, and duplication rates</p></li>
+<li><p><strong>Peak Annotation Files</strong>
+- Tables linking peaks to genes and genomic features
+- Distribution of peaks across promoters, exons, introns, intergenic regions</p></li>
+<li><p><strong>Differential Binding Outputs</strong>
+- Read count matrices across peak sets
+- Statistical test results (<cite>DESeq2</cite> or <cite>edgeR</cite>)
+- Visualization files (PDFs for PCA, heatmaps, volcano plots)</p></li>
+<li><p><strong>Logs and Intermediate Files</strong>
+- Tool-specific log files for error tracking
+- Intermediate BED, BAM, and QC files for transparency and troubleshooting</p></li>
+</ol>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h2>
+<p>Below is an example shell script to run the pipeline in a Unix environment using standard tools. This assumes the necessary software and genome indices are already installed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Quality Control</span>
+mkdir<span class="w"> </span>qc<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>fastqc<span class="w"> </span>*.fastq.gz<span class="w"> </span>-o<span class="w"> </span>qc/
+multiqc<span class="w"> </span>qc/<span class="w"> </span>-o<span class="w"> </span>qc/
+
+<span class="c1"># Step 2: Adapter Trimming (Paired-end)</span>
+trim_galore<span class="w"> </span>--paired<span class="w"> </span>chip_R1.fastq.gz<span class="w"> </span>chip_R2.fastq.gz<span class="w"> </span>-o<span class="w"> </span>trimmed/
+trim_galore<span class="w"> </span>--paired<span class="w"> </span>input_R1.fastq.gz<span class="w"> </span>input_R2.fastq.gz<span class="w"> </span>-o<span class="w"> </span>trimmed/
+
+<span class="c1"># Step 3: Alignment (using BWA)</span>
+bwa<span class="w"> </span>mem<span class="w"> </span>-t<span class="w"> </span><span class="m">8</span><span class="w"> </span>hg38.fa<span class="w"> </span>trimmed/chip_R1_val_1.fq.gz<span class="w"> </span>trimmed/chip_R2_val_2.fq.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>samtools<span class="w"> </span>sort<span class="w"> </span>-o<span class="w"> </span>chip.bam
+bwa<span class="w"> </span>mem<span class="w"> </span>-t<span class="w"> </span><span class="m">8</span><span class="w"> </span>hg38.fa<span class="w"> </span>trimmed/input_R1_val_1.fq.gz<span class="w"> </span>trimmed/input_R2_val_2.fq.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span>samtools<span class="w"> </span>sort<span class="w"> </span>-o<span class="w"> </span>input.bam
+
+<span class="c1"># Step 4: Deduplication</span>
+sambamba<span class="w"> </span>markdup<span class="w"> </span>-r<span class="w"> </span>chip.bam<span class="w"> </span>chip.dedup.bam
+sambamba<span class="w"> </span>markdup<span class="w"> </span>-r<span class="w"> </span>input.bam<span class="w"> </span>input.dedup.bam
+
+<span class="c1"># Step 5: Peak Calling</span>
+macs2<span class="w"> </span>callpeak<span class="w"> </span>-t<span class="w"> </span>chip.dedup.bam<span class="w"> </span>-c<span class="w"> </span>input.dedup.bam<span class="w"> </span>-f<span class="w"> </span>BAMPE<span class="w"> </span>-g<span class="w"> </span>hs<span class="w"> </span>-n<span class="w"> </span>TF_peak<span class="w"> </span>--outdir<span class="w"> </span>macs2_peaks<span class="w"> </span>--nomodel<span class="w"> </span>--shift<span class="w"> </span>-100<span class="w"> </span>--extsize<span class="w"> </span><span class="m">200</span>
+
+<span class="c1"># Step 6: Generate bigWig</span>
+bamCoverage<span class="w"> </span>-b<span class="w"> </span>chip.dedup.bam<span class="w"> </span>-o<span class="w"> </span>chip.bw<span class="w"> </span>--normalizeUsing<span class="w"> </span>CPM
+
+<span class="c1"># Step 7: Peak Annotation (in R)</span>
+Rscript<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">library(ChIPseeker);</span>
+<span class="s2">peak &lt;- readPeakFile(&#39;macs2_peaks/TF_peak_peaks.narrowPeak&#39;);</span>
+<span class="s2">txdb &lt;- TxDb.Hsapiens.UCSC.hg38.knownGene;</span>
+<span class="s2">peakAnno &lt;- annotatePeak(peak, TxDb=txdb, tssRegion=c(-3000,3000));</span>
+<span class="s2">plotAnnoPie(peakAnno);</span>
+<span class="s2">&quot;</span>
+
+<span class="c1"># Step 8: Differential Binding (in R)</span>
+Rscript<span class="w"> </span>diffbind_analysis.R
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For HPC environments, consider wrapping these steps in a Snakemake, Nextflow, or SLURM-compatible workflow script.</p>
+</div>
+<p>Continue to <a class="reference internal" href="structure_and_containerisation.html"><span class="doc">Pipeline Structure and Containerisation</span></a> to learn about recommended pipeline folder structure and containerized environment setup.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="ChIP-seq Pre-processing and Analysis Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="chipseq_guidelines.html" class="btn btn-neutral float-right" title="ChIP-seq Bioinformatics Guidelines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

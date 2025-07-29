@@ -1,0 +1,137 @@
+.. _chipseq_guidelines:
+
+ChIP-seq Bioinformatics Guidelines
+====================================
+
+Based on the ENCODE and modENCODE consortia best practices, this document outlines a reproducible and high-confidence pipeline for ChIP-seq data analysis.
+
+Overview
+--------
+ChIP-seq (Chromatin Immunoprecipitation followed by sequencing) identifies protein-DNA interactions. The guidelines ensure robust and comparable results for transcription factors (TFs) and histone modifications.
+
+.. graphviz::
+
+   digraph chipseq_pipeline {
+       rankdir=LR;
+       node [shape=box, style=filled, fillcolor=lightgray];
+
+       QC [label="1. Quality Control\n(FastQC, MultiQC)"]
+       Trim [label="2. Adapter Trimming\n(Trim Galore / fastp)"]
+       Align [label="3. Genome Alignment\n(Bowtie2 / BWA-MEM)"]
+       Dedup [label="4. Deduplication\n(Picard / sambamba)"]
+       Peak [label="5. Peak Calling\n(MACS2)"]
+       Annotate [label="6. Peak Annotation\n(ChIPseeker / HOMER)"]
+       Signal [label="7. Signal Tracks\n(deepTools)"]
+       DiffBind [label="8. Differential Binding\n(DiffBind, DESeq2)"]
+
+       QC -> Trim -> Align -> Dedup -> Peak -> Annotate -> Signal -> DiffBind;
+   }
+
+Input Files
+-----------
+* Raw FASTQ files (ChIP and Input)
+* Indexed reference genome (e.g., hg38, mm10)
+* Gene annotation (GTF/BED)
+* Optional: Blacklisted regions (ENCODE)
+* Sample metadata (cell type, antibody, replicate type)
+
+Pipeline Steps
+--------------
+
+1. Quality Control
+^^^^^^^^^^^^^^^^^^
+* **Tools**: FastQC, MultiQC
+* **Checks**: Per-base quality, GC content, adapter contamination, duplication levels
+
+2. Adapter Trimming
+^^^^^^^^^^^^^^^^^^^^
+* **Tools**: Trim Galore, Cutadapt, fastp
+* **Parameters**: Q ≥ 20, minimum read length ≥ 30 bp
+
+3. Genome Alignment
+^^^^^^^^^^^^^^^^^^^^
+* **Tools**: Bowtie2 (TF), BWA-MEM (histone marks)
+* **Post-processing**:
+  * Sort BAM: `samtools sort`
+  * Filter MAPQ ≥ 30: `samtools view -q 30`
+  * Remove blacklisted regions
+
+4. Deduplication
+^^^^^^^^^^^^^^^^^
+* **Tools**: Picard MarkDuplicates, sambamba
+* Retain marked BAMs; remove duplicates only when appropriate
+
+5. Peak Calling
+^^^^^^^^^^^^^^^^
+* **Tool**: MACS2
+* **TF ChIP**: `--nomodel --shift -100 --extsize 200`
+* **Histone marks**: `--broad`
+* Requires matched Input control
+
+6. Peak Annotation
+^^^^^^^^^^^^^^^^^^^
+* **Tools**: ChIPseeker, HOMER
+* **Features**: promoter, exon, intron, intergenic
+* **Associations**: nearest genes, known enhancers
+
+7. Signal Track Generation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* **Tool**: deepTools (`bamCoverage`)
+* **Output**: BigWig files (RPKM/CPM normalized)
+* **Visuals**: plotProfile, plotHeatmap
+
+8. Differential Binding
+^^^^^^^^^^^^^^^^^^^^^^^^
+* **Tools**: DiffBind, DESeq2, edgeR
+* **Process**:
+  * Generate consensus peaks
+  * Count reads in peaks
+  * Apply statistical testing and correction
+* **Visuals**: PCA, MA plot, heatmaps, volcano plot
+
+Quality Metrics
+---------------
+
++----------------------------+------------------------+-----------------------------------------+
+| Metric                     | Threshold              | Notes                                   |
++============================+========================+=========================================+
+| Total mapped reads         | ≥ 20M (TF), ≥ 45M      | Post-filtering and deduplication        |
++----------------------------+------------------------+-----------------------------------------+
+| NSC                        | ≥ 1.05                 | Cross-correlation signal                |
++----------------------------+------------------------+-----------------------------------------+
+| RSC                        | ≥ 0.8                  | Enrichment specificity                  |
++----------------------------+------------------------+-----------------------------------------+
+| FRiP                       | ≥ 1% (TF), ≥ 5–10%     | Fraction of Reads in Peaks              |
++----------------------------+------------------------+-----------------------------------------+
+| IDR                        | ≤ 0.05                 | Irreproducible Discovery Rate           |
++----------------------------+------------------------+-----------------------------------------+
+
+Output Structure
+----------------
+
+::
+
+  ChIP-seq_Project/
+  ├── raw_fastq/
+  ├── trimmed_fastq/
+  ├── alignments/
+  ├── peaks/
+  ├── bigwigs/
+  ├── annotation/
+  ├── diff_binding/
+  ├── qc_reports/
+  ├── logs/
+  └── metadata/
+
+Reproducibility
+---------------
+* Use workflow systems (e.g., Snakemake, Nextflow)
+* Track software versions with `conda` or `Docker/Apptainer`
+* Include documentation and QC with every release
+
+Data Submission
+---------------
+* Submit to GEO, ENCODE DCC, or SRA
+* Include raw and processed data, peak files, coverage tracks, metadata, QC reports
+
+Refer to ENCODE’s portal for submission formats and reproducibility standards.

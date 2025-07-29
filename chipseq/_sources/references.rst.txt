@@ -1,0 +1,20 @@
+.. _references:
+
+References
+==========
+
+1. Landt, S.G., et al. (2012). **ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia**. *Genome Research*, 22(9), 1813–1831. https://doi.org/10.1101/gr.136184.111
+
+2. ENCODE Project Consortium (2012). **An integrated encyclopedia of DNA elements in the human genome.** *Nature*, 489(7414), 57–74. https://doi.org/10.1038/nature11247
+
+3. Kundaje, A., et al. (2015). **Integrative analysis of 111 reference human epigenomes.** *Nature*, 518(7539), 317–330. https://doi.org/10.1038/nature14248
+
+4. Zhang, Y., et al. (2008). **Model-based analysis of ChIP-Seq (MACS).** *Genome Biology*, 9(9), R137. https://doi.org/10.1186/gb-2008-9-9-r137
+
+5. Yu, G., Wang, L.G., and He, Q.Y. (2015). **ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization.** *Bioinformatics*, 31(14), 2382–2383. https://doi.org/10.1093/bioinformatics/btv145
+
+6. Ramírez, F., et al. (2016). **deepTools2: a next generation web server for deep-sequencing data analysis.** *Nucleic Acids Research*, 44(W1), W160–W165. https://doi.org/10.1093/nar/gkw257
+
+7. Ross-Innes, C.S., et al. (2012). **Differential oestrogen receptor binding is associated with clinical outcome in breast cancer.** *Nature*, 481(7381), 389–393. https://doi.org/10.1038/nature10730
+
+8. Bailey, T.L., et al. (2009). **MEME Suite: tools for motif discovery and searching.** *Nucleic Acids Research*, 37(suppl_2), W202–W208. https://doi.org/10.1093/nar/gkp335

@@ -1,0 +1,157 @@
+.. _structure_and_containerisation:
+
+Pipeline Structure and Containerisation
+=======================================
+
+This section describes the recommended directory structure, file naming conventions, and how to use containers (Docker or Apptainer/Singularity) to ensure reproducibility and portability of the ChIP-seq pipeline.
+
+Folder Organization
+-------------------
+
+To maintain a clean and reproducible analysis, we suggest organizing files into the following folder hierarchy:
+
+.. code-block:: text
+
+   chipseq_project/
+   ├── data/
+   │   ├── raw_fastq/           # Raw FASTQ files (ChIP and Input samples)
+   │   ├── trimmed_fastq/       # Adapter-trimmed FASTQs
+   │   ├── reference/           # Genome FASTA and aligner indices
+   │   ├── annotation/          # GTF/BED files, blacklists
+   ├── results/
+   │   ├── fastqc/              # Raw read quality reports
+   │   ├── multiqc/             # Aggregated QC report
+   │   ├── alignment/           # Sorted and deduplicated BAM files
+   │   ├── peaks/               # MACS2 output (narrowPeak/broadPeak/xls)
+   │   ├── signal/              # Normalized bigWig files
+   │   ├── annotation/          # Annotated peak tables, plots
+   │   ├── differential/        # DiffBind output: counts, stats, plots
+   ├── logs/                    # Logs for all pipeline steps
+   ├── scripts/                 # Custom scripts (R, bash, etc.)
+   ├── config/                  # Config files: paths, parameters, samplesheet.csv
+   ├── containers/              # Dockerfile / Apptainer recipes
+   └── README.md                # Project description and usage notes
+
+.. tip::
+   Use consistent sample naming across all stages (`sample1_chip`, `sample1_input`, etc.) to simplify automation and avoid ambiguity.
+
+Naming Conventions
+------------------
+
+- **FASTQ files**: `sampleID_chip_R1.fastq.gz`, `sampleID_input_R1.fastq.gz`
+- **BAM files**: `sampleID_chip.dedup.bam`, `sampleID_input.dedup.bam`
+- **Peaks**: `sampleID_peaks.narrowPeak`, `sampleID_peaks.broadPeak`
+- **BigWig files**: `sampleID.bw`
+- **Logs**: `stepname_sampleID.log` or `stepname.err/out`
+
+Containerisation
+----------------
+
+To ensure reproducibility, we recommend containerizing the entire pipeline. Both **Docker** and **Apptainer/Singularity** are supported.
+
+Using Docker
+^^^^^^^^^^^^
+
+Create a `Dockerfile` to define your analysis environment:
+
+.. code-block:: docker
+
+   FROM ubuntu:22.04
+
+   # Install core dependencies
+   RUN apt-get update && apt-get install -y \
+       wget curl unzip git build-essential zlib1g-dev \
+       default-jre python3 python3-pip r-base samtools \
+       bedtools bowtie2 bwa fastqc multiqc
+
+   # Install Cutadapt, MACS2, deepTools, Trim Galore
+   RUN pip3 install cutadapt macs2 deeptools fastp
+
+   # Install R packages (DiffBind, ChIPseeker)
+   RUN Rscript -e "install.packages('BiocManager', repos='https://cloud.r-project.org')" && \
+       Rscript -e "BiocManager::install(c('DiffBind', 'ChIPseeker', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'))"
+
+   WORKDIR /pipeline
+
+   ENTRYPOINT ["/bin/bash"]
+
+Build the image:
+
+.. code-block:: bash
+
+   docker build -t chipseq_pipeline:latest .
+
+Run the container:
+
+.. code-block:: bash
+
+   docker run --rm -it -v $PWD:/pipeline chipseq_pipeline:latest
+
+Using Apptainer/Singularity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For HPC environments where Docker is not allowed, Apptainer (formerly Singularity) is recommended.
+
+Create a definition file (`chipseq.def`):
+
+.. code-block:: bash
+
+   Bootstrap: docker
+   From: ubuntu:22.04
+
+   %post
+       apt-get update && apt-get install -y \
+           wget curl unzip git build-essential zlib1g-dev \
+           default-jre python3 python3-pip r-base samtools \
+           bedtools bowtie2 bwa fastqc multiqc
+       pip3 install cutadapt macs2 deeptools fastp
+       Rscript -e "install.packages('BiocManager', repos='https://cloud.r-project.org')"
+       Rscript -e "BiocManager::install(c('DiffBind', 'ChIPseeker', 'TxDb.Hsapiens.UCSC.hg38.knownGene', 'org.Hs.eg.db'))"
+
+   %environment
+       export LC_ALL=C
+       export PATH=/usr/local/bin:$PATH
+
+   %labels
+       Author <Firstname LastName>
+       Version v1.0
+
+Build the container:
+
+.. code-block:: bash
+
+   apptainer build chipseq_pipeline.sif chipseq.def
+
+Run the container:
+
+.. code-block:: bash
+
+   apptainer exec --bind $PWD:/pipeline chipseq_pipeline.sif bash
+
+.. note::
+   Always bind your working directory using `--bind` to enable read/write access inside the container.
+
+Version Control and Documentation
+---------------------------------
+
+- **Git**: Use Git to track pipeline changes and maintain a reproducible record of configuration and scripts.
+- **README.md**: Include usage notes, tool versions, and citation instructions in the root `README.md`.
+- **Lock files**: For Conda users, maintain `environment.yml` and `conda-lock.yml`.
+
+Best Practices
+--------------
+
+- Store container images (`.sif`, Docker tarballs) with the project for full reproducibility.
+- Use fixed tool versions where possible.
+- Maintain hashes of reference files (e.g., md5sum of `hg38.fa`) to ensure integrity across runs.
+- Include a `versions.txt` with the output to log tool versions used.
+
+Next Steps
+----------
+
+Once your structure and containers are in place, proceed to the :doc:`visualization` section for figure generation and reporting.
+
+.. toctree::
+   :hidden:
+
+   visualization

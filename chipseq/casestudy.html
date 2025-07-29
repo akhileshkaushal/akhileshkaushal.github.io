@@ -1,0 +1,324 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study: Oncogenic Enhancers in Leukemia &mdash; Chip-seq Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/chipseq/casestudy.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References" href="references.html" />
+    <link rel="prev" title="Visualization and Reporting" href="visualization.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Chip-seq Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">ChIP-seq Pre-processing and Analysis Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#scope-and-applications">Scope and Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#pipeline-highlights">Pipeline Highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#pipeline-modules">Pipeline Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#next-steps">Next Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html">Running the ChIP-seq Pipeline</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#adapter-trimming-and-filtering">2. Adapter Trimming and Filtering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#alignment-to-reference-genome">3. Alignment to Reference Genome</a></li>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#deduplication">4. Deduplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#peak-calling">5. Peak Calling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#peak-annotation">6. Peak Annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#signal-track-generation">7. Signal Track Generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#differential-binding-analysis">8. Differential Binding Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#inputs-outputs-and-example-usage">Inputs, Outputs, and Example Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#outputs">Outputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="run_pipeline.html#example-usage">Example Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chipseq_guidelines.html">ChIP-seq Bioinformatics Guidelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#input-files">Input Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#pipeline-steps">Pipeline Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#adapter-trimming">2. Adapter Trimming</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#genome-alignment">3. Genome Alignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#deduplication">4. Deduplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#peak-calling">5. Peak Calling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#peak-annotation">6. Peak Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#signal-track-generation">7. Signal Track Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chipseq_guidelines.html#differential-binding">8. Differential Binding</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#quality-metrics">Quality Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#reproducibility">Reproducibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipseq_guidelines.html#data-submission">Data Submission</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline.html">Running the ChIP-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#adapter-trimming-and-filtering">2. Adapter Trimming and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#alignment-to-reference-genome">3. Alignment to Reference Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#deduplication">4. Deduplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#peak-calling">5. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#peak-annotation">6. Peak Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#signal-track-generation">7. Signal Track Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#differential-binding-analysis">8. Differential Binding Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline.html#inputs-outputs-and-example-usage">Inputs, Outputs, and Example Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#inputs">Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#outputs">Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#folder-organization">Folder Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#containerisation">Containerisation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#using-apptainer-singularity">Using Apptainer/Singularity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#version-control-and-documentation">Version Control and Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="structure_and_containerisation.html#next-steps">Next Steps</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="visualization.html">Visualization and Reporting</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#quality-control-visualization">1. Quality Control Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#alignment-metrics-and-fragment-size">2. Alignment Metrics and Fragment Size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#signal-track-visualization">3. Signal Track Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#heatmaps-and-profiles-around-genomic-features">4. Heatmaps and Profiles around Genomic Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#peak-annotation-visuals">5. Peak Annotation Visuals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#differential-binding-visualization">6. Differential Binding Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#additional-suggestions">7. Additional Suggestions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="visualization.html#final-report-assembly">8. Final Report Assembly</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="visualization.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="visualization.html">Visualization and Reporting</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#quality-control-visualization">1. Quality Control Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#alignment-metrics-and-fragment-size">2. Alignment Metrics and Fragment Size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#signal-track-visualization">3. Signal Track Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#heatmaps-and-profiles-around-genomic-features">4. Heatmaps and Profiles around Genomic Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#peak-annotation-visuals">5. Peak Annotation Visuals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#differential-binding-visualization">6. Differential Binding Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#additional-suggestions">7. Additional Suggestions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#final-report-assembly">8. Final Report Assembly</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="visualization.html#next-steps">Next Steps</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Case Study: Oncogenic Enhancers in Leukemia</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#background">Background</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#types-of-enhancer-aberrations">Types of Enhancer Aberrations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chip-seq-strategy-for-enhancer-mapping">ChIP-seq Strategy for Enhancer Mapping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#biological-and-clinical-implications">Biological and Clinical Implications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#suggested-analysis-workflow">Suggested Analysis Workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#concluding-remarks">Concluding Remarks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Case Study: Oncogenic Enhancers in Leukemia</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#types-of-enhancer-aberrations">Types of Enhancer Aberrations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#chip-seq-strategy-for-enhancer-mapping">ChIP-seq Strategy for Enhancer Mapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#biological-and-clinical-implications">Biological and Clinical Implications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#suggested-analysis-workflow">Suggested Analysis Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#concluding-remarks">Concluding Remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Chip-seq Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a></li>
+          <li class="breadcrumb-item"><a href="visualization.html">Visualization and Reporting</a></li>
+      <li class="breadcrumb-item active">Case Study: Oncogenic Enhancers in Leukemia</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/casestudy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="visualization.html" class="btn btn-neutral float-left" title="Visualization and Reporting" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="case-study-oncogenic-enhancers-in-leukemia">
+<span id="casestudy"></span><h1>Case Study: Oncogenic Enhancers in Leukemia<a class="headerlink" href="#case-study-oncogenic-enhancers-in-leukemia" title="Link to this heading"></a></h1>
+<p>This case study is derived from the review article “Oncogenic Enhancers in Leukemia” by Mulet-Lazaro and Delwel (2024, <em>Blood Cancer Discovery</em>). It highlights the critical role of enhancer dysfunction in leukemogenesis, outlines different enhancer-altering mechanisms, and discusses ChIP-seq–based approaches for mapping such regulatory aberrations.</p>
+<section id="background">
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
+<p>While the traditional study of leukemia has centered on protein-coding mutations, emerging evidence points to <strong>enhancer dysregulation</strong> as a key oncogenic mechanism. Enhancers are distal regulatory elements that orchestrate cell-type specific transcription programs. Alterations in enhancer landscape can misregulate proto-oncogenes or suppress tumor suppressors, leading to malignancy.</p>
+</section>
+<section id="types-of-enhancer-aberrations">
+<h2>Types of Enhancer Aberrations<a class="headerlink" href="#types-of-enhancer-aberrations" title="Link to this heading"></a></h2>
+<p><strong>1. Enhancer Hijacking via Structural Rearrangement</strong></p>
+<ul class="simple">
+<li><p>Structural variations (e.g. inversions, translocations) can reposition strong enhancers next to oncogenes.</p></li>
+<li><p>Example: Inversion inv(3)(q21q26) in AML relocates a GATA2 enhancer upstream of the <strong>EVI1</strong> locus, causing its ectopic expression.</p></li>
+<li><p>Similar rearrangements are implicated in B-cell precursor ALL, T-ALL, and mixed-lineage leukemias.</p></li>
+</ul>
+<p><strong>2. Enhancer Creation via Non-coding Mutations</strong></p>
+<ul class="simple">
+<li><p>Point mutations or small indels can create de novo transcription factor binding motifs within normally inert DNA.</p></li>
+<li><p>This may lead to <strong>gain-of-function enhancers</strong> that activate oncogenes in a cell-specific manner.</p></li>
+<li><p>Reported in T-ALL (e.g. TAL1 enhancer creation) and other lymphoid malignancies.</p></li>
+</ul>
+<p><strong>3. Copy Number Amplification of Enhancers</strong></p>
+<ul class="simple">
+<li><p>Amplification of enhancer-containing regions can create <strong>super-enhancers</strong> that drive high-level oncogene expression.</p></li>
+<li><p>Example: MYC locus in T-ALL and AML with super-enhancer clusters identified via H3K27ac ChIP-seq.</p></li>
+</ul>
+<p><strong>4. Epigenetic Enhancer Dysregulation</strong></p>
+<ul class="simple">
+<li><p>Mutations in epigenetic regulators (e.g. TET2, DNMT3A, EZH2) can alter enhancer activity by affecting H3K27ac, H3K4me1, or DNA methylation.</p></li>
+<li><p>TET2-deficient AMLs show hypermethylation and repression of tumor-suppressor enhancers.</p></li>
+</ul>
+</section>
+<section id="chip-seq-strategy-for-enhancer-mapping">
+<h2>ChIP-seq Strategy for Enhancer Mapping<a class="headerlink" href="#chip-seq-strategy-for-enhancer-mapping" title="Link to this heading"></a></h2>
+<p>Enhancer detection requires high-quality chromatin immunoprecipitation followed by sequencing (ChIP-seq), targeting <strong>H3K27ac</strong> and <strong>H3K4me1</strong>. The standard ChIP-seq pipeline includes:</p>
+<ol class="arabic simple">
+<li><p><strong>Sample preparation</strong>: Crosslinking, chromatin shearing, immunoprecipitation with enhancer-specific histone antibodies.</p></li>
+<li><p><strong>Sequencing &amp; preprocessing</strong>: Adapter trimming, quality filtering, and alignment (e.g., BWA or Bowtie2).</p></li>
+<li><p><strong>Peak calling</strong>: MACS2 or SEACR to define narrow and broad regions of enrichment.</p></li>
+<li><p><strong>Annotation</strong>: Identify genomic regions as enhancers (distal to TSS) and classify super-enhancers via tools like ROSE or LILY.</p></li>
+<li><p><strong>Comparative analysis</strong>: Identify differentially active enhancers between normal vs leukemic cells or between subtypes.</p></li>
+<li><p><strong>Visualization</strong>: Use IGV, deepTools (plotHeatmap, plotProfile), and bigWig tracks for enhancer intensity maps.</p></li>
+</ol>
+</section>
+<section id="biological-and-clinical-implications">
+<h2>Biological and Clinical Implications<a class="headerlink" href="#biological-and-clinical-implications" title="Link to this heading"></a></h2>
+<p><strong>EVI1 Activation via Enhancer Hijacking</strong>
+- Found in 3q-rearranged AML cases, where a GATA2 enhancer is relocated and activates EVI1.
+- EVI1 activation is associated with poor prognosis and resistance to chemotherapy.</p>
+<p><strong>MYC and BCL11A Enhancer Dysregulation</strong>
+- Super-enhancer amplification or enhancer hijacking contributes to persistent expression of MYC in multiple subtypes.
+- BCL11A is similarly regulated via non-coding duplications in pediatric AML.</p>
+<p><strong>CTCF/Cohesin Boundary Disruption</strong>
+- Deletion or mutation of boundary elements can merge topologically associated domains (TADs), creating neo-enhancer–gene contacts.
+- Example: Cohesin mutations in AML affect chromatin looping and gene regulation.</p>
+<p><strong>Therapeutic Opportunities</strong>
+- BET inhibitors (e.g. JQ1) target BRD4, a key enhancer-bound coactivator.
+- CDK7/CDK9 inhibitors suppress transcription of super-enhancer–driven oncogenes.
+- Emerging approaches include targeted epigenetic editing of enhancers (e.g. CRISPR-dCas9-HDAC fusion).</p>
+</section>
+<section id="suggested-analysis-workflow">
+<h2>Suggested Analysis Workflow<a class="headerlink" href="#suggested-analysis-workflow" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Obtain ChIP-seq for H3K27ac and input</strong> from AML patient samples and controls.</p></li>
+<li><p><strong>Run peak calling and enhancer classification</strong> using MACS2 and ROSE.</p></li>
+<li><p><strong>Annotate enhancer-gene links</strong> with ChIPseeker or GREAT.</p></li>
+<li><p><strong>Compare enhancer profiles</strong> using DiffBind or custom limma/DESeq2 frameworks.</p></li>
+<li><p><strong>Overlay expression data</strong> (RNA-seq) to validate enhancer-driven transcription.</p></li>
+<li><p><strong>Visualize critical loci</strong> (e.g., EVI1, MYC) to confirm enhancer engagement.</p></li>
+</ol>
+</section>
+<section id="concluding-remarks">
+<h2>Concluding Remarks<a class="headerlink" href="#concluding-remarks" title="Link to this heading"></a></h2>
+<p>Enhancer-centric analysis provides insights into previously hidden oncogenic mechanisms in leukemia. Incorporating ChIP-seq into diagnostic or classification efforts may help identify novel biomarkers or therapeutic targets, especially in genomically “quiet” cases. In the future, enhancer editing or degradation may represent a new frontier in leukemia therapy.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>Mulet-Lazaro R, Delwel R. Oncogenic Enhancers in Leukemia. <em>Blood Cancer Discovery</em>. 2024;5(5):303–317. doi:10.1158/2643-3230.BCD-23-0211</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="visualization.html" class="btn btn-neutral float-left" title="Visualization and Reporting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
