@@ -1,0 +1,21 @@
+Single-Cell Omics Pipeline Documentation
+========================================
+
+This documentation provides a comprehensive overview of modular, scalable pipelines for analyzing single-cell omics data. It covers multiple modalities including scRNA-seq, CITE-seq, TCR/BCR-seq, and integrated multi-omics analysis, supported by state-of-the-art tools and best practices.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents
+
+   intro
+   install
+   structure_and_containerisation
+   run_pipeline_scrnaseq
+   run_pipeline_citeseq
+   run_pipeline_tcr_bcr_seq
+   integrated_multiomics
+   advanced_analysis
+   casestudy
+   references
+
+

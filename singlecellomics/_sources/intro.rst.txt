@@ -1,0 +1,65 @@
+Single-cell Omics Pipelines
+===========================
+
+**Author:** Akhilesh Kaushal  
+**Version:** 1.0.0
+
+Overview
+--------
+
+Single-cell omics technologies have revolutionized our ability to dissect cellular heterogeneity in complex tissues and disease microenvironments. This documentation introduces a modular, scalable suite of pipelines designed for comprehensive analysis of single-cell omics data, encompassing single-cell RNA sequencing (scRNA-seq), Cellular Indexing of Transcriptomes and Epitopes by sequencing (CITE-seq), T-cell receptor sequencing (TCR-seq), and B-cell receptor sequencing (BCR-seq).
+
+These pipelines streamline data processing from raw sequencing reads to publication-ready outputs, incorporating best-practice quality control, alignment, quantification, dimensionality reduction, clustering, differential expression, immune repertoire analysis, and visualization.
+
+Supported Modalities
+--------------------
+
+**scRNA-seq: Single-cell RNA Sequencing**
+  - Captures the transcriptome-wide gene expression profile at single-cell resolution.
+  - Enables exploration of cellular diversity, state transitions, lineage relationships, and marker gene discovery.
+  - Core steps include read alignment or pseudo-alignment (e.g., STARsolo, Cell Ranger, Salmon-Alevin), UMI deduplication, gene quantification, and downstream statistical analyses (e.g., Seurat, Scanpy).
+
+**CITE-seq: Cellular Indexing of Transcriptomes and Epitopes**
+  - Extends scRNA-seq by enabling simultaneous quantification of mRNA and surface protein expression.
+  - Antibody-Derived Tags (ADTs) are conjugated with oligonucleotides to index surface proteins.
+  - The pipeline separates and demultiplexes RNA and ADT libraries, quantifies both modalities, and integrates them in downstream analyses for multimodal clustering and cell-type resolution.
+
+**TCR-seq: T-cell Receptor Profiling**
+  - Provides insights into adaptive immunity by identifying T-cell receptor (TCR) sequences at single-cell resolution.
+  - Enables analysis of clonotype expansion, diversity metrics, and longitudinal immune responses.
+  - The pipeline extracts V(D)J regions, assembles contigs, and maps CDR3 sequences using tools like Cell Ranger VDJ or MiXCR.
+
+**BCR-seq: B-cell Receptor Sequencing**
+  - Analogous to TCR-seq but focuses on B-cell receptors to study clonal expansion, somatic hypermutation, and antibody lineage development.
+  - Critical for understanding humoral immunity, vaccine responses, and B-cell malignancies.
+  - Uses similar V(D)J annotation strategies as TCR-seq and integrates results with transcriptomic data.
+
+Key Features
+------------
+
+- **Modularity:** Each modality can be processed independently or integrated within multi-omic workflows.
+- **Scalability:** Compatible with high-performance computing environments, SLURM schedulers, and cloud-based infrastructures.
+- **Standardization:** Adheres to best practices from 10x Genomics, ENCODE, and the Human Cell Atlas.
+- **Containerization:** All pipelines are packaged in Docker/Apptainer containers to ensure reproducibility.
+- **Visualization:** Built-in support for generating UMAP/tSNE plots, heatmaps, and clonotype trees.
+
+Applications
+------------
+
+These pipelines have been successfully applied in:
+
+- Cancer immunotherapy research to track T-cell and B-cell responses.
+- Allergy and autoimmune disease profiling.
+- Multi-omic integration of transcriptional and proteomic features.
+- Lineage tracing and developmental biology.
+
+Future Directions
+------------------
+
+The framework is being expanded to include:
+
+- **Spatial Transcriptomics** integration.
+- **Perturb-seq** support for CRISPR-based screens.
+- Enhanced support for **long-read single-cell** platforms (e.g., PacBio, ONT).
+
+For full pipeline usage, installation instructions, and case studies, refer to subsequent sections of this documentation.

@@ -1,0 +1,344 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integrated Single-Cell Multi-Omics Analysis &mdash; Single Cell Omics Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/singlecellomics/integrated_multiomics.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced Single-Cell Multi-Omics Analysis" href="advanced_analysis.html" />
+    <link rel="prev" title="TCR/BCR Sequencing Pipeline" href="run_pipeline_tcr_bcr_seq.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Single Cell Omics Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Single-cell Omics Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-modalities">Supported Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#future-directions">Future Directions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-recommendations">Environment Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#quick-setup-with-conda-optional">Quick Setup with Conda (Optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#required-tools-by-module">Required Tools by Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#additional-utilities">Additional Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#containerized-pipelines">Containerized Pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#pipeline-directory-structure">Pipeline Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#containerization">Containerization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#conda-environments">Conda Environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#apptainer-singularity-containers">Apptainer (Singularity) Containers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#benefits-of-containerization">Benefits of Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#cloud-and-hpc-integration">Cloud and HPC Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#versioning-and-updates">Versioning and Updates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_scrnaseq.html">scRNA-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#fastq-generation-and-initial-qc">1. FASTQ Generation and Initial QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#alignment-and-umi-processing">2. Alignment and UMI Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#quality-control-and-filtering">3. Quality Control and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#normalization-and-feature-selection">4. Normalization and Feature Selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#dimensionality-reduction-and-clustering">5. Dimensionality Reduction and Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#marker-identification-and-cell-type-annotation">6. Marker Identification and Cell Type Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#downstream-analysis">7. Downstream Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_citeseq.html">CITE-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#raw-data-input-and-demultiplexing">1. Raw Data Input and Demultiplexing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#alignment-and-quantification">2. Alignment and Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#quality-control-and-filtering">3. Quality Control and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#normalization-and-feature-scaling">4. Normalization and Feature Scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#data-integration-and-joint-embedding">5. Data Integration and Joint Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#clustering-and-visualization">6. Clustering and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#marker-detection-and-differential-expression">7. Marker Detection and Differential Expression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#key-outputs">Key Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#software-and-tools">Software and Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html">TCR/BCR Sequencing Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#input-fastq-files">1. Input FASTQ Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#quality-control">2. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#alignment-and-v-d-j-annotation">3. Alignment and V(D)J Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#clonotype-aggregation-and-filtering">4. Clonotype Aggregation and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#repertoire-diversity-analysis">5. Repertoire Diversity Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#visualization-and-reporting">6. Visualization and Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#optional-downstream-analyses">7. Optional Downstream Analyses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#key-outputs">Key Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Integrated Single-Cell Multi-Omics Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dataset-description">Dataset Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-workflow">Pipeline Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#raw-data-preprocessing">1. Raw Data Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-modal-data-integration-in-seurat">2. Multi-Modal Data Integration in Seurat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-of-tcr-bcr-data">3. Integration of TCR/BCR Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clustering-and-annotation">4. Clustering and Annotation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#results-interpretation">Results Interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#visualization-outputs">Visualization Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusions">Conclusions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Single-Cell Multi-Omics Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#overview-of-supported-modalities">Overview of Supported Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#multi-omic-integration-strategies">1. Multi-Omic Integration Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#epigenetic-profiling-with-scatac-seq-and-cut-tag">2. Epigenetic Profiling with scATAC-seq and CUT&amp;Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#dna-methylation-integration">3. DNA Methylation Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#spatial-transcriptomics-overlay">4. Spatial Transcriptomics Overlay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#cross-modal-regulatory-inference">5. Cross-Modal Regulatory Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#example-applications">Example Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: Comprehensive Single-Cell Multi-Omics Characterization of the Tumor Microenvironment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#study-context-and-sample-acquisition">Study Context and Sample Acquisition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#data-generation">Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#computational-workflow">Computational Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#biological-findings">Biological Findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#key-tools-and-pipelines">Key Tools and Pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Single Cell Omics Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Integrated Single-Cell Multi-Omics Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/integrated_multiomics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="run_pipeline_tcr_bcr_seq.html" class="btn btn-neutral float-left" title="TCR/BCR Sequencing Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_analysis.html" class="btn btn-neutral float-right" title="Advanced Single-Cell Multi-Omics Analysis" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="integrated-single-cell-multi-omics-analysis">
+<h1>Integrated Single-Cell Multi-Omics Analysis<a class="headerlink" href="#integrated-single-cell-multi-omics-analysis" title="Link to this heading"></a></h1>
+<p>This section describes a comprehensive workflow for integrating scRNA-seq, CITE-seq (cell surface protein), and TCR/BCR sequencing data. The pipeline facilitates the joint interpretation of transcriptomic, proteomic, and immune repertoire information to characterize immune phenotypes and clonal dynamics within complex tissues such as the tumor microenvironment.</p>
+<section id="dataset-description">
+<h2>Dataset Description<a class="headerlink" href="#dataset-description" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Source: Tumor-infiltrating lymphocytes (TILs) from a melanoma patient</p></li>
+<li><p>Platform: 10x Genomics Chromium 5’ v3 chemistry</p></li>
+<li><p>Modalities Captured:
+- Gene expression (scRNA-seq)
+- Surface protein quantification (CITE-seq with TotalSeq-B antibodies)
+- V(D)J-enriched TCR and BCR libraries (TCR-seq/BCR-seq)</p></li>
+</ul>
+</section>
+<section id="pipeline-workflow">
+<h2>Pipeline Workflow<a class="headerlink" href="#pipeline-workflow" title="Link to this heading"></a></h2>
+<section id="raw-data-preprocessing">
+<h3>1. Raw Data Preprocessing<a class="headerlink" href="#raw-data-preprocessing" title="Link to this heading"></a></h3>
+<p><strong>Input</strong>
+BCL files from 10x Genomics 5’ multi-omic run</p>
+<p><strong>Tool</strong>
+<cite>cellranger multi</cite> with a YAML configuration specifying:</p>
+<ul class="simple">
+<li><p>Gene expression library</p></li>
+<li><p>Antibody capture (ADT) library</p></li>
+<li><p>V(D)J TCR/BCR libraries</p></li>
+</ul>
+<p><strong>Output</strong></p>
+<ul class="simple">
+<li><p>Filtered gene-barcode matrices (RNA, ADT)</p></li>
+<li><p>Annotated contigs for VDJ segments</p></li>
+<li><p>Clonotype tables for TCR and BCR sequences</p></li>
+</ul>
+</section>
+<section id="multi-modal-data-integration-in-seurat">
+<h3>2. Multi-Modal Data Integration in Seurat<a class="headerlink" href="#multi-modal-data-integration-in-seurat" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Load RNA and ADT matrices:</p></li>
+</ul>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">CreateSeuratObject</span><span class="p">(</span><span class="n">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RNA</span><span class="p">)</span>
+<span class="n">seurat_obj</span><span class="p">[[</span><span class="s">&#39;ADT&#39;</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">CreateAssayObject</span><span class="p">(</span><span class="n">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ADT</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Normalize modalities:</p></li>
+</ul>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">NormalizeData</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">)</span>
+<span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">NormalizeData</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">,</span><span class="w"> </span><span class="n">assay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;ADT&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">normalization.method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;CLR&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Dimensionality reduction and integration:</p></li>
+</ul>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">FindVariableFeatures</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">)</span>
+<span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ScaleData</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">)</span>
+<span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">RunPCA</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">)</span>
+<span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">RunPCA</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">,</span><span class="w"> </span><span class="n">assay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;ADT&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">reduction.name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;apca&#39;</span><span class="p">)</span>
+<span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">FindMultiModalNeighbors</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">,</span><span class="w"> </span><span class="n">reduction.list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="s">&quot;pca&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;apca&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">dims.list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">18</span><span class="p">))</span>
+<span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">RunUMAP</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">,</span><span class="w"> </span><span class="n">nn.name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;weighted.nn&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">reduction.name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;wnn.umap&#39;</span><span class="p">)</span>
+<span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">FindClusters</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">,</span><span class="w"> </span><span class="n">graph.name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;wsnn&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-of-tcr-bcr-data">
+<h3>3. Integration of TCR/BCR Data<a class="headerlink" href="#integration-of-tcr-bcr-data" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Tool: <cite>scRepertoire</cite>
+- Input: clonotype and contig annotation files from <cite>cellranger vdj</cite>
+- Merge with Seurat metadata:</p></li>
+</ul>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="n">combined</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">combineTCR</span><span class="p">(</span><span class="n">contig_files</span><span class="p">,</span><span class="w"> </span><span class="n">samples</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sample_ids</span><span class="p">)</span>
+<span class="n">seurat_obj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">combineExpression</span><span class="p">(</span><span class="n">combined</span><span class="p">,</span><span class="w"> </span><span class="n">seurat_obj</span><span class="p">,</span><span class="w"> </span><span class="n">cloneCall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;aa&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Clonotype mapping:
+- Add CDR3 and VDJ usage annotations
+- Visualize clonotype expansion using clonalHomeostasis(), clonalOverlay(), alluvialClonotypes()</p></li>
+</ul>
+</section>
+<section id="clustering-and-annotation">
+<h3>4. Clustering and Annotation<a class="headerlink" href="#clustering-and-annotation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use canonical markers for annotation:
+- CD3D, CD4, CD8A, FOXP3, PDCD1, LAG3 (RNA)
+- CD69, CD103, CD25 (ADT)</p></li>
+<li><p>Visualize markers:</p></li>
+</ul>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">FeaturePlot</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;CD8A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PDCD1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LAG3&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">reduction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;wnn.umap&quot;</span><span class="p">)</span>
+<span class="nf">RidgePlot</span><span class="p">(</span><span class="n">seurat_obj</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;CD69&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CD103&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">assay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ADT&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="results-interpretation">
+<h2>Results Interpretation<a class="headerlink" href="#results-interpretation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Transcriptomics:</strong>
+- UMAP clustering revealed CD4+ T cells, CD8+ cytotoxic T cells, NK cells, Tregs, and exhausted T cells.
+- Exhausted T cells expressed high PD-1 (PDCD1), LAG3, and TOX.</p></li>
+<li><p><strong>Surface Proteins (ADT):</strong>
+- CITE-seq validated transcriptional profiles and enhanced phenotyping.
+- Identified CD69+CD103+ TRM cells and CD25+FOXP3+ Tregs.</p></li>
+<li><p><strong>TCR Clonotype Expansion:</strong>
+- Expanded clonotypes localized to exhausted CD8+ T cells, suggesting tumor-specific activation.
+- V and J usage biased toward specific gene segments.</p></li>
+<li><p><strong>BCR Diversity:</strong>
+- BCR analysis showed polyclonal naive B cells and oligoclonal plasma cells.
+- Indications of antigen-driven selection and somatic hypermutation.</p></li>
+</ul>
+</section>
+<section id="visualization-outputs">
+<h2>Visualization Outputs<a class="headerlink" href="#visualization-outputs" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>UMAP plots of joint RNA + ADT space</p></li>
+<li><p>Heatmaps of cluster marker expression across RNA and ADT</p></li>
+<li><p>Clonotype frequency barplots</p></li>
+<li><p>Circos plots of V-J pairing for TCR and BCR repertoires</p></li>
+</ul>
+</section>
+<section id="conclusions">
+<h2>Conclusions<a class="headerlink" href="#conclusions" title="Link to this heading"></a></h2>
+<p>This integrated multi-omics pipeline enables:</p>
+<ul class="simple">
+<li><p>High-resolution mapping of immune cell subtypes</p></li>
+<li><p>Linking of phenotypic states with clonal architecture</p></li>
+<li><p>Discovery of tissue-resident memory, regulatory, and exhausted cell subsets</p></li>
+<li><p>Monitoring of clonal expansion and immune repertoire dynamics</p></li>
+</ul>
+<p>Refer to <a class="reference internal" href="advanced_analysis.html"><span class="doc">Advanced Single-Cell Multi-Omics Analysis</span></a> for additional modules including trajectory inference, cross-tissue comparison, and spatial multi-omics integration.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="run_pipeline_tcr_bcr_seq.html" class="btn btn-neutral float-left" title="TCR/BCR Sequencing Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_analysis.html" class="btn btn-neutral float-right" title="Advanced Single-Cell Multi-Omics Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

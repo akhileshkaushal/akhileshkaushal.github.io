@@ -1,0 +1,111 @@
+TCR/BCR Sequencing Pipeline
+===========================
+
+This page describes a detailed pipeline for analyzing T-cell receptor (TCR) and B-cell receptor (BCR) sequencing data. The goal of this workflow is to characterize the adaptive immune repertoire by identifying V(D)J recombination events, reconstructing clonotypes, and measuring diversity across samples. This pipeline supports both bulk repertoire profiling and single-cell VDJ data (e.g., 10x Genomics Chromium).
+
+1. Input FASTQ Files
+--------------------
+
+- Paired-end FASTQ files derived from:
+  - TCR or BCR VDJ-enriched libraries (single-cell or bulk)
+  - Optional: Sample sheet or metadata file for cohort/treatment grouping
+
+- Platform-specific support:
+  - 10x Genomics Single Cell V(D)J
+  - Adaptive Biotechnologies ImmunoSEQ
+  - Generic Illumina-based bulk VDJ libraries
+
+2. Quality Control
+------------------
+
+- Assess raw read quality with `FastQC`
+- Remove adapters and low-quality bases using `fastp`
+- Optional: Generate `MultiQC` report to aggregate per-sample QC statistics
+
+3. Alignment and V(D)J Annotation
+----------------------------------
+
+- Tool selection based on platform:
+  - **MiXCR**: Versatile for bulk and single-cell TCR/BCR profiling
+  - **IgBlast**: NCBI-supported tool for detailed immunoglobulin segment matching
+  - **Cell Ranger VDJ**: Recommended for 10x Genomics data
+
+- Core functions:
+  - Align reads to curated germline V, D, J, and C gene reference sets
+  - Extract CDR3 sequences (amino acid and nucleotide)
+  - Annotate productive and non-productive rearrangements
+
+- Outputs:
+  - Annotated contig sequences
+  - Clonotype assignment table (barcode, chain, CDR3, VDJ usage)
+  - Summary of segment usage
+
+4. Clonotype Aggregation and Filtering
+--------------------------------------
+
+- Collapse sequences into clonotypes using:
+  - Identical CDR3 amino acid sequences
+  - Shared V and J gene segments (optional)
+
+- Filtering strategies:
+  - Remove low-frequency clonotypes (< X reads or barcodes)
+  - Exclude non-productive or ambiguous rearrangements
+  - Optionally collapse multi-chain clonotypes
+
+5. Repertoire Diversity Analysis
+--------------------------------
+
+- Compute standard diversity metrics:
+  - **Richness**: total number of unique clonotypes
+  - **Shannon Entropy**: measure of diversity and evenness
+  - **Simpson Index**: dominance and clonal skewing
+
+- Assess:
+  - Clonal expansion
+  - Distribution of dominant clonotypes
+  - Overlap across tissues or individuals
+
+- Tools:
+  - VDJtools, Immunarch (R), scRepertoire, Scirpy
+
+6. Visualization and Reporting
+------------------------------
+
+- Visualize repertoire composition:
+  - Stacked barplots of V and J gene segment usage
+  - Clonotype frequency distributions (rank-abundance curves)
+  - Circos plots of V-J recombination pairs
+
+- Compare repertoire metrics across groups:
+  - Disease vs. control
+  - Pre/post treatment
+  - Tumor vs. adjacent tissue
+
+- Export:
+  - Summary tables
+  - High-resolution figures for publication
+
+7. Optional Downstream Analyses
+-------------------------------
+
+- **Longitudinal Tracking**
+  - Monitor persistence of dominant clonotypes across timepoints
+  - Quantify clonal expansion or contraction
+
+- **Single-cell Integration**
+  - Merge TCR/BCR data with scRNA-seq metadata
+  - Annotate clusters with dominant immune clones
+
+- **Epitope Prediction and Specificity Clustering**
+  - Use `GLIPH2`, `TCRdist`, or `DeepTCR` to cluster CDR3 sequences
+  - Predict antigen specificity and TCR convergence
+
+Key Outputs
+-----------
+
+- Annotated VDJ contig and clonotype tables
+- Diversity index statistics and plots
+- Gene usage heatmaps and clonotype overlap matrices
+- Integrated multi-omic metadata tables (for scRNA-seq linkage)
+
+This pipeline offers a comprehensive solution for profiling adaptive immune repertoires from both single-cell and bulk sequencing data. Refer to :doc:`advanced_analysis` for immunogenomic integration and predictive modeling extensions.

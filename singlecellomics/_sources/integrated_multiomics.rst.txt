@@ -1,0 +1,135 @@
+Integrated Single-Cell Multi-Omics Analysis
+===========================================
+
+This section describes a comprehensive workflow for integrating scRNA-seq, CITE-seq (cell surface protein), and TCR/BCR sequencing data. The pipeline facilitates the joint interpretation of transcriptomic, proteomic, and immune repertoire information to characterize immune phenotypes and clonal dynamics within complex tissues such as the tumor microenvironment.
+
+Dataset Description
+-------------------
+
+- Source: Tumor-infiltrating lymphocytes (TILs) from a melanoma patient
+- Platform: 10x Genomics Chromium 5' v3 chemistry
+- Modalities Captured:
+  - Gene expression (scRNA-seq)
+  - Surface protein quantification (CITE-seq with TotalSeq-B antibodies)
+  - V(D)J-enriched TCR and BCR libraries (TCR-seq/BCR-seq)
+
+Pipeline Workflow
+------------------
+
+1. Raw Data Preprocessing
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Input**  
+BCL files from 10x Genomics 5' multi-omic run
+
+**Tool**  
+`cellranger multi` with a YAML configuration specifying:
+
+- Gene expression library  
+- Antibody capture (ADT) library  
+- V(D)J TCR/BCR libraries
+
+**Output**
+
+- Filtered gene-barcode matrices (RNA, ADT)  
+- Annotated contigs for VDJ segments  
+- Clonotype tables for TCR and BCR sequences
+
+
+2. Multi-Modal Data Integration in Seurat
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Load RNA and ADT matrices:
+
+.. code-block:: R
+
+   seurat_obj <- CreateSeuratObject(counts = RNA)
+   seurat_obj[['ADT']] <- CreateAssayObject(counts = ADT)
+
+- Normalize modalities:
+
+.. code-block:: R
+
+   seurat_obj <- NormalizeData(seurat_obj)
+   seurat_obj <- NormalizeData(seurat_obj, assay = 'ADT', normalization.method = 'CLR')
+
+- Dimensionality reduction and integration:
+
+.. code-block:: R
+
+   seurat_obj <- FindVariableFeatures(seurat_obj)
+   seurat_obj <- ScaleData(seurat_obj)
+   seurat_obj <- RunPCA(seurat_obj)
+   seurat_obj <- RunPCA(seurat_obj, assay = 'ADT', reduction.name = 'apca')
+   seurat_obj <- FindMultiModalNeighbors(seurat_obj, reduction.list = list("pca", "apca"), dims.list = list(1:30, 1:18))
+   seurat_obj <- RunUMAP(seurat_obj, nn.name = 'weighted.nn', reduction.name = 'wnn.umap')
+   seurat_obj <- FindClusters(seurat_obj, graph.name = 'wsnn')
+
+3. Integration of TCR/BCR Data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Tool: `scRepertoire`
+  - Input: clonotype and contig annotation files from `cellranger vdj`
+  - Merge with Seurat metadata:
+
+.. code-block:: R
+
+   combined <- combineTCR(contig_files, samples = sample_ids)
+   seurat_obj <- combineExpression(combined, seurat_obj, cloneCall = "aa")
+
+- Clonotype mapping:
+  - Add CDR3 and VDJ usage annotations
+  - Visualize clonotype expansion using clonalHomeostasis(), clonalOverlay(), alluvialClonotypes()
+
+4. Clustering and Annotation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Use canonical markers for annotation:
+  - CD3D, CD4, CD8A, FOXP3, PDCD1, LAG3 (RNA)
+  - CD69, CD103, CD25 (ADT)
+
+- Visualize markers:
+
+.. code-block:: R
+
+   FeaturePlot(seurat_obj, features = c("CD8A", "PDCD1", "LAG3"), reduction = "wnn.umap")
+   RidgePlot(seurat_obj, features = c("CD69", "CD103"), assay = "ADT")
+
+Results Interpretation
+----------------------
+
+- **Transcriptomics:**
+  - UMAP clustering revealed CD4+ T cells, CD8+ cytotoxic T cells, NK cells, Tregs, and exhausted T cells.
+  - Exhausted T cells expressed high PD-1 (PDCD1), LAG3, and TOX.
+
+- **Surface Proteins (ADT):**
+  - CITE-seq validated transcriptional profiles and enhanced phenotyping.
+  - Identified CD69+CD103+ TRM cells and CD25+FOXP3+ Tregs.
+
+- **TCR Clonotype Expansion:**
+  - Expanded clonotypes localized to exhausted CD8+ T cells, suggesting tumor-specific activation.
+  - V and J usage biased toward specific gene segments.
+
+- **BCR Diversity:**
+  - BCR analysis showed polyclonal naive B cells and oligoclonal plasma cells.
+  - Indications of antigen-driven selection and somatic hypermutation.
+
+Visualization Outputs
+---------------------
+
+- UMAP plots of joint RNA + ADT space
+- Heatmaps of cluster marker expression across RNA and ADT
+- Clonotype frequency barplots
+- Circos plots of V-J pairing for TCR and BCR repertoires
+
+Conclusions
+-----------
+
+This integrated multi-omics pipeline enables:
+
+- High-resolution mapping of immune cell subtypes
+- Linking of phenotypic states with clonal architecture
+- Discovery of tissue-resident memory, regulatory, and exhausted cell subsets
+- Monitoring of clonal expansion and immune repertoire dynamics
+
+Refer to :doc:`advanced_analysis` for additional modules including trajectory inference, cross-tissue comparison, and spatial multi-omics integration.

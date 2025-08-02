@@ -1,0 +1,22 @@
+References
+==========
+
+The following references were cited across the documentation to support the methods, technologies, and tools described in the single-cell omics analysis pipelines:
+
+1. Stuart, T., Butler, A., Hoffman, P. et al. (2019). Comprehensive Integration of Single-Cell Data. *Cell*, 177(7), 1888–1902.e21.
+2. Hafemeister, C., & Satija, R. (2019). Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression. *Genome Biology*, 20, 296.
+3. Korsunsky, I., Millard, N., Fan, J., Slowikowski, K., Zhang, F., Wei, K. et al. (2019). Fast, sensitive and accurate integration of single-cell data with Harmony. *Nature Methods*, 16(12), 1289–1296.
+4. Hao, Y., Hao, S., Andersen-Nissen, E. et al. (2021). Integrated analysis of multimodal single-cell data. *Cell*, 184(13), 3573–3587.e29.
+5. Stoeckius, M., Hafemeister, C., Stephenson, W. et al. (2017). Simultaneous epitope and transcriptome measurement in single cells. *Nature Methods*, 14, 865–868.
+6. Satpathy, A. T., Granja, J. M., Yost, K. E. et al. (2019). Massively parallel single-cell chromatin landscapes of human immune cell development and intratumoral T cell exhaustion. *Nature Biotechnology*, 37, 925–936.
+7. Buenrostro, J. D., Corces, M. R., Lareau, C. A. et al. (2018). Integrated Single-Cell Analysis Maps the Continuous Regulatory Landscape of Human Hematopoietic Differentiation. *Cell*, 173(6), 1535–1548.e16.
+8. Van Dijk, D., Sharma, R., Nainys, J. et al. (2018). Recovering gene interactions from single-cell data using data diffusion. *Cell*, 174(3), 716–729.e27.
+9. Zheng, G. X. Y., Terry, J. M., Belgrader, P. et al. (2017). Massively parallel digital transcriptional profiling of single cells. *Nature Communications*, 8, 14049.
+10. Zhang, X., Lan, Y., Xu, J. et al. (2019). CellMarker: a manually curated resource of cell markers in human and mouse. *Nucleic Acids Research*, 47(D1), D721–D728.
+11. Yost, K. E., Satpathy, A. T., Wells, D. K. et al. (2019). Clonal replacement of tumor-specific T cells following PD-1 blockade. *Nature Medicine*, 25, 1251–1259.
+12. The Technological Landscape of Single-cell Multi-omics. (2023). *Nature Reviews Genetics*, doi:10.1038/s41576-023-00647-0.
+13. Petukhov, V., Guo, J., Baryawno, N. et al. (2018). dropEst: pipeline for accurate estimation of molecular counts in droplet-based single-cell RNA-seq experiments. *Genome Biology*, 19, 78.
+14. Wolf, F. A., Angerer, P., & Theis, F. J. (2018). SCANPY: large-scale single-cell gene expression data analysis. *Genome Biology*, 19, 15.
+15. Finak, G., McDavid, A., Yajima, M. et al. (2015). MAST: a flexible statistical framework for assessing transcriptional changes and characterizing heterogeneity in single-cell RNA sequencing data. *Genome Biology*, 16, 278.
+
+These references represent foundational studies and tools in the field of single-cell omics and were utilized throughout the pipeline for data generation, normalization, integration, and interpretation.

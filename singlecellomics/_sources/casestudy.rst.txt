@@ -1,0 +1,159 @@
+Case Study: Comprehensive Single-Cell Multi-Omics Characterization of the Tumor Microenvironment
+=================================================================================================
+
+This case study synthesizes insights from the technological landscape of single-cell multi-omics platforms, focusing on a hypothetical integrated analysis of a tumor microenvironment (TME) using cutting-edge sequencing strategies. The aim is to demonstrate a full-spectrum pipeline that integrates transcriptomic, proteomic, epigenomic, and immune receptor data to decipher regulatory, clonal, and spatial dynamics of immune and tumor cells. The methodology reflects real-world implementations based on technologies and tools reviewed in the landmark study on single-cell multi-omics.
+
+Study Context and Sample Acquisition
+------------------------------------
+
+**Disease Focus**: Malignant melanoma
+
+**Objective**: Dissect transcriptional and regulatory programs of tumor-infiltrating immune cells, identify immune evasion markers, and resolve clonal expansion patterns among T and B lymphocytes.
+
+**Samples**: Tumor core biopsies obtained from melanoma patients undergoing immune checkpoint blockade (ICB) therapy. Single-cell suspensions were prepared by enzymatic dissociation and sorted for live CD45+ immune cells.
+
+**Single-Cell Library Preparation**:
+- **Platform**: 10x Genomics Chromium 5' v3 for GEX + VDJ + ADT + ATAC
+- **Antibody panel**: TotalSeq-B (BioLegend) for 40 surface proteins
+- **Histone profiling**: CUT&Tag performed in parallel on aliquots using anti-H3K27ac and anti-H3K4me1
+- **Methylation profiling**: snmC-seq2 protocol for CpG-resolution DNA methylation
+
+Data Generation
+---------------
+
+**Sequencing Instruments**
+
+- Illumina NovaSeq 6000 (paired-end 150 bp)
+
+**Read Depth**
+
+- GEX: ~50,000 reads/cell  
+- ADT: ~5,000 reads/cell  
+- V(D)J: ~10,000 reads/cell  
+- ATAC: ~25,000 fragments/cell  
+- CUT&Tag: ~20 million reads per histone mark  
+- Methylation: ~100,000 CpG sites/cell
+
+
+**FASTQ Conversion**: BCL to FASTQ via `bcl2fastq` with dual-index demultiplexing
+
+Computational Workflow
+----------------------
+
+1. **Preprocessing**
+   - GEX + ADT + VDJ: Processed using `cellranger multi` with a YAML configuration for all modalities
+   - ATAC: Processed using `cellranger-atac` for fragment counting and peak calling
+   - CUT&Tag: Aligned with `bowtie2`, deduplicated, and peak-called via `MACS2`
+   - Methylation: Aligned with `bismark`, methylation calls with `methylDackel`
+
+2. **Quality Control**
+
+**Cell Filtering**
+
+- Using `Seurat`:  
+  - Gene count >200 and <5000  
+  - Mitochondrial genes <10%  
+  - ADT signal thresholding to remove ambient barcode contamination
+
+**Doublet Detection**
+
+- `DoubletFinder`
+
+**ATAC-seq Specific QC**
+
+- Fragment count-based QC and nucleosomal patterning  
+- Peak overlap for histone marks  
+- Fragment enrichment over TSS
+
+**Methylation QC**
+
+- CpG coverage thresholding  
+- Bisulfite conversion rate checks
+
+
+3. **Normalization and Integration**
+   - RNA: `SCTransform`
+   - ADT: `CLR` transformation
+   - ATAC: Latent Semantic Indexing (LSI)
+   - Methylation: Principal Component Analysis (PCA) on β-values
+   - Multimodal integration using `FindMultiModalNeighbors()` in Seurat and `MOFA+`
+
+4. **Dimensionality Reduction and Clustering**
+   - WNN-based UMAP projection using RNA + ADT + ATAC
+   - Leiden clustering (resolution = 0.8)
+   - Cell-type annotation using marker gene panels and `SingleR`
+
+Biological Findings
+-------------------
+
+1. **Transcriptional Heterogeneity**
+
+   Identification of key immune subsets:
+
+   - CD8+ cytotoxic T cells (`GZMB`, `PRF1`)
+   - CD4+ Tregs (`FOXP3`, `IL2RA`)
+   - Exhausted CD8+ T cells (`PDCD1`, `LAG3`, `TOX`)
+   - Tissue-resident memory T cells (`CD69`, `ITGAE`)
+   - B cell subsets:
+     - Naïve (`IGHM+`)
+     - Memory (`CD27+`)
+     - Plasma (`XBP1`, `PRDM1`)
+
+2. **Surface Proteomics Confirmation**
+
+   ADT signals confirmed lineage specificity:
+
+   - `CD8` / `CD4` / `CD3` for T cells  
+   - `CD19` / `CD20` / `CD27` for B cells  
+   - `TIGIT` / `PD-1` / `LAG3` for exhausted T cells  
+   - `CD25` / `CTLA4` for activated Tregs
+
+
+3. **Clonotype Expansion**
+   - VDJ data from `cellranger vdj` and parsed using `scRepertoire`
+   - Clonally expanded CD8+ populations highly enriched in exhausted clusters
+   - Treg clonotypes found in both tumor and peripheral samples (suggesting trafficking)
+   - Somatic hypermutation (SHM) rates elevated in tumor-resident plasma cells (via `IgBlast`)
+
+4. **Chromatin and Epigenetic Landscape**
+
+   **scATAC-seq**
+
+   - Differential accessibility in effector vs. exhausted CD8+ T cells
+   - Motif enrichment for `TOX`, `BATF`, and `NFAT` in exhausted clusters
+
+   **CUT&Tag**
+
+   - `H3K27ac` peaks in enhancer regions upstream of `PDCD1` and `TOX`
+   - Bivalent `H3K4me1/H3K27me3` at loci encoding checkpoint molecules in progenitor T cells
+
+   **Methylation**
+
+   - Hypomethylation at `PRF1`/`GZMB` promoters in cytotoxic T cells
+   - Progressive hypermethylation of `TCF7` and `LEF1` in exhausted CD8+ cells
+
+5. **Trajectory Inference and Cell Fate**
+
+   - Pseudotime ordering using `Monocle 3` revealed:
+     - Transition from naïve → effector → exhausted states
+     - Bifurcation into memory-like vs. terminally exhausted CD8+ T cells
+   - Co-embedding with ATAC accessibility supported bifurcated regulatory paths
+
+
+6. **Spatial Anchoring (optional)**
+   - Mapped cell types onto spatial RNA data using `Tangram`
+   - Tregs enriched at tumor-stroma interface
+   - TRM cells localized within tumor nests
+
+Conclusion
+----------
+
+This multi-omic approach unravels the multilayered biology of immune-tumor interactions. By combining scRNA-seq, ADT profiling, VDJ sequencing, chromatin accessibility, histone modification, and DNA methylation analysis, the study resolves both phenotypic identity and regulatory architecture of immune cells in the tumor microenvironment. The observed transcriptional exhaustion, epigenetic silencing, and clonal dominance of CD8+ T cells provide compelling evidence for adaptive resistance in melanoma, guiding future immunotherapeutic strategies.
+
+Key Tools and Pipelines
+------------------------
+
+- **Preprocessing**: Cell Ranger, Bowtie2, Bismark, MACS2, methylDackel
+- **Analysis**: Seurat, scRepertoire, ArchR, MOFA+, Monocle 3, SCENIC
+- **Integration**: WNN, CCA, LSI, PCA, MOFA+
+- **Visualization**: UMAP, heatmaps, Circos (for V-J usage), pseudotime plots

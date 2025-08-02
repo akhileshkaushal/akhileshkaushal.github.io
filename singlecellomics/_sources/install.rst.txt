@@ -1,0 +1,92 @@
+Installation and Setup
+======================
+
+This section provides detailed instructions to install the required tools and prepare the computational environment for analyzing single-cell omics datasets. The installation is modular and tailored to support preprocessing, alignment, quantification, quality control, and downstream analysis of multiple single-cell modalities.
+
+Supported Data Types
+--------------------
+
+- **Input:** Paired-end FASTQ files or raw BCL files generated from:
+  - 10x Genomics (Chromium)
+  - Smart-seq2
+  - Plate-based single-cell assays
+
+Environment Recommendations
+---------------------------
+
+We recommend using Conda environments or Apptainer/Docker containers to ensure reproducibility and minimize software conflicts. All pipelines are compatible with Linux-based systems and tested on HPC environments using SLURM.
+
+Quick Setup with Conda (Optional)
+---------------------------------
+
+To quickly install core tools using Conda:
+
+.. code-block:: bash
+
+   conda create -n singlecell_env python=3.10 -y
+   conda activate singlecell_env
+   conda install -c bioconda star cellranger alevin-fry kallisto bustools mixcr trust4 imrep
+   conda install -c conda-forge scanpy seaborn jupyterlab r-base r-seurat
+
+Alternatively, consider using the provided Apptainer container (see :doc:`structure_and_containerisation`).
+
+Required Tools by Module
+------------------------
+
+**1. Preprocessing**
+
+- `Cell Ranger <https://support.10xgenomics.com/single-cell-gene-expression/software>`__ (10x Genomics official pipeline)
+- `STARsolo <https://github.com/alexdobin/STAR>`__ (STAR aligner with scRNA-seq mode)
+- `Alevin <https://salmon.readthedocs.io/en/latest/alevin.html>`__ (part of Salmon)
+- `Kallisto|Bustools <https://www.kallistobus.tools/>`__ (lightweight pseudoalignment)
+
+**2. Alignment and Quantification**
+
+- STAR (for STARsolo-based workflows)
+- Cell Ranger (for integrated alignment + quantification)
+- Alevin-fry / Kallisto-Bustools (pseudoalignment and quantification)
+
+**3. Quality Control and Filtering**
+
+- `Scrublet <https://github.com/AllonKleinLab/scrublet>`__ (doublet detection)
+- `Seurat <https://satijalab.org/seurat/>`__ (R-based single-cell toolkit)
+- `Scanpy <https://scanpy.readthedocs.io/en/stable/>`__ (Python-based toolkit)
+
+**4. Downstream Analysis**
+
+- `Seurat` (for normalization, clustering, integration)
+- `Scanpy` (highly scalable, Python-based alternative)
+- `Monocle3 <https://cole-trapnell-lab.github.io/monocle3/>`__ (trajectory inference)
+- `ArchR <https://www.archrproject.com/>`__ (chromatin accessibility and multi-omics integration)
+
+**5. Antibody-Derived Tag (ADT) Analysis**
+
+- `CiteFuse <https://github.com/edward130603/CiteFuse>`__ (integrated ADT-RNA workflows)
+- `Seurat v4+` with WNN (Weighted Nearest Neighbor) integration
+
+**6. Immune Repertoire Analysis**
+
+- `MiXCR <https://github.com/milaboratory/mixcr>`__ (TCR/BCR annotation)
+- `TRUST4 <https://github.com/liulab-dfci/TRUST4>`__ (de novo reconstruction of TCR/BCR)
+- `ImReP <https://github.com/mikessh/imrep>`__ (immunoglobulin profiling)
+
+Additional Utilities
+--------------------
+
+- `FastQC` and `MultiQC` for raw data quality inspection
+- `UMI-tools` for UMI deduplication (when needed)
+- `Cutadapt` for trimming and demultiplexing
+
+Containerized Pipelines
+-----------------------
+
+For maximum reproducibility, we recommend using pre-built containers:
+
+.. code-block:: bash
+
+   apptainer pull docker://<registry>/singlecellomics:latest
+   apptainer shell singlecellomics_latest.sif
+
+Container support includes all major packages described above and eliminates the need for individual installations.
+
+Once installation is complete, refer to the :doc:`run_pipeline_scrnaseq` section for running workflows and example commands.

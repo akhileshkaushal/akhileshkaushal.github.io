@@ -1,0 +1,117 @@
+scRNA-seq Pipeline
+==================
+
+This page describes the complete step-by-step pipeline for processing single-cell RNA sequencing (scRNA-seq) data. The workflow is modular and supports input from both droplet-based (e.g., 10x Genomics) and plate-based protocols.
+
+1. FASTQ Generation and Initial QC
+----------------------------------
+
+- Convert raw BCL files to FASTQ format using Illumina's `bcl2fastq` or `bcl-convert`.
+- Perform quality assessment using `FastQC` and generate a summary report with `MultiQC`.
+- Key metrics:
+  - Per base sequence quality
+  - Per tile sequence quality
+  - Adapter content
+  - Overrepresented sequences
+
+2. Alignment and UMI Processing
+-------------------------------
+
+- Use either of the following tools:
+  - **Cell Ranger**: Recommended for 10x Genomics data.
+  - **STARsolo**: Flexible and open-source alignment and quantification.
+
+- Steps:
+  - Align reads to the appropriate reference transcriptome (e.g., GRCh38 or mm10).
+  - Extract and correct cell barcodes.
+  - Deduplicate UMIs and generate a filtered gene-barcode matrix.
+
+- Reference preparation:
+  - For Cell Ranger, use `cellranger mkref` to build custom reference genomes if needed.
+  - For STARsolo, index with `STAR --runMode genomeGenerate` using GTF and FASTA.
+
+3. Quality Control and Filtering
+--------------------------------
+
+**Cell Filtering Criteria**
+
+- Total number of UMIs per cell  
+- Number of detected genes per cell  
+- Percentage of mitochondrial gene expression
+
+**Doublet Detection (Optional)**
+
+- `DoubletFinder` (Seurat-based)  
+- `Scrublet` (Scanpy-based)
+
+**QC Metric Visualization**
+
+- Violin plots of `nUMI`, `nGene`, and mitochondrial percentage  
+- Scatter plots: `nUMI` vs. mito %, `nGene` vs. mito %
+
+
+4. Normalization and Feature Selection
+--------------------------------------
+
+- Normalize gene expression:
+  - **Seurat**: `NormalizeData(method = 'LogNormalize', scale.factor = 1e4)`
+  - **Scanpy**: `pp.normalize_total()` followed by `pp.log1p()`
+
+- Identify highly variable genes:
+  - Seurat: `FindVariableFeatures()`
+  - Scanpy: `pp.highly_variable_genes()`
+
+5. Dimensionality Reduction and Clustering
+------------------------------------------
+
+- Scale data:
+  - Seurat: `ScaleData()`
+  - Scanpy: `pp.scale()`
+
+- Perform PCA:
+  - Seurat: `RunPCA()`
+  - Scanpy: `tl.pca()`
+
+- Construct KNN graph and cluster cells:
+  - Seurat: `FindNeighbors()` and `FindClusters()` (Louvain or Leiden)
+  - Scanpy: `pp.neighbors()` and `tl.leiden()`
+
+- Visualize clusters:
+  - Seurat: `RunUMAP()` or `RunTSNE()`
+  - Scanpy: `tl.umap()` or `tl.tsne()`
+
+6. Marker Identification and Cell Type Annotation
+-------------------------------------------------
+
+**Cluster Marker Identification**
+
+- **Seurat**: `FindAllMarkers()` using Wilcoxon Rank Sum Test  
+- **Scanpy**: `tl.rank_genes_groups()`
+
+**Cluster Annotation**
+
+- Manual annotation using canonical marker genes  
+- Automated methods:  
+  - `SingleR`  
+  - `CellTypist`  
+  - `scType`
+
+
+7. Downstream Analysis
+----------------------
+
+- **Pathway Enrichment**
+  - `clusterProfiler` (R): GO, KEGG, Reactome enrichment
+  - `fgsea` (R): GSEA on ranked marker lists
+  - `Enrichr` (API or Python/R interface)
+
+- **Trajectory Inference**
+  - `Monocle3`: pseudotime ordering and graph learning
+  - `Slingshot`: lineage assignment
+  - `paga` (Scanpy): abstracted graph-based trajectory
+
+- **Multi-omic Integration**
+  - Spatial transcriptomics (e.g., Seurat v5 spatial, Giotto)
+  - ATAC integration (e.g., ArchR, Seurat WNN)
+
+This pipeline enables complete processing and interpretation of scRNA-seq data, from raw reads to biological insight. See :doc:`advanced_analysis` for multimodal extensions and specialized modules.

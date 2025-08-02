@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search &mdash; Single Cell Omics Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/singlecellomics/search.html" />
+    
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="#" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Single Cell Omics Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Single-cell Omics Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-modalities">Supported Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#future-directions">Future Directions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-recommendations">Environment Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#quick-setup-with-conda-optional">Quick Setup with Conda (Optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#required-tools-by-module">Required Tools by Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#additional-utilities">Additional Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#containerized-pipelines">Containerized Pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#pipeline-directory-structure">Pipeline Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#containerization">Containerization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#conda-environments">Conda Environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#apptainer-singularity-containers">Apptainer (Singularity) Containers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#benefits-of-containerization">Benefits of Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#cloud-and-hpc-integration">Cloud and HPC Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#versioning-and-updates">Versioning and Updates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_scrnaseq.html">scRNA-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#fastq-generation-and-initial-qc">1. FASTQ Generation and Initial QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#alignment-and-umi-processing">2. Alignment and UMI Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#quality-control-and-filtering">3. Quality Control and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#normalization-and-feature-selection">4. Normalization and Feature Selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#dimensionality-reduction-and-clustering">5. Dimensionality Reduction and Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#marker-identification-and-cell-type-annotation">6. Marker Identification and Cell Type Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#downstream-analysis">7. Downstream Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_citeseq.html">CITE-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#raw-data-input-and-demultiplexing">1. Raw Data Input and Demultiplexing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#alignment-and-quantification">2. Alignment and Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#quality-control-and-filtering">3. Quality Control and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#normalization-and-feature-scaling">4. Normalization and Feature Scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#data-integration-and-joint-embedding">5. Data Integration and Joint Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#clustering-and-visualization">6. Clustering and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#marker-detection-and-differential-expression">7. Marker Detection and Differential Expression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#key-outputs">Key Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#software-and-tools">Software and Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html">TCR/BCR Sequencing Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#input-fastq-files">1. Input FASTQ Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#quality-control">2. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#alignment-and-v-d-j-annotation">3. Alignment and V(D)J Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#clonotype-aggregation-and-filtering">4. Clonotype Aggregation and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#repertoire-diversity-analysis">5. Repertoire Diversity Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#visualization-and-reporting">6. Visualization and Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#optional-downstream-analyses">7. Optional Downstream Analyses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#key-outputs">Key Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="integrated_multiomics.html">Integrated Single-Cell Multi-Omics Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#dataset-description">Dataset Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#pipeline-workflow">Pipeline Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#raw-data-preprocessing">1. Raw Data Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#multi-modal-data-integration-in-seurat">2. Multi-Modal Data Integration in Seurat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#integration-of-tcr-bcr-data">3. Integration of TCR/BCR Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#clustering-and-annotation">4. Clustering and Annotation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#results-interpretation">Results Interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#visualization-outputs">Visualization Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#conclusions">Conclusions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Single-Cell Multi-Omics Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#overview-of-supported-modalities">Overview of Supported Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#multi-omic-integration-strategies">1. Multi-Omic Integration Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#epigenetic-profiling-with-scatac-seq-and-cut-tag">2. Epigenetic Profiling with scATAC-seq and CUT&amp;Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#dna-methylation-integration">3. DNA Methylation Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#spatial-transcriptomics-overlay">4. Spatial Transcriptomics Overlay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#cross-modal-regulatory-inference">5. Cross-Modal Regulatory Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#example-applications">Example Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: Comprehensive Single-Cell Multi-Omics Characterization of the Tumor Microenvironment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#study-context-and-sample-acquisition">Study Context and Sample Acquisition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#data-generation">Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#computational-workflow">Computational Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#biological-findings">Biological Findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#key-tools-and-pipelines">Key Tools and Pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Single Cell Omics Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Search</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <noscript>
+  <div id="fallback" class="admonition warning">
+    <p class="last">
+      Please activate JavaScript to enable the search functionality.
+    </p>
+  </div>
+  </noscript>
+
+  
+  <div id="search-results">
+  
+  </div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+  <script>
+    jQuery(function() { Search.loadIndex("searchindex.js"); });
+  </script>
+  
+  <script id="searchindexloader"></script>
+   
+
+
+</body>
+</html>

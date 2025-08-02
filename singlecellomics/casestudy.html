@@ -1,0 +1,363 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study: Comprehensive Single-Cell Multi-Omics Characterization of the Tumor Microenvironment &mdash; Single Cell Omics Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/singlecellomics/casestudy.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References" href="references.html" />
+    <link rel="prev" title="Advanced Single-Cell Multi-Omics Analysis" href="advanced_analysis.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Single Cell Omics Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Single-cell Omics Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-modalities">Supported Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#future-directions">Future Directions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-recommendations">Environment Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#quick-setup-with-conda-optional">Quick Setup with Conda (Optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#required-tools-by-module">Required Tools by Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#additional-utilities">Additional Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#containerized-pipelines">Containerized Pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#pipeline-directory-structure">Pipeline Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#containerization">Containerization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#conda-environments">Conda Environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="structure_and_containerisation.html#apptainer-singularity-containers">Apptainer (Singularity) Containers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#benefits-of-containerization">Benefits of Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#cloud-and-hpc-integration">Cloud and HPC Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#versioning-and-updates">Versioning and Updates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_scrnaseq.html">scRNA-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#fastq-generation-and-initial-qc">1. FASTQ Generation and Initial QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#alignment-and-umi-processing">2. Alignment and UMI Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#quality-control-and-filtering">3. Quality Control and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#normalization-and-feature-selection">4. Normalization and Feature Selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#dimensionality-reduction-and-clustering">5. Dimensionality Reduction and Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#marker-identification-and-cell-type-annotation">6. Marker Identification and Cell Type Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#downstream-analysis">7. Downstream Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_citeseq.html">CITE-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#raw-data-input-and-demultiplexing">1. Raw Data Input and Demultiplexing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#alignment-and-quantification">2. Alignment and Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#quality-control-and-filtering">3. Quality Control and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#normalization-and-feature-scaling">4. Normalization and Feature Scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#data-integration-and-joint-embedding">5. Data Integration and Joint Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#clustering-and-visualization">6. Clustering and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#marker-detection-and-differential-expression">7. Marker Detection and Differential Expression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#key-outputs">Key Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#software-and-tools">Software and Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html">TCR/BCR Sequencing Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#input-fastq-files">1. Input FASTQ Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#quality-control">2. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#alignment-and-v-d-j-annotation">3. Alignment and V(D)J Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#clonotype-aggregation-and-filtering">4. Clonotype Aggregation and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#repertoire-diversity-analysis">5. Repertoire Diversity Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#visualization-and-reporting">6. Visualization and Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#optional-downstream-analyses">7. Optional Downstream Analyses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#key-outputs">Key Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="integrated_multiomics.html">Integrated Single-Cell Multi-Omics Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#dataset-description">Dataset Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#pipeline-workflow">Pipeline Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#raw-data-preprocessing">1. Raw Data Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#multi-modal-data-integration-in-seurat">2. Multi-Modal Data Integration in Seurat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#integration-of-tcr-bcr-data">3. Integration of TCR/BCR Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#clustering-and-annotation">4. Clustering and Annotation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#results-interpretation">Results Interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#visualization-outputs">Visualization Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#conclusions">Conclusions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Single-Cell Multi-Omics Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#overview-of-supported-modalities">Overview of Supported Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#multi-omic-integration-strategies">1. Multi-Omic Integration Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#epigenetic-profiling-with-scatac-seq-and-cut-tag">2. Epigenetic Profiling with scATAC-seq and CUT&amp;Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#dna-methylation-integration">3. DNA Methylation Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#spatial-transcriptomics-overlay">4. Spatial Transcriptomics Overlay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#cross-modal-regulatory-inference">5. Cross-Modal Regulatory Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#example-applications">Example Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Case Study: Comprehensive Single-Cell Multi-Omics Characterization of the Tumor Microenvironment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#study-context-and-sample-acquisition">Study Context and Sample Acquisition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-generation">Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computational-workflow">Computational Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#biological-findings">Biological Findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-tools-and-pipelines">Key Tools and Pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Single Cell Omics Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Case Study: Comprehensive Single-Cell Multi-Omics Characterization of the Tumor Microenvironment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/casestudy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="advanced_analysis.html" class="btn btn-neutral float-left" title="Advanced Single-Cell Multi-Omics Analysis" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="case-study-comprehensive-single-cell-multi-omics-characterization-of-the-tumor-microenvironment">
+<h1>Case Study: Comprehensive Single-Cell Multi-Omics Characterization of the Tumor Microenvironment<a class="headerlink" href="#case-study-comprehensive-single-cell-multi-omics-characterization-of-the-tumor-microenvironment" title="Link to this heading"></a></h1>
+<p>This case study synthesizes insights from the technological landscape of single-cell multi-omics platforms, focusing on a hypothetical integrated analysis of a tumor microenvironment (TME) using cutting-edge sequencing strategies. The aim is to demonstrate a full-spectrum pipeline that integrates transcriptomic, proteomic, epigenomic, and immune receptor data to decipher regulatory, clonal, and spatial dynamics of immune and tumor cells. The methodology reflects real-world implementations based on technologies and tools reviewed in the landmark study on single-cell multi-omics.</p>
+<section id="study-context-and-sample-acquisition">
+<h2>Study Context and Sample Acquisition<a class="headerlink" href="#study-context-and-sample-acquisition" title="Link to this heading"></a></h2>
+<p><strong>Disease Focus</strong>: Malignant melanoma</p>
+<p><strong>Objective</strong>: Dissect transcriptional and regulatory programs of tumor-infiltrating immune cells, identify immune evasion markers, and resolve clonal expansion patterns among T and B lymphocytes.</p>
+<p><strong>Samples</strong>: Tumor core biopsies obtained from melanoma patients undergoing immune checkpoint blockade (ICB) therapy. Single-cell suspensions were prepared by enzymatic dissociation and sorted for live CD45+ immune cells.</p>
+<p><strong>Single-Cell Library Preparation</strong>:
+- <strong>Platform</strong>: 10x Genomics Chromium 5’ v3 for GEX + VDJ + ADT + ATAC
+- <strong>Antibody panel</strong>: TotalSeq-B (BioLegend) for 40 surface proteins
+- <strong>Histone profiling</strong>: CUT&amp;Tag performed in parallel on aliquots using anti-H3K27ac and anti-H3K4me1
+- <strong>Methylation profiling</strong>: snmC-seq2 protocol for CpG-resolution DNA methylation</p>
+</section>
+<section id="data-generation">
+<h2>Data Generation<a class="headerlink" href="#data-generation" title="Link to this heading"></a></h2>
+<p><strong>Sequencing Instruments</strong></p>
+<ul class="simple">
+<li><p>Illumina NovaSeq 6000 (paired-end 150 bp)</p></li>
+</ul>
+<p><strong>Read Depth</strong></p>
+<ul class="simple">
+<li><p>GEX: ~50,000 reads/cell</p></li>
+<li><p>ADT: ~5,000 reads/cell</p></li>
+<li><p>V(D)J: ~10,000 reads/cell</p></li>
+<li><p>ATAC: ~25,000 fragments/cell</p></li>
+<li><p>CUT&amp;Tag: ~20 million reads per histone mark</p></li>
+<li><p>Methylation: ~100,000 CpG sites/cell</p></li>
+</ul>
+<p><strong>FASTQ Conversion</strong>: BCL to FASTQ via <cite>bcl2fastq</cite> with dual-index demultiplexing</p>
+</section>
+<section id="computational-workflow">
+<h2>Computational Workflow<a class="headerlink" href="#computational-workflow" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Preprocessing</strong>
+- GEX + ADT + VDJ: Processed using <cite>cellranger multi</cite> with a YAML configuration for all modalities
+- ATAC: Processed using <cite>cellranger-atac</cite> for fragment counting and peak calling
+- CUT&amp;Tag: Aligned with <cite>bowtie2</cite>, deduplicated, and peak-called via <cite>MACS2</cite>
+- Methylation: Aligned with <cite>bismark</cite>, methylation calls with <cite>methylDackel</cite></p></li>
+<li><p><strong>Quality Control</strong></p></li>
+</ol>
+<p><strong>Cell Filtering</strong></p>
+<ul class="simple">
+<li><p>Using <cite>Seurat</cite>:
+- Gene count &gt;200 and &lt;5000
+- Mitochondrial genes &lt;10%
+- ADT signal thresholding to remove ambient barcode contamination</p></li>
+</ul>
+<p><strong>Doublet Detection</strong></p>
+<ul class="simple">
+<li><p><cite>DoubletFinder</cite></p></li>
+</ul>
+<p><strong>ATAC-seq Specific QC</strong></p>
+<ul class="simple">
+<li><p>Fragment count-based QC and nucleosomal patterning</p></li>
+<li><p>Peak overlap for histone marks</p></li>
+<li><p>Fragment enrichment over TSS</p></li>
+</ul>
+<p><strong>Methylation QC</strong></p>
+<ul class="simple">
+<li><p>CpG coverage thresholding</p></li>
+<li><p>Bisulfite conversion rate checks</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p><strong>Normalization and Integration</strong>
+- RNA: <cite>SCTransform</cite>
+- ADT: <cite>CLR</cite> transformation
+- ATAC: Latent Semantic Indexing (LSI)
+- Methylation: Principal Component Analysis (PCA) on β-values
+- Multimodal integration using <cite>FindMultiModalNeighbors()</cite> in Seurat and <cite>MOFA+</cite></p></li>
+<li><p><strong>Dimensionality Reduction and Clustering</strong>
+- WNN-based UMAP projection using RNA + ADT + ATAC
+- Leiden clustering (resolution = 0.8)
+- Cell-type annotation using marker gene panels and <cite>SingleR</cite></p></li>
+</ol>
+</section>
+<section id="biological-findings">
+<h2>Biological Findings<a class="headerlink" href="#biological-findings" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Transcriptional Heterogeneity</strong></p>
+<p>Identification of key immune subsets:</p>
+<ul class="simple">
+<li><p>CD8+ cytotoxic T cells (<cite>GZMB</cite>, <cite>PRF1</cite>)</p></li>
+<li><p>CD4+ Tregs (<cite>FOXP3</cite>, <cite>IL2RA</cite>)</p></li>
+<li><p>Exhausted CD8+ T cells (<cite>PDCD1</cite>, <cite>LAG3</cite>, <cite>TOX</cite>)</p></li>
+<li><p>Tissue-resident memory T cells (<cite>CD69</cite>, <cite>ITGAE</cite>)</p></li>
+<li><p>B cell subsets:
+- Naïve (<cite>IGHM+</cite>)
+- Memory (<cite>CD27+</cite>)
+- Plasma (<cite>XBP1</cite>, <cite>PRDM1</cite>)</p></li>
+</ul>
+</li>
+<li><p><strong>Surface Proteomics Confirmation</strong></p>
+<p>ADT signals confirmed lineage specificity:</p>
+<ul class="simple">
+<li><p><cite>CD8</cite> / <cite>CD4</cite> / <cite>CD3</cite> for T cells</p></li>
+<li><p><cite>CD19</cite> / <cite>CD20</cite> / <cite>CD27</cite> for B cells</p></li>
+<li><p><cite>TIGIT</cite> / <cite>PD-1</cite> / <cite>LAG3</cite> for exhausted T cells</p></li>
+<li><p><cite>CD25</cite> / <cite>CTLA4</cite> for activated Tregs</p></li>
+</ul>
+</li>
+<li><p><strong>Clonotype Expansion</strong>
+- VDJ data from <cite>cellranger vdj</cite> and parsed using <cite>scRepertoire</cite>
+- Clonally expanded CD8+ populations highly enriched in exhausted clusters
+- Treg clonotypes found in both tumor and peripheral samples (suggesting trafficking)
+- Somatic hypermutation (SHM) rates elevated in tumor-resident plasma cells (via <cite>IgBlast</cite>)</p></li>
+<li><p><strong>Chromatin and Epigenetic Landscape</strong></p>
+<p><strong>scATAC-seq</strong></p>
+<ul class="simple">
+<li><p>Differential accessibility in effector vs. exhausted CD8+ T cells</p></li>
+<li><p>Motif enrichment for <cite>TOX</cite>, <cite>BATF</cite>, and <cite>NFAT</cite> in exhausted clusters</p></li>
+</ul>
+<p><strong>CUT&amp;Tag</strong></p>
+<ul class="simple">
+<li><p><cite>H3K27ac</cite> peaks in enhancer regions upstream of <cite>PDCD1</cite> and <cite>TOX</cite></p></li>
+<li><p>Bivalent <cite>H3K4me1/H3K27me3</cite> at loci encoding checkpoint molecules in progenitor T cells</p></li>
+</ul>
+<p><strong>Methylation</strong></p>
+<ul class="simple">
+<li><p>Hypomethylation at <cite>PRF1</cite>/<cite>GZMB</cite> promoters in cytotoxic T cells</p></li>
+<li><p>Progressive hypermethylation of <cite>TCF7</cite> and <cite>LEF1</cite> in exhausted CD8+ cells</p></li>
+</ul>
+</li>
+<li><p><strong>Trajectory Inference and Cell Fate</strong></p>
+<ul class="simple">
+<li><p>Pseudotime ordering using <cite>Monocle 3</cite> revealed:
+- Transition from naïve → effector → exhausted states
+- Bifurcation into memory-like vs. terminally exhausted CD8+ T cells</p></li>
+<li><p>Co-embedding with ATAC accessibility supported bifurcated regulatory paths</p></li>
+</ul>
+</li>
+<li><p><strong>Spatial Anchoring (optional)</strong>
+- Mapped cell types onto spatial RNA data using <cite>Tangram</cite>
+- Tregs enriched at tumor-stroma interface
+- TRM cells localized within tumor nests</p></li>
+</ol>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
+<p>This multi-omic approach unravels the multilayered biology of immune-tumor interactions. By combining scRNA-seq, ADT profiling, VDJ sequencing, chromatin accessibility, histone modification, and DNA methylation analysis, the study resolves both phenotypic identity and regulatory architecture of immune cells in the tumor microenvironment. The observed transcriptional exhaustion, epigenetic silencing, and clonal dominance of CD8+ T cells provide compelling evidence for adaptive resistance in melanoma, guiding future immunotherapeutic strategies.</p>
+</section>
+<section id="key-tools-and-pipelines">
+<h2>Key Tools and Pipelines<a class="headerlink" href="#key-tools-and-pipelines" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Preprocessing</strong>: Cell Ranger, Bowtie2, Bismark, MACS2, methylDackel</p></li>
+<li><p><strong>Analysis</strong>: Seurat, scRepertoire, ArchR, MOFA+, Monocle 3, SCENIC</p></li>
+<li><p><strong>Integration</strong>: WNN, CCA, LSI, PCA, MOFA+</p></li>
+<li><p><strong>Visualization</strong>: UMAP, heatmaps, Circos (for V-J usage), pseudotime plots</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="advanced_analysis.html" class="btn btn-neutral float-left" title="Advanced Single-Cell Multi-Omics Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

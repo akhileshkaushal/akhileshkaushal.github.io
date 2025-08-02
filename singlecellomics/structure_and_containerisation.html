@@ -1,0 +1,313 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline Structure and Containerisation &mdash; Single Cell Omics Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/singlecellomics/structure_and_containerisation.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="scRNA-seq Pipeline" href="run_pipeline_scrnaseq.html" />
+    <link rel="prev" title="Installation and Setup" href="install.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Single Cell Omics Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Single-cell Omics Pipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-modalities">Supported Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#future-directions">Future Directions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#environment-recommendations">Environment Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#quick-setup-with-conda-optional">Quick Setup with Conda (Optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#required-tools-by-module">Required Tools by Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#additional-utilities">Additional Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#containerized-pipelines">Containerized Pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-directory-structure">Pipeline Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#containerization">Containerization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#conda-environments">Conda Environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apptainer-singularity-containers">Apptainer (Singularity) Containers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#benefits-of-containerization">Benefits of Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cloud-and-hpc-integration">Cloud and HPC Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#versioning-and-updates">Versioning and Updates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_scrnaseq.html">scRNA-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#fastq-generation-and-initial-qc">1. FASTQ Generation and Initial QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#alignment-and-umi-processing">2. Alignment and UMI Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#quality-control-and-filtering">3. Quality Control and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#normalization-and-feature-selection">4. Normalization and Feature Selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#dimensionality-reduction-and-clustering">5. Dimensionality Reduction and Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#marker-identification-and-cell-type-annotation">6. Marker Identification and Cell Type Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_scrnaseq.html#downstream-analysis">7. Downstream Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_citeseq.html">CITE-seq Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#raw-data-input-and-demultiplexing">1. Raw Data Input and Demultiplexing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#alignment-and-quantification">2. Alignment and Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#quality-control-and-filtering">3. Quality Control and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#normalization-and-feature-scaling">4. Normalization and Feature Scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#data-integration-and-joint-embedding">5. Data Integration and Joint Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#clustering-and-visualization">6. Clustering and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#marker-detection-and-differential-expression">7. Marker Detection and Differential Expression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#key-outputs">Key Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_citeseq.html#software-and-tools">Software and Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html">TCR/BCR Sequencing Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#input-fastq-files">1. Input FASTQ Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#quality-control">2. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#alignment-and-v-d-j-annotation">3. Alignment and V(D)J Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#clonotype-aggregation-and-filtering">4. Clonotype Aggregation and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#repertoire-diversity-analysis">5. Repertoire Diversity Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#visualization-and-reporting">6. Visualization and Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#optional-downstream-analyses">7. Optional Downstream Analyses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline_tcr_bcr_seq.html#key-outputs">Key Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="integrated_multiomics.html">Integrated Single-Cell Multi-Omics Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#dataset-description">Dataset Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#pipeline-workflow">Pipeline Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#raw-data-preprocessing">1. Raw Data Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#multi-modal-data-integration-in-seurat">2. Multi-Modal Data Integration in Seurat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#integration-of-tcr-bcr-data">3. Integration of TCR/BCR Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integrated_multiomics.html#clustering-and-annotation">4. Clustering and Annotation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#results-interpretation">Results Interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#visualization-outputs">Visualization Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrated_multiomics.html#conclusions">Conclusions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Single-Cell Multi-Omics Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#overview-of-supported-modalities">Overview of Supported Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#multi-omic-integration-strategies">1. Multi-Omic Integration Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#epigenetic-profiling-with-scatac-seq-and-cut-tag">2. Epigenetic Profiling with scATAC-seq and CUT&amp;Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#dna-methylation-integration">3. DNA Methylation Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#spatial-transcriptomics-overlay">4. Spatial Transcriptomics Overlay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#cross-modal-regulatory-inference">5. Cross-Modal Regulatory Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#example-applications">Example Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: Comprehensive Single-Cell Multi-Omics Characterization of the Tumor Microenvironment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#study-context-and-sample-acquisition">Study Context and Sample Acquisition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#data-generation">Data Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#computational-workflow">Computational Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#biological-findings">Biological Findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#key-tools-and-pipelines">Key Tools and Pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Single Cell Omics Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pipeline Structure and Containerisation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/structure_and_containerisation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation and Setup" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_pipeline_scrnaseq.html" class="btn btn-neutral float-right" title="scRNA-seq Pipeline" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-structure-and-containerisation">
+<h1>Pipeline Structure and Containerisation<a class="headerlink" href="#pipeline-structure-and-containerisation" title="Link to this heading"></a></h1>
+<p>This section outlines the directory structure, modular design, and containerization strategy used to ensure reproducibility, scalability, and environment control for the single-cell omics pipelines.</p>
+<section id="pipeline-directory-structure">
+<h2>Pipeline Directory Structure<a class="headerlink" href="#pipeline-directory-structure" title="Link to this heading"></a></h2>
+<p>The pipeline is organized in a modular and extensible format to facilitate both standalone and integrated analyses of scRNA-seq, CITE-seq, and TCR/BCR-seq data.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>singlecell_omics_pipeline/
+├──<span class="w"> </span>config/
+│<span class="w">   </span>├──<span class="w"> </span>samplesheet.csv
+│<span class="w">   </span>├──<span class="w"> </span>multi_config.yaml
+│<span class="w">   </span>└──<span class="w"> </span>settings.yaml
+├──<span class="w"> </span>data/
+│<span class="w">   </span>├──<span class="w"> </span>raw/<span class="w">                  </span><span class="c1"># FASTQ or BCL files</span>
+│<span class="w">   </span>└──<span class="w"> </span>processed/<span class="w">            </span><span class="c1"># Output matrices and metadata</span>
+├──<span class="w"> </span>scripts/
+│<span class="w">   </span>├──<span class="w"> </span>preprocessing/
+│<span class="w">   </span>├──<span class="w"> </span>quantification/
+│<span class="w">   </span>├──<span class="w"> </span>qc/
+│<span class="w">   </span>├──<span class="w"> </span>integration/
+│<span class="w">   </span>└──<span class="w"> </span>visualization/
+├──<span class="w"> </span>results/
+│<span class="w">   </span>├──<span class="w"> </span>figures/
+│<span class="w">   </span>└──<span class="w"> </span>tables/
+├──<span class="w"> </span>envs/
+│<span class="w">   </span>├──<span class="w"> </span>scrna_env.yaml
+│<span class="w">   </span>├──<span class="w"> </span>citeseq_env.yaml
+│<span class="w">   </span>└──<span class="w"> </span>tcrbcr_env.yaml
+└──<span class="w"> </span>containers/
+<span class="w">    </span>├──<span class="w"> </span>scrna_container.def
+<span class="w">    </span>├──<span class="w"> </span>citeseq_container.def
+<span class="w">    </span>└──<span class="w"> </span>tcrbcr_container.def
+</pre></div>
+</div>
+</section>
+<section id="containerization">
+<h2>Containerization<a class="headerlink" href="#containerization" title="Link to this heading"></a></h2>
+<p>To ensure consistent software environments across platforms (HPCs, cloud, local), we provide both <strong>Conda environment YAMLs</strong> and <strong>Apptainer (Singularity) definitions</strong>.</p>
+<section id="conda-environments">
+<h3>Conda Environments<a class="headerlink" href="#conda-environments" title="Link to this heading"></a></h3>
+<p>Each pipeline module is supported by a separate Conda environment:</p>
+<ul class="simple">
+<li><p><cite>scrna_env.yaml</cite>: Seurat, Scanpy, STAR, Cell Ranger</p></li>
+<li><p><cite>citeseq_env.yaml</cite>: Seurat, CITE-seq-Count, Cell Ranger multi</p></li>
+<li><p><cite>tcrbcr_env.yaml</cite>: MiXCR, TRUST4, IgBlast, scRepertoire</p></li>
+</ul>
+<p>Activate environment before running scripts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>envs/scrna_env.yaml
+conda<span class="w"> </span>activate<span class="w"> </span>scrna_env
+</pre></div>
+</div>
+</section>
+<section id="apptainer-singularity-containers">
+<h3>Apptainer (Singularity) Containers<a class="headerlink" href="#apptainer-singularity-containers" title="Link to this heading"></a></h3>
+<p>Apptainer ensures fully portable containers for deployment on HPC clusters or cloud systems where Docker is not allowed.</p>
+<p>Definition files (<cite>.def</cite>) are provided for each modality:</p>
+<ul class="simple">
+<li><p><cite>scrna_container.def</cite></p></li>
+<li><p><cite>citeseq_container.def</cite></p></li>
+<li><p><cite>tcrbcr_container.def</cite></p></li>
+</ul>
+<p>Build a container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apptainer<span class="w"> </span>build<span class="w"> </span>scrna_container.sif<span class="w"> </span>containers/scrna_container.def
+</pre></div>
+</div>
+<p>Run a containerized script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apptainer<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>scrna_container.sif<span class="w"> </span>python<span class="w"> </span>scripts/qc/run_qc.py
+</pre></div>
+</div>
+</section>
+</section>
+<section id="benefits-of-containerization">
+<h2>Benefits of Containerization<a class="headerlink" href="#benefits-of-containerization" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Reproducibility</strong>: Same results across users, systems, and time</p></li>
+<li><p><strong>Scalability</strong>: Easily deployed on large HPC or cloud platforms</p></li>
+<li><p><strong>Portability</strong>: Minimal setup for new users or collaborators</p></li>
+<li><p><strong>Security</strong>: Isolated environments reduce dependency conflicts</p></li>
+</ul>
+</section>
+<section id="cloud-and-hpc-integration">
+<h2>Cloud and HPC Integration<a class="headerlink" href="#cloud-and-hpc-integration" title="Link to this heading"></a></h2>
+<p>The pipeline supports deployment on:</p>
+<ul class="simple">
+<li><p><strong>SLURM-based clusters</strong> using <cite>sbatch</cite> scripts for batch execution</p></li>
+<li><p><strong>AWS Batch</strong> and <strong>Google Cloud Life Sciences</strong> for scalable workflows</p></li>
+<li><p><strong>Nextflow or Snakemake</strong> (optional): For workflow orchestration with container support</p></li>
+</ul>
+</section>
+<section id="versioning-and-updates">
+<h2>Versioning and Updates<a class="headerlink" href="#versioning-and-updates" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Environments and containers are version-controlled via Git</p></li>
+<li><p>All software dependencies are pinned to fixed versions</p></li>
+<li><p>Updates are made with backward compatibility to avoid breaking analyses</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We recommend using Apptainer for production workflows and Conda during development or for smaller projects.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation and Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_pipeline_scrnaseq.html" class="btn btn-neutral float-right" title="scRNA-seq Pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

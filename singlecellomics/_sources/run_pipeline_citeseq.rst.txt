@@ -1,0 +1,107 @@
+CITE-seq Pipeline
+=================
+
+This page outlines a detailed pipeline for the analysis of Cellular Indexing of Transcriptomes and Epitopes by sequencing (CITE-seq) data. CITE-seq combines transcriptomic and proteomic information in the same single cells by tagging antibodies with DNA barcodes (antibody-derived tags, or ADTs) that are co-sequenced with mRNA. This pipeline provides an end-to-end solution for joint analysis of RNA and surface protein expression.
+
+1. Raw Data Input and Demultiplexing
+------------------------------------
+
+- Input: Paired-end FASTQ files generated from:
+  - Gene expression library
+  - Antibody-derived tag (ADT) library
+
+- If starting from BCL files:
+  - Use `bcl2fastq` or `bcl-convert` with custom CITE-seq sample sheets to generate multiplexed FASTQ files.
+
+2. Alignment and Quantification
+-------------------------------
+
+**Gene Expression Library**
+
+- Use **Cell Ranger** (recommended for 10x Genomics data) or **STARsolo** for alignment to the reference genome (e.g., GRCh38).
+- **Output**: Filtered feature-barcode matrix for RNA expression.
+
+**ADT Library**
+
+- Use **CITE-seq-Count** to extract and count DNA-barcoded antibody tags.  
+  - **Input**: ADT FASTQ file and barcode whitelist  
+  - **Output**: ADT count matrix per cell barcode
+- **Alternative**: Use **Cell Ranger multi** for simultaneous RNA + ADT processing (requires `multi_config.csv`).
+
+
+3. Quality Control and Filtering
+--------------------------------
+
+- Merge RNA and ADT matrices based on common barcodes.
+- Filter cells based on:
+  - RNA UMI count
+  - Number of detected genes
+  - Percent mitochondrial content
+  - ADT background noise (e.g., IgG isotype controls)
+
+- Tools:
+  - **Seurat:** `PercentageFeatureSet`, `subset`, `CreateSeuratObject`
+  - **Scanpy:** `pp.filter_cells`, `pp.calculate_qc_metrics`
+
+4. Normalization and Feature Scaling
+------------------------------------
+
+- RNA normalization:
+  - Seurat: `SCTransform()` or `NormalizeData()`
+  - Scanpy: `pp.normalize_total()` and `pp.log1p()`
+
+- ADT normalization:
+  - Seurat: Centered log-ratio transformation: `NormalizeData(assay = "ADT", normalization.method = "CLR")`
+  - Scanpy: Apply CLR per protein feature manually.
+
+- Feature selection for RNA: `FindVariableFeatures()` or `pp.highly_variable_genes()`
+
+5. Data Integration and Joint Embedding
+---------------------------------------
+
+- Construct Weighted Nearest Neighbor (WNN) graph:
+  - Seurat: `FindMultiModalNeighbors()` using RNA and ADT dimensions
+  - Compute joint UMAP: `RunUMAP(reduction = 'wnn')`
+
+- Scanpy equivalent (manually concatenate modalities followed by neighbor graph construction)
+
+6. Clustering and Visualization
+-------------------------------
+
+- Clustering:
+  - Seurat: `FindClusters()` based on WNN graph
+  - Scanpy: `tl.leiden()` or `tl.louvain()` after integrated neighbor graph
+
+- Visualization:
+  - Seurat: `DimPlot(group.by = ...)`, `FeaturePlot()` for RNA/ADT overlay
+  - Scanpy: `pl.umap(color = [...])`, `pl.stacked_violin()`
+
+7. Marker Detection and Differential Expression
+-----------------------------------------------
+
+- Identify RNA and ADT markers per cluster:
+  - Seurat: `FindAllMarkers()` for both assays
+  - Scanpy: `tl.rank_genes_groups()`
+
+- Compare expression across clusters or conditions:
+  - Between timepoints, treatment groups, genotypes
+  - RNA + ADT comparison enables deeper phenotypic classification
+
+Key Outputs
+-----------
+
+- Filtered and annotated single-cell matrix combining RNA and ADT data
+- Joint embeddings (UMAP/t-SNE) of multi-modal information
+- Cluster assignments and DE marker tables
+- Heatmaps of RNA/protein expression across clusters
+- Annotated cell types with protein markers
+
+Software and Tools
+------------------
+
+- `Cell Ranger` or `STARsolo` for RNA alignment and matrix generation
+- `CITE-seq-Count <https://hoohm.github.io/CITE-seq-Count/>`__ for ADT quantification
+- `Seurat v4+` for multi-modal integration using WNN framework
+- `Scanpy` for an all-Python alternative pipeline
+
+This pipeline enables integrated, scalable, and reproducible analysis of multi-modal CITE-seq datasets. Refer to :doc:`advanced_analysis` for multiplexed antibody panels, trajectory analysis, and CITE-seq + ATAC-seq integration.

@@ -105,8 +105,8 @@
     "name": "Single Cell Omics",
     "description": "Multimodal single-cell analysis: scRNA-seq, CITE-seq, TCR/BCR-seq integration.",
     "version": "1.0.0",
-    "link": "singlecellomics.html",
-    "detail_html": "singlecellomics.html",
+    "link": "singlecellomics/index.html",
+    "detail_html": "singlecellomics/index.html",
     "tags": ["scRNA-seq", "CITE-seq", "TCR-seq", "BCR-seq"],
     "details": {
       "steps": [
@@ -125,8 +125,8 @@
     "name": "WGBS Pipeline",
     "description": "Preprocessing and methylation analysis of Whole Genome Bisulfite Sequencing data.",
     "version": "1.0.0",
-    "link": "wgbs.html",
-    "detail_html": "wgbs.html",
+    "link": "wgbs/index.html",
+    "detail_html": "wgbs/index.html",
     "tags": ["WGBS", "Methylation", "Bismark"],
     "details": {
       "steps": [
@@ -145,8 +145,8 @@
     "name": "WGS/WES Variant Calling Pipeline",
     "description": "Comprehensive germline and somatic variant calling pipeline from whole genome/exome data.",
     "version": "1.0.0",
-    "link": "wgswes.html",
-    "detail_html": "wgswes.html",
+    "link": "wgswes/index.html",
+    "detail_html": "wgswes/index.html",
     "tags": ["WGS", "WES", "Germline", "Somatic", "GATK"],
     "details": {
       "steps": [
@@ -167,8 +167,8 @@
     "name": "HiPlex Demultiplexer",
     "description": "Preprocessing and dual-layer demultiplexing of multiplexed Cut&Tag reads using sample and antibody barcodes.",
     "version": "1.0.0",
-    "link": "hiplex.html",
-    "detail_html": "hiplex.html",
+    "link": "hiplex/index.html",
+    "detail_html": "hiplex/index.html",
     "tags": ["HiPlex", "Demultiplexing", "FASTQ", "Barcodes"],
     "details": {
       "steps": [

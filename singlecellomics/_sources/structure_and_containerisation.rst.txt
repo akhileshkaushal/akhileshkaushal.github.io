@@ -1,0 +1,110 @@
+Pipeline Structure and Containerisation
+=======================================
+
+This section outlines the directory structure, modular design, and containerization strategy used to ensure reproducibility, scalability, and environment control for the single-cell omics pipelines.
+
+Pipeline Directory Structure
+----------------------------
+
+The pipeline is organized in a modular and extensible format to facilitate both standalone and integrated analyses of scRNA-seq, CITE-seq, and TCR/BCR-seq data.
+
+.. code-block:: bash
+
+   singlecell_omics_pipeline/
+   ├── config/
+   │   ├── samplesheet.csv
+   │   ├── multi_config.yaml
+   │   └── settings.yaml
+   ├── data/
+   │   ├── raw/                  # FASTQ or BCL files
+   │   └── processed/            # Output matrices and metadata
+   ├── scripts/
+   │   ├── preprocessing/
+   │   ├── quantification/
+   │   ├── qc/
+   │   ├── integration/
+   │   └── visualization/
+   ├── results/
+   │   ├── figures/
+   │   └── tables/
+   ├── envs/
+   │   ├── scrna_env.yaml
+   │   ├── citeseq_env.yaml
+   │   └── tcrbcr_env.yaml
+   └── containers/
+       ├── scrna_container.def
+       ├── citeseq_container.def
+       └── tcrbcr_container.def
+
+Containerization
+----------------
+
+To ensure consistent software environments across platforms (HPCs, cloud, local), we provide both **Conda environment YAMLs** and **Apptainer (Singularity) definitions**.
+
+Conda Environments
+~~~~~~~~~~~~~~~~~~
+
+Each pipeline module is supported by a separate Conda environment:
+
+- `scrna_env.yaml`: Seurat, Scanpy, STAR, Cell Ranger
+- `citeseq_env.yaml`: Seurat, CITE-seq-Count, Cell Ranger multi
+- `tcrbcr_env.yaml`: MiXCR, TRUST4, IgBlast, scRepertoire
+
+Activate environment before running scripts:
+
+.. code-block:: bash
+
+   conda env create -f envs/scrna_env.yaml
+   conda activate scrna_env
+
+Apptainer (Singularity) Containers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Apptainer ensures fully portable containers for deployment on HPC clusters or cloud systems where Docker is not allowed.
+
+Definition files (`.def`) are provided for each modality:
+
+- `scrna_container.def`
+- `citeseq_container.def`
+- `tcrbcr_container.def`
+
+Build a container:
+
+.. code-block:: bash
+
+   apptainer build scrna_container.sif containers/scrna_container.def
+
+Run a containerized script:
+
+.. code-block:: bash
+
+   apptainer exec scrna_container.sif python scripts/qc/run_qc.py
+
+Benefits of Containerization
+----------------------------
+
+- **Reproducibility**: Same results across users, systems, and time
+- **Scalability**: Easily deployed on large HPC or cloud platforms
+- **Portability**: Minimal setup for new users or collaborators
+- **Security**: Isolated environments reduce dependency conflicts
+
+Cloud and HPC Integration
+-------------------------
+
+The pipeline supports deployment on:
+
+- **SLURM-based clusters** using `sbatch` scripts for batch execution
+- **AWS Batch** and **Google Cloud Life Sciences** for scalable workflows
+- **Nextflow or Snakemake** (optional): For workflow orchestration with container support
+
+Versioning and Updates
+----------------------
+
+- Environments and containers are version-controlled via Git
+- All software dependencies are pinned to fixed versions
+- Updates are made with backward compatibility to avoid breaking analyses
+
+.. note::
+
+   We recommend using Apptainer for production workflows and Conda during development or for smaller projects.
+
