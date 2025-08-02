@@ -1,0 +1,27 @@
+.. _references:
+
+References
+==========
+
+Key Publications
+-----------------
+
+1. Kaya-Okur, H. S., Wu, S. J., Codomo, C. A., Pledger, E. S., Bryson, T. D., Henikoff, J. G., Ahmad, K., & Henikoff, S. (2019). CUT\&Tag for efficient epigenomic profiling of small samples and single cells. *Nature Communications*, 10, 1930. [https://doi.org/10.1038/s41467-019-09982-5](https://doi.org/10.1038/s41467-019-09982-5)
+
+2. Zhang, Y., Liu, T., Meyer, C. A., Eeckhoute, J., Johnson, D. S., Bernstein, B. E., ... & Liu, X. S. (2008). Model-based analysis of ChIP-Seq (MACS). *Genome Biology*, 9(9), R137. [https://doi.org/10.1186/gb-2008-9-9-r137](https://doi.org/10.1186/gb-2008-9-9-r137)
+
+3. Ramírez, F., Dündar, F., Diehl, S., Grüning, B. A., & Manke, T. (2014). deepTools: a flexible platform for exploring deep-sequencing data. *Nucleic Acids Research*, 42(W1), W187–W191. [https://doi.org/10.1093/nar/gku365](https://doi.org/10.1093/nar/gku365)
+
+4. Yu, G., Wang, L. G., & He, Q. Y. (2015). ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization. *Bioinformatics*, 31(14), 2382–2383. [https://doi.org/10.1093/bioinformatics/btv145](https://doi.org/10.1093/bioinformatics/btv145)
+
+5. Quinlan, A. R., & Hall, I. M. (2010). BEDTools: a flexible suite of utilities for comparing genomic features. *Bioinformatics*, 26(6), 841–842. [https://doi.org/10.1093/bioinformatics/btq033](https://doi.org/10.1093/bioinformatics/btq033)
+
+6. Dobin, A., Davis, C. A., Schlesinger, F., Drenkow, J., Zaleski, C., Jha, S., ... & Gingeras, T. R. (2013). STAR: ultrafast universal RNA-seq aligner. *Bioinformatics*, 29(1), 15–21. [https://doi.org/10.1093/bioinformatics/bts635](https://doi.org/10.1093/bioinformatics/bts635)
+
+7. Love, M. I., Huber, W., & Anders, S. (2014). Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. *Genome Biology*, 15(12), 550. [https://doi.org/10.1186/s13059-014-0550-8](https://doi.org/10.1186/s13059-014-0550-8)
+
+8. Yu, G., Wang, L. G., Han, Y., & He, Q. Y. (2012). clusterProfiler: an R package for comparing biological themes among gene clusters. *OMICS: A Journal of Integrative Biology*, 16(5), 284–287. [https://doi.org/10.1089/omi.2011.0118](https://doi.org/10.1089/omi.2011.0118)
+
+9. Gaspar, J. M. (2018). NGMerge: merging paired-end reads via novel empirically-derived models of sequencing errors. *BMC Bioinformatics*, 19, 536. [https://doi.org/10.1186/s12859-018-2537-8](https://doi.org/10.1186/s12859-018-2537-8)
+
+10. Picard Toolkit. (2019). Broad Institute, GitHub Repository. [https://broadinstitute.github.io/picard/](https://broadinstitute.github.io/picard/)

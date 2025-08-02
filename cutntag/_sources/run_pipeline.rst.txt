@@ -1,0 +1,193 @@
+.. _run_pipeline:
+
+Cut&Tag Analysis Pipeline: Step-by-Step
+=======================================
+
+This section outlines the complete bioinformatics workflow for analyzing Cleavage Under Targets and Tagmentation (Cut&Tag) data. While conceptually similar to ChIP-seq, Cut&Tag exhibits distinct enzymatic behavior and signal characteristics that necessitate specific preprocessing and quality control strategies.
+
+Overview of Differences from ChIP-seq
+-------------------------------------
+
+Unlike ChIP-seq, which relies on crosslinking and sonication, Cut&Tag:
+- Uses **in situ Tn5 transposase** tethered via Protein A/G to antibody-bound targets.
+- Generates **short, tightly centered fragments** around binding sites.
+- Results in **lower background**, often obviating the need for extensive filtering.
+- Typically produces **lower library complexity** but with higher specificity.
+
+Thus, Cut&Tag data:
+- Requires **fragment-centric** visualization
+- Benefits from **paired-end reads** for fragment inference
+- Avoids crosslinking artifacts
+- Is compatible with **lower input DNA**
+
+Pipeline Steps
+--------------
+
+1. Quality Control
+------------------
+
+Assess raw sequencing quality using `FastQC` and summarize with `MultiQC`.
+
+.. code-block:: bash
+
+   fastqc *.fastq.gz -o fastqc_reports/
+   multiqc fastqc_reports/ -o multiqc_output/
+
+Key checks:
+- Per-base sequence quality
+- Overrepresented adapter sequences (e.g., Nextera or Tn5-specific)
+- Base duplication (typically higher in Cut&Tag due to low input)
+
+2. Adapter Trimming
+-------------------
+
+Cut&Tag typically uses **Nextera-compatible adapters**, which must be removed prior to alignment.
+
+.. code-block:: bash
+
+   cutadapt -a CTGTCTCTTATACACATCT -A CTGTCTCTTATACACATCT \
+     -q 20 -m 20 \
+     -o sample_R1_trimmed.fastq.gz -p sample_R2_trimmed.fastq.gz \
+     sample_R1.fastq.gz sample_R2.fastq.gz
+
+Notes:
+- For paired-end reads, ensure proper synchronization
+- Tn5 integrates at staggered positions, so trimming read-through adapters is critical
+
+3. Alignment to Reference Genome
+--------------------------------
+
+Align reads with `bowtie2` in paired-end mode using Cut&Tag-specific options:
+
+.. code-block:: bash
+
+   bowtie2 --very-sensitive -X 2000 --no-mixed --no-discordant \
+     -x /path/to/genome_index \
+     -1 sample_R1_trimmed.fastq.gz -2 sample_R2_trimmed.fastq.gz \
+     -S sample.sam
+
+Cut&Tag considerations:
+- Fragment sizes are tight; avoid discordant alignments
+- Use `--very-sensitive` to capture soft-clipped or short alignments
+- For **single-end reads**, append `--local` and manually filter based on length
+
+4. Post-Alignment Processing
+----------------------------
+
+.. code-block:: bash
+
+   samtools view -bS sample.sam | samtools sort -o sample.sorted.bam
+   samtools index sample.sorted.bam
+   samtools view -b -q 30 sample.sorted.bam > sample.filtered.bam
+
+Additional:
+- Remove mitochondrial reads (often overrepresented):
+
+.. code-block:: bash
+
+   samtools idxstats sample.filtered.bam | cut -f 1 | grep -v chrM \
+     | xargs samtools view -b sample.filtered.bam > sample.noMT.bam
+
+5. Fragment Size Estimation
+---------------------------
+
+Due to the fragment-centric nature of Cut&Tag, assessing fragment length profiles is essential.
+
+.. code-block:: bash
+
+   bamPEFragmentSize -b sample.noMT.bam -hist fraglen.png \
+     -T "Fragment Size Distribution" --maxFragmentLength 1000
+
+Cut&Tag-specific patterns:
+- Clear mono-nucleosome peak (~150 bp)
+- Sub-nucleosomal peak (<120 bp)
+- Minimal di-/tri-nucleosome peaks unless over-tagmented
+
+6. Peak Calling
+---------------
+
+Use `MACS2` in paired-end mode (`--format BAMPE`) without model building.
+
+For TFs (narrow peaks):
+
+.. code-block:: bash
+
+   macs2 callpeak -t sample.noMT.bam -c input.bam \
+     --format BAMPE --nomodel --extsize 200 \
+     -g hs -n sample_narrow --outdir macs2_output
+
+For histone marks (broad peaks):
+
+.. code-block:: bash
+
+   macs2 callpeak -t sample.noMT.bam -c input.bam \
+     --format BAMPE --broad --broad-cutoff 0.1 \
+     -g hs -n sample_broad --outdir macs2_output
+
+Cut&Tag-specific tip:
+- If lacking input control, IgG or mock-treated controls may be substituted
+- SEACR (Sparse Enrichment Analysis for CUT&RUN) can be considered for minimal background
+
+7. Peak Annotation
+------------------
+
+Link peaks to genes or regulatory features.
+
+.. code-block:: R
+
+   library(ChIPseeker)
+   peak <- readPeakFile("sample_narrow_peaks.narrowPeak")
+   peakAnno <- annotatePeak(peak, tssRegion=c(-2000, 2000), TxDb=txdb, annoDb="org.Hs.eg.db")
+   plotAnnoPie(peakAnno)
+
+Annotation outputs:
+- Promoter enrichment
+- Intergenic distal peaks
+- Functional gene associations
+
+8. Signal Visualization
+-----------------------
+
+Create browser tracks and TSS plots.
+
+.. code-block:: bash
+
+   bamCoverage -b sample.noMT.bam -o sample.bw \
+     --normalizeUsing RPGC \
+     --effectiveGenomeSize 2913022398 \
+     --binSize 10 --extendReads
+
+TSS plot:
+
+.. code-block:: bash
+
+   computeMatrix reference-point -S sample.bw -R tss.bed \
+     -a 2000 -b 2000 -bs 25 -out matrix.gz
+   plotHeatmap -m matrix.gz -out tss_heatmap.png
+   plotProfile -m matrix.gz -out tss_profile.png
+
+Cut&Tag-specific considerations:
+- Short fragments generate sharper, symmetric TSS signals
+- Use fine binning (e.g., 25 bp) to capture narrow peaks
+
+9. Replicate Quality Assessment
+-------------------------------
+
+Compare technical and biological replicates for consistency.
+
+.. code-block:: bash
+
+   multiBamSummary bins -b rep1.bam rep2.bam rep3.bam -o reps.npz
+   plotCorrelation -in reps.npz --corMethod spearman --whatToPlot heatmap -o correlation.png
+
+Optional: Evaluate signal enrichment metrics (NSC, RSC) using `phantompeakqualtools`.
+
+10. Downstream Analyses (Optional)
+----------------------------------
+
+- **Motif enrichment** under peaks using HOMER or MEME
+- **Differential binding analysis** via DiffBind or csaw
+- **Pathway enrichment** of peak-associated genes
+- **Super-enhancer detection** using ROSE
+
+

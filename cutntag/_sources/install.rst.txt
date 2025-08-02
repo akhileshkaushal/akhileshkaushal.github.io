@@ -1,0 +1,123 @@
+.. _install:
+
+Installation
+============
+
+This section provides step-by-step instructions to install the Cut&Tag pipeline and its dependencies in a reproducible environment. The pipeline is implemented using Python, shell scripts, and standard bioinformatics tools. To ensure reproducibility across platforms, we support both **Conda-based installation** and **Apptainer (Singularity) containers**.
+
+System Requirements
+-------------------
+
+- **Operating System**: Linux or macOS (x86_64)
+- **Memory**: Minimum 16 GB RAM (32 GB recommended for peak calling)
+- **Disk space**: At least 100 GB free space (depending on number of samples)
+- **Python**: Version 3.8 or later
+- **Recommended**: HPC environment with SLURM or compatible batch scheduler
+
+Installation Methods
+--------------------
+
+You can install and run the pipeline using one of the following approaches:
+
+**Option 1: Conda-based Setup**
+
+1. Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) (if not already installed):
+
+   .. code-block:: bash
+
+      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+      bash Miniconda3-latest-Linux-x86_64.sh
+
+2. Create and activate a new Conda environment:
+
+   .. code-block:: bash
+
+      conda create -n cutntag_env python=3.10 -y
+      conda activate cutntag_env
+
+3. Install required packages via `bioconda` and `conda-forge`:
+
+   .. code-block:: bash
+
+      conda install -c bioconda -c conda-forge \
+          fastqc \
+          cutadapt \
+          bowtie2 \
+          samtools \
+          picard \
+          macs2 \
+          bedtools \
+          deeptools \
+          multiqc \
+          subread \
+          ucsc-bedgraphtobigwig \
+          python=3.10 \
+          pandas \
+          matplotlib \
+          seaborn \
+          scipy \
+          click
+
+4. Verify tool versions:
+
+   .. code-block:: bash
+
+      fastqc --version
+      cutadapt --version
+      bowtie2 --version
+      macs2 --version
+
+   This ensures the environment is correctly configured.
+
+**Option 2: Apptainer (Singularity) Container**
+
+Apptainer (formerly Singularity) is recommended for deploying the pipeline in HPC environments to guarantee reproducibility and isolate dependencies.
+
+1. Install Apptainer:
+
+   Follow official instructions from: https://apptainer.org/docs/
+
+2. Pull and build the container:
+
+   .. code-block:: bash
+
+      apptainer pull cutntag_pipeline.sif docker://<your-dockerhub-image>
+
+   *(A prebuilt container can be provided or built locally using a Dockerfile. Contact the author or refer to the containerization section.)*
+
+3. Run the pipeline within the container:
+
+   .. code-block:: bash
+
+      apptainer exec cutntag_pipeline.sif bash run_pipeline.sh --help
+
+Optional Setup for GPU-enabled Servers (for visualization or peak modeling)
+---------------------------------------------------------------------------
+
+If you're running the pipeline on a server with GPU support and intend to use deep learning-based peak calling or image rendering tools (e.g., using TensorFlow, PyTorch, or IGV snapshot scripting), install additional dependencies as needed.
+
+Best Practices
+--------------
+
+- Always use version-controlled environments via `conda env export` or container recipes.
+- Store pipeline configuration and sample metadata separately for clean project structure.
+- Use symbolic links and consistent file naming conventions for raw data.
+
+Testing Your Installation
+-------------------------
+
+Run the included test dataset to verify your installation:
+
+.. code-block:: bash
+
+   bash test/test_cutntag_pipeline.sh
+
+This will process a small synthetic dataset and generate a MultiQC report in the `test_output/` directory.
+
+Next Steps
+----------
+
+Once installation is complete, proceed to the :ref:`run_pipeline` section for raw data preprocessing and quality control.
+
+
+

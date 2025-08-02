@@ -85,8 +85,8 @@
     "name": "Cut&Tag Pipeline",
     "description": "End-to-end processing of Cut&Tag data for chromatin profiling.",
     "version": "1.0.0",
-    "link": "cutandtag.html",
-    "detail_html": "cutandtag.html",
+    "link": "cutntag/index.html",
+    "detail_html": "cutntag/index.html",
     "tags": ["Cut&Tag", "Chromatin", "Histone"],
     "details": {
       "steps": [

@@ -1,0 +1,278 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study &mdash; Cut&amp;Tag Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/cutntag/casestudy.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References" href="references.html" />
+    <link rel="prev" title="Test Dataset and Usage Guide" href="test_structure_containerisation.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Cut&Tag Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Cut&amp;Tag Preprocessing and Analysis Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#key-applications">Key Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#benefits-over-chip-seq">Benefits Over ChIP-seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-experimental-designs">Supported Experimental Designs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#typical-workflow-steps">Typical Workflow Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installation-methods">Installation Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#optional-setup-for-gpu-enabled-servers-for-visualization-or-peak-modeling">Optional Setup for GPU-enabled Servers (for visualization or peak modeling)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#testing-your-installation">Testing Your Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline.html">Cut&amp;Tag Analysis Pipeline: Step-by-Step</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#overview-of-differences-from-chip-seq">Overview of Differences from ChIP-seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#pipeline-steps">Pipeline Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#adapter-trimming">2. Adapter Trimming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#alignment-to-reference-genome">3. Alignment to Reference Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#post-alignment-processing">4. Post-Alignment Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#fragment-size-estimation">5. Fragment Size Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#peak-calling">6. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#peak-annotation">7. Peak Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#signal-visualization">8. Signal Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#replicate-quality-assessment">9. Replicate Quality Assessment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#downstream-analyses-optional">10. Downstream Analyses (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Analysis Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#spike-in-normalization-optional">1. Spike-in Normalization (Optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#read-deduplication">2. Read Deduplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#background-signal-correction">3. Background Signal Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#comparative-peak-analysis">4. Comparative Peak Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#fragmentation-pattern-analysis">5. Fragmentation Pattern Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="test_structure_containerisation.html">Test Dataset and Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#outputs">Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#sample-metadata">Sample Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#project-layout">Project Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#wrapper-script-run-cutandtag-pipeline-sh">Wrapper Script: <code class="docutils literal notranslate"><span class="pre">run_cutandtag_pipeline.sh</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#container-support">Container Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Case Study</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#case-study-single-cell-and-low-input-chromatin-profiling-using-cut-tag">Case Study: Single-Cell and Low-Input Chromatin Profiling Using CUT&amp;Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#background-and-rationale">1. Background and Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experimental-strategy-and-innovations">2. Experimental Strategy and Innovations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-findings-and-results">3. Key Findings and Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#detailed-protocol-modifications">4. Detailed Protocol Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-analysis">5. Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#biological-insights">6. Biological Insights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#future-applications">7. Future Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#key-publications">Key Publications</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cut&Tag Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Case Study</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/casestudy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="test_structure_containerisation.html" class="btn btn-neutral float-left" title="Test Dataset and Usage Guide" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="case-study">
+<span id="casestudy"></span><h1>Case Study<a class="headerlink" href="#case-study" title="Link to this heading"></a></h1>
+<section id="case-study-single-cell-and-low-input-chromatin-profiling-using-cut-tag">
+<h2>Case Study: Single-Cell and Low-Input Chromatin Profiling Using CUT&amp;Tag<a class="headerlink" href="#case-study-single-cell-and-low-input-chromatin-profiling-using-cut-tag" title="Link to this heading"></a></h2>
+<p>This case study is based on the article <em>“CUT&amp;Tag for efficient epigenomic profiling of small samples and single cells”</em> by Kaya-Okur et al., published in <em>Nature Communications</em> (2019).</p>
+</section>
+<section id="background-and-rationale">
+<h2>1. Background and Rationale<a class="headerlink" href="#background-and-rationale" title="Link to this heading"></a></h2>
+<p>Mapping protein-DNA interactions is fundamental to understanding gene regulation, chromatin dynamics, and epigenetic programming. Traditional methods like ChIP-seq require large amounts of starting material and often suffer from low signal-to-noise ratio. Kaya-Okur et al. introduced <strong>Cleavage Under Targets and Tagmentation (CUT&amp;Tag)</strong>, enabling high-resolution, low-background, and low-input epigenomic profiling.</p>
+<p>The authors further demonstrated that CUT&amp;Tag can be adapted for <strong>single-cell</strong> applications, offering scalability and precision in rare or heterogeneous samples.</p>
+</section>
+<section id="experimental-strategy-and-innovations">
+<h2>2. Experimental Strategy and Innovations<a class="headerlink" href="#experimental-strategy-and-innovations" title="Link to this heading"></a></h2>
+<p><strong>CUT&amp;Tag Workflow</strong>:</p>
+<ul class="simple">
+<li><p>Antibody binds target chromatin protein.</p></li>
+<li><p>Protein A-Tn5 fusion (loaded with adapters) binds the antibody.</p></li>
+<li><p>Upon Mg²⁺ activation, Tn5 integrates adapters, producing sequencing-ready fragments.</p></li>
+</ul>
+<p><strong>Advantages Over ChIP-seq</strong>:</p>
+<ul class="simple">
+<li><p>In situ processing minimizes loss and noise.</p></li>
+<li><p>Requires as few as 60 cells.</p></li>
+<li><p>Generates sharper, high-confidence peaks.</p></li>
+<li><p>Simplified library prep workflow.</p></li>
+</ul>
+</section>
+<section id="key-findings-and-results">
+<h2>3. Key Findings and Results<a class="headerlink" href="#key-findings-and-results" title="Link to this heading"></a></h2>
+<p><strong>Histone Profiling in K562 Cells</strong>:</p>
+<ul class="simple">
+<li><p>Targets included: H3K27me3, H3K4me1/2/3, H3K27ac.</p></li>
+<li><p>Even at n=60 cells, CUT&amp;Tag produced high-quality signal.</p></li>
+<li><p>Signal-to-noise ratio exceeded ChIP-seq and CUT&amp;RUN.</p></li>
+<li><p>H3K4me2 enrichment correlated with gene activity.</p></li>
+</ul>
+<p><strong>Comparison with Other Methods</strong>:</p>
+<ul class="simple">
+<li><p>CUT&amp;Tag yielded narrower peaks than CUT&amp;RUN.</p></li>
+<li><p>Less off-target activity than ChIP-seq.</p></li>
+<li><p>Effective on permeabilized nuclei.</p></li>
+</ul>
+<p><strong>Single-Cell CUT&amp;Tag</strong>:</p>
+<ul class="simple">
+<li><p>Used ICELL8 platform for nanowell barcoding.</p></li>
+<li><p>Hundreds of nuclei profiled for H3K27me3 and H3K4me2.</p></li>
+<li><p>Aggregated profiles matched bulk; individual profiles revealed epigenomic heterogeneity.</p></li>
+</ul>
+</section>
+<section id="detailed-protocol-modifications">
+<h2>4. Detailed Protocol Modifications<a class="headerlink" href="#detailed-protocol-modifications" title="Link to this heading"></a></h2>
+<p><strong>Buffer Composition</strong>:</p>
+<ul class="simple">
+<li><p>20 mM HEPES, 150 mM NaCl, 0.5 mM Spermidine, protease inhibitors.</p></li>
+</ul>
+<p><strong>Tn5 Fusion Protein</strong>:</p>
+<ul class="simple">
+<li><p>Protein A fused to hyperactive Tn5.</p></li>
+<li><p>Preloaded with mosaic-end adapters.</p></li>
+</ul>
+<p><strong>PCR and Library Prep</strong>:</p>
+<ul class="simple">
+<li><p>MgCl₂-activated in situ tagmentation.</p></li>
+<li><p>12-14 PCR cycles sufficed.</p></li>
+</ul>
+</section>
+<section id="data-analysis">
+<h2>5. Data Analysis<a class="headerlink" href="#data-analysis" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Alignment</strong>: Bowtie2 (<cite>–very-sensitive -X 2000</cite>)</p></li>
+<li><p><strong>Filtering</strong>: MAPQ &gt; 30, mitochondrial reads removed.</p></li>
+<li><p><strong>Peak Calling</strong>: MACS2 (custom parameters per mark).</p></li>
+<li><p><strong>Visualization</strong>: deepTools (<cite>bamCoverage</cite>, <cite>plotProfile</cite>), IGV.</p></li>
+<li><p><strong>Single-cell</strong>: Barcoded libraries demultiplexed using ICELL8 metadata.</p></li>
+</ul>
+</section>
+<section id="biological-insights">
+<h2>6. Biological Insights<a class="headerlink" href="#biological-insights" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>CUT&amp;Tag revealed high-resolution maps of active/repressed elements.</p></li>
+<li><p>Single-cell profiles captured enhancer and promoter heterogeneity.</p></li>
+<li><p>Enabled trajectory and clustering based on histone mark distribution.</p></li>
+</ul>
+</section>
+<section id="future-applications">
+<h2>7. Future Applications<a class="headerlink" href="#future-applications" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Multi-modal integration with scRNA-seq or ATAC-seq.</p></li>
+<li><p>Combinatorial indexing to scale up single-cell workflows.</p></li>
+<li><p>Applicable to fixed tissue or biopsy-derived nuclei.</p></li>
+</ul>
+</section>
+</section>
+<section id="conclusion">
+<h1>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h1>
+<p>CUT&amp;Tag is a robust, efficient, and low-input method for chromatin profiling. This study validated its utility for bulk and single-cell epigenomic studies with superior resolution and minimal background. The protocol is poised to transform epigenetics by enabling precise profiling from limited or rare biological samples.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="test_structure_containerisation.html" class="btn btn-neutral float-left" title="Test Dataset and Usage Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

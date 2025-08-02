@@ -1,0 +1,378 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Dataset and Usage Guide &mdash; Cut&amp;Tag Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/cutntag/test_structure_containerisation.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Case Study" href="casestudy.html" />
+    <link rel="prev" title="Advanced Analysis Options" href="advanced_analysis.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Cut&Tag Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Cut&amp;Tag Preprocessing and Analysis Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#key-applications">Key Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#benefits-over-chip-seq">Benefits Over ChIP-seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-experimental-designs">Supported Experimental Designs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#typical-workflow-steps">Typical Workflow Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installation-methods">Installation Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#optional-setup-for-gpu-enabled-servers-for-visualization-or-peak-modeling">Optional Setup for GPU-enabled Servers (for visualization or peak modeling)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#testing-your-installation">Testing Your Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline.html">Cut&amp;Tag Analysis Pipeline: Step-by-Step</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#overview-of-differences-from-chip-seq">Overview of Differences from ChIP-seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#pipeline-steps">Pipeline Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#adapter-trimming">2. Adapter Trimming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#alignment-to-reference-genome">3. Alignment to Reference Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#post-alignment-processing">4. Post-Alignment Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#fragment-size-estimation">5. Fragment Size Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#peak-calling">6. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#peak-annotation">7. Peak Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#signal-visualization">8. Signal Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#replicate-quality-assessment">9. Replicate Quality Assessment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#downstream-analyses-optional">10. Downstream Analyses (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Analysis Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#spike-in-normalization-optional">1. Spike-in Normalization (Optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#read-deduplication">2. Read Deduplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#background-signal-correction">3. Background Signal Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#comparative-peak-analysis">4. Comparative Peak Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#fragmentation-pattern-analysis">5. Fragmentation Pattern Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Test Dataset and Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#input-requirements">Input Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#outputs">Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sample-metadata">Sample Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-layout">Project Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wrapper-script-run-cutandtag-pipeline-sh">Wrapper Script: <code class="docutils literal notranslate"><span class="pre">run_cutandtag_pipeline.sh</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#container-support">Container Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#case-study-single-cell-and-low-input-chromatin-profiling-using-cut-tag">Case Study: Single-Cell and Low-Input Chromatin Profiling Using CUT&amp;Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#background-and-rationale">1. Background and Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#experimental-strategy-and-innovations">2. Experimental Strategy and Innovations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#key-findings-and-results">3. Key Findings and Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#detailed-protocol-modifications">4. Detailed Protocol Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#data-analysis">5. Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#biological-insights">6. Biological Insights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#future-applications">7. Future Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#key-publications">Key Publications</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cut&Tag Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Test Dataset and Usage Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/test_structure_containerisation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="advanced_analysis.html" class="btn btn-neutral float-left" title="Advanced Analysis Options" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="casestudy.html" class="btn btn-neutral float-right" title="Case Study" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="test-dataset-and-usage-guide">
+<span id="test-dataset"></span><h1>Test Dataset and Usage Guide<a class="headerlink" href="#test-dataset-and-usage-guide" title="Link to this heading"></a></h1>
+<p>This section provides a test dataset and execution framework to validate the Cut&amp;Tag pipeline in any local, HPC, or containerized environment. It includes minimal inputs, example outputs, a structured layout, and a ready-to-use script to test functionality from preprocessing to peak calling and visualization.</p>
+<section id="input-requirements">
+<h2>Input Requirements<a class="headerlink" href="#input-requirements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>FASTQ files</strong>
+Paired-end (or optionally single-end) reads:
+<code class="docutils literal notranslate"><span class="pre">fastq/test_sample_R1.fastq.gz</span></code>, <code class="docutils literal notranslate"><span class="pre">fastq/test_sample_R2.fastq.gz</span></code></p></li>
+<li><p><strong>Reference genome</strong>
+Mini genome build (e.g., <code class="docutils literal notranslate"><span class="pre">chr22</span></code> or <code class="docutils literal notranslate"><span class="pre">chr1</span></code>):
+<code class="docutils literal notranslate"><span class="pre">genome/hg38.fa</span></code>
+<code class="docutils literal notranslate"><span class="pre">genome/hg38.fa.fai</span></code>
+<code class="docutils literal notranslate"><span class="pre">genome/bowtie2_index/</span></code></p></li>
+<li><p><strong>Sample metadata</strong>
+Describes sample names, groups, and file paths:
+<code class="docutils literal notranslate"><span class="pre">metadata/sample_sheet.csv</span></code></p></li>
+<li><p><strong>Optional</strong>:
+- IgG or Input control BAMs (for peak calling control)
+- ENCODE blacklist: <code class="docutils literal notranslate"><span class="pre">blacklist/hg38_blacklist.bed</span></code></p></li>
+</ul>
+</section>
+<section id="outputs">
+<h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h2>
+<p>Upon successful execution, the following outputs will be generated in <code class="docutils literal notranslate"><span class="pre">test_output/</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Trimmed reads</strong>: Adapter-trimmed FASTQs in <code class="docutils literal notranslate"><span class="pre">trimmed/</span></code></p></li>
+<li><p><strong>Alignments</strong>: Filtered and sorted BAMs in <code class="docutils literal notranslate"><span class="pre">aligned/</span></code></p></li>
+<li><p><strong>Peaks</strong>: MACS2 narrowPeak, broadPeak, and xls files in <code class="docutils literal notranslate"><span class="pre">peaks/</span></code></p></li>
+<li><p><strong>QC Reports</strong>: FastQC HTML reports, MultiQC summary (<code class="docutils literal notranslate"><span class="pre">multiqc_report.html</span></code>), deepTools fragment size histogram</p></li>
+<li><p><strong>Signal Tracks</strong>: Normalized BigWig files in <code class="docutils literal notranslate"><span class="pre">tracks/</span></code></p></li>
+<li><p><strong>Annotations</strong>: Peak annotation tables in <code class="docutils literal notranslate"><span class="pre">annotation/</span></code></p></li>
+</ul>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<p>Run the pipeline with the test dataset using the provided script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>test_dataset/
+bash<span class="w"> </span>run_cutandtag_pipeline.sh<span class="w"> </span>--config<span class="w"> </span>config.yaml
+</pre></div>
+</div>
+<p>This script performs the following:</p>
+<ul class="simple">
+<li><p>Trimming adapters using <code class="docutils literal notranslate"><span class="pre">cutadapt</span></code></p></li>
+<li><p>Aligning reads using <code class="docutils literal notranslate"><span class="pre">bowtie2</span></code></p></li>
+<li><p>Sorting, indexing, and filtering BAMs using <code class="docutils literal notranslate"><span class="pre">samtools</span></code></p></li>
+<li><p>Estimating fragment sizes with <code class="docutils literal notranslate"><span class="pre">deepTools</span></code></p></li>
+<li><p>Calling peaks using <code class="docutils literal notranslate"><span class="pre">MACS2</span></code></p></li>
+<li><p>Annotating peaks with <code class="docutils literal notranslate"><span class="pre">ChIPseeker</span></code> (optional)</p></li>
+<li><p>Generating signal tracks (BigWig)</p></li>
+<li><p>Compiling QC reports using <code class="docutils literal notranslate"><span class="pre">MultiQC</span></code></p></li>
+</ul>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
+<p>Edit the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file to define paths to:</p>
+<ul class="simple">
+<li><p>Reference genome and its index</p></li>
+<li><p>Blacklist BED file</p></li>
+<li><p>Sample metadata CSV</p></li>
+<li><p>Output directory</p></li>
+<li><p>Tool binaries (if outside <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>)</p></li>
+<li><p>Parameters for trimming, alignment, and peak calling</p></li>
+</ul>
+<p>Example <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> snippet:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">genome_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">genome/bowtie2_index/hg38</span>
+<span class="nt">blacklist</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">blacklist/hg38_blacklist.bed</span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metadata/sample_sheet.csv</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test_output/</span>
+<span class="nt">tools</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">cutadapt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cutadapt</span>
+<span class="w">  </span><span class="nt">bowtie2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bowtie2</span>
+<span class="w">  </span><span class="nt">macs2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">macs2</span>
+<span class="w">  </span><span class="nt">samtools</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">samtools</span>
+<span class="w">  </span><span class="nt">bamCoverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bamCoverage</span>
+<span class="w">  </span><span class="nt">multiqc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">multiqc</span>
+<span class="nt">parameters</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mapq_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="w">  </span><span class="nt">extsize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200</span>
+<span class="w">  </span><span class="nt">peak_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">narrow</span>
+</pre></div>
+</div>
+</section>
+<section id="sample-metadata">
+<h2>Sample Metadata<a class="headerlink" href="#sample-metadata" title="Link to this heading"></a></h2>
+<p>File: <code class="docutils literal notranslate"><span class="pre">metadata/sample_sheet.csv</span></code></p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Sample Metadata Table</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 12.5%" />
+<col style="width: 12.5%" />
+<col style="width: 8.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>SampleID</p></th>
+<th class="head"><p>Condition</p></th>
+<th class="head"><p>Replicate</p></th>
+<th class="head"><p>Read1</p></th>
+<th class="head"><p>Read2</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>test_sample</p></td>
+<td><p>H3K4me3</p></td>
+<td><p>1</p></td>
+<td><p>fastq/test_sample_R1.fastq.gz</p></td>
+<td><p>fastq/test_sample_R2.fastq.gz</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="project-layout">
+<h2>Project Layout<a class="headerlink" href="#project-layout" title="Link to this heading"></a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test_dataset/
+├── blacklist/
+│   └── hg38_blacklist.bed
+├── config.yaml
+├── fastq/
+│   ├── test_sample_R1.fastq.gz
+│   └── test_sample_R2.fastq.gz
+├── genome/
+│   ├── hg38.fa
+│   ├── hg38.fa.fai
+│   └── bowtie2_index/
+├── metadata/
+│   └── sample_sheet.csv
+├── run_cutandtag_pipeline.sh
+└── test_output/
+    ├── trimmed/
+    ├── aligned/
+    ├── peaks/
+    ├── tracks/
+    ├── annotation/
+    └── multiqc_report.html
+</pre></div>
+</div>
+</section>
+<section id="wrapper-script-run-cutandtag-pipeline-sh">
+<h2>Wrapper Script: <code class="docutils literal notranslate"><span class="pre">run_cutandtag_pipeline.sh</span></code><a class="headerlink" href="#wrapper-script-run-cutandtag-pipeline-sh" title="Link to this heading"></a></h2>
+<p>A simplified wrapper is provided to handle test execution:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nb">set</span><span class="w"> </span>-e
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Running Cut&amp;Tag Test Pipeline...&quot;</span>
+
+<span class="nv">CONFIG</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nb">source</span><span class="w"> </span>parse_yaml.sh<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CONFIG</span><span class="s2">&quot;</span><span class="w">  </span><span class="c1"># Optional helper to parse YAML to BASH vars</span>
+
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/logs
+
+cutadapt<span class="w"> </span>-a<span class="w"> </span>CTGTCTCTTATACACATCT<span class="w"> </span>-A<span class="w"> </span>CTGTCTCTTATACACATCT<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/trimmed/sample_R1.trimmed.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/trimmed/sample_R2.trimmed.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="si">${</span><span class="nv">read1</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">read2</span><span class="si">}</span><span class="w"> </span>&gt;<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/logs/cutadapt.log
+
+bowtie2<span class="w"> </span>--very-sensitive<span class="w"> </span>-X<span class="w"> </span><span class="m">2000</span><span class="w"> </span>--no-mixed<span class="w"> </span>--no-discordant<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-x<span class="w"> </span><span class="si">${</span><span class="nv">genome_index</span><span class="si">}</span><span class="w"> </span>-1<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/trimmed/sample_R1.trimmed.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-2<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/trimmed/sample_R2.trimmed.fastq.gz<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>samtools<span class="w"> </span>view<span class="w"> </span>-bS<span class="w"> </span>-<span class="w"> </span><span class="p">|</span><span class="w"> </span>samtools<span class="w"> </span>sort<span class="w"> </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/aligned/sample.bam
+samtools<span class="w"> </span>index<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/aligned/sample.bam
+
+macs2<span class="w"> </span>callpeak<span class="w"> </span>-t<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/aligned/sample.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--format<span class="w"> </span>BAMPE<span class="w"> </span>--nomodel<span class="w"> </span>--extsize<span class="w"> </span><span class="si">${</span><span class="nv">extsize</span><span class="si">}</span><span class="w"> </span>-n<span class="w"> </span>sample_test<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--outdir<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/peaks/<span class="w"> </span>&gt;<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/logs/macs2.log
+
+bamCoverage<span class="w"> </span>-b<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/aligned/sample.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/tracks/sample.bw<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--normalizeUsing<span class="w"> </span>RPGC<span class="w"> </span>--effectiveGenomeSize<span class="w"> </span><span class="m">2913022398</span>
+
+multiqc<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/<span class="w"> </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span>/
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Test pipeline complete. Outputs written to </span><span class="si">${</span><span class="nv">output_dir</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="container-support">
+<h2>Container Support<a class="headerlink" href="#container-support" title="Link to this heading"></a></h2>
+<p>The Cut&amp;Tag test pipeline supports full containerization for reproducibility.</p>
+<p><strong>Apptainer/Singularity</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apptainer<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>cutandtag_latest.sif<span class="w"> </span>bash<span class="w"> </span>run_cutandtag_pipeline.sh<span class="w"> </span>--config<span class="w"> </span>config.yaml
+</pre></div>
+</div>
+<p><strong>Docker</strong> (Linux or WSL):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/data<span class="w"> </span>-w<span class="w"> </span>/data<span class="w"> </span>ghcr.io/akhileshkaushal/cutandtag:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>bash<span class="w"> </span>run_cutandtag_pipeline.sh<span class="w"> </span>--config<span class="w"> </span>config.yaml
+</pre></div>
+</div>
+<p>Container Images:</p>
+<ul class="simple">
+<li><p>DockerHub: <code class="docutils literal notranslate"><span class="pre">ghcr.io/akhileshkaushal/cutandtag:latest</span></code></p></li>
+<li><p>Includes all tools via <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> or <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code></p></li>
+<li><p>Recommended for reproducible deployment across HPC and cloud</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="advanced_analysis.html" class="btn btn-neutral float-left" title="Advanced Analysis Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="casestudy.html" class="btn btn-neutral float-right" title="Case Study" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+.. _test_dataset:
+
+Test Dataset and Usage Guide
+============================
+
+This section provides a test dataset and execution framework to validate the Cut&Tag pipeline in any local, HPC, or containerized environment. It includes minimal inputs, example outputs, a structured layout, and a ready-to-use script to test functionality from preprocessing to peak calling and visualization.
+
+Input Requirements
+------------------
+
+- **FASTQ files**  
+  Paired-end (or optionally single-end) reads:  
+  ``fastq/test_sample_R1.fastq.gz``, ``fastq/test_sample_R2.fastq.gz``
+
+- **Reference genome**  
+  Mini genome build (e.g., ``chr22`` or ``chr1``):  
+  ``genome/hg38.fa``  
+  ``genome/hg38.fa.fai``  
+  ``genome/bowtie2_index/``
+
+- **Sample metadata**  
+  Describes sample names, groups, and file paths:  
+  ``metadata/sample_sheet.csv``
+
+- **Optional**:
+  - IgG or Input control BAMs (for peak calling control)
+  - ENCODE blacklist: ``blacklist/hg38_blacklist.bed``
+
+Outputs
+-------
+
+Upon successful execution, the following outputs will be generated in ``test_output/``:
+
+- **Trimmed reads**: Adapter-trimmed FASTQs in ``trimmed/``
+- **Alignments**: Filtered and sorted BAMs in ``aligned/``
+- **Peaks**: MACS2 narrowPeak, broadPeak, and xls files in ``peaks/``
+- **QC Reports**: FastQC HTML reports, MultiQC summary (``multiqc_report.html``), deepTools fragment size histogram
+- **Signal Tracks**: Normalized BigWig files in ``tracks/``
+- **Annotations**: Peak annotation tables in ``annotation/``
+
+Usage
+-----
+
+Run the pipeline with the test dataset using the provided script:
+
+.. code-block:: bash
+
+   cd test_dataset/
+   bash run_cutandtag_pipeline.sh --config config.yaml
+
+This script performs the following:
+
+- Trimming adapters using ``cutadapt``
+- Aligning reads using ``bowtie2``
+- Sorting, indexing, and filtering BAMs using ``samtools``
+- Estimating fragment sizes with ``deepTools``
+- Calling peaks using ``MACS2``
+- Annotating peaks with ``ChIPseeker`` (optional)
+- Generating signal tracks (BigWig)
+- Compiling QC reports using ``MultiQC``
+
+Configuration
+-------------
+
+Edit the ``config.yaml`` file to define paths to:
+
+- Reference genome and its index
+- Blacklist BED file
+- Sample metadata CSV
+- Output directory
+- Tool binaries (if outside ``$PATH``)
+- Parameters for trimming, alignment, and peak calling
+
+Example ``config.yaml`` snippet:
+
+.. code-block:: yaml
+
+   genome_index: genome/bowtie2_index/hg38
+   blacklist: blacklist/hg38_blacklist.bed
+   metadata: metadata/sample_sheet.csv
+   output_dir: test_output/
+   tools:
+     cutadapt: cutadapt
+     bowtie2: bowtie2
+     macs2: macs2
+     samtools: samtools
+     bamCoverage: bamCoverage
+     multiqc: multiqc
+   parameters:
+     mapq_threshold: 30
+     extsize: 200
+     peak_type: narrow
+
+Sample Metadata
+---------------
+
+File: ``metadata/sample_sheet.csv``
+
+.. csv-table:: Sample Metadata Table
+   :header: "SampleID", "Condition", "Replicate", "Read1", "Read2"
+   :widths: 15, 15, 10, 40, 40
+
+   test_sample, H3K4me3, 1, fastq/test_sample_R1.fastq.gz, fastq/test_sample_R2.fastq.gz
+
+
+Project Layout
+--------------
+
+.. code-block:: none
+
+   test_dataset/
+   ├── blacklist/
+   │   └── hg38_blacklist.bed
+   ├── config.yaml
+   ├── fastq/
+   │   ├── test_sample_R1.fastq.gz
+   │   └── test_sample_R2.fastq.gz
+   ├── genome/
+   │   ├── hg38.fa
+   │   ├── hg38.fa.fai
+   │   └── bowtie2_index/
+   ├── metadata/
+   │   └── sample_sheet.csv
+   ├── run_cutandtag_pipeline.sh
+   └── test_output/
+       ├── trimmed/
+       ├── aligned/
+       ├── peaks/
+       ├── tracks/
+       ├── annotation/
+       └── multiqc_report.html
+
+Wrapper Script: ``run_cutandtag_pipeline.sh``
+---------------------------------------------
+
+A simplified wrapper is provided to handle test execution:
+
+.. code-block:: bash
+
+   #!/bin/bash
+
+   set -e
+   echo "Running Cut&Tag Test Pipeline..."
+
+   CONFIG=$1
+   source parse_yaml.sh "$CONFIG"  # Optional helper to parse YAML to BASH vars
+
+   mkdir -p ${output_dir}/logs
+
+   cutadapt -a CTGTCTCTTATACACATCT -A CTGTCTCTTATACACATCT \
+     -o ${output_dir}/trimmed/sample_R1.trimmed.fastq.gz \
+     -p ${output_dir}/trimmed/sample_R2.trimmed.fastq.gz \
+     ${read1} ${read2} > ${output_dir}/logs/cutadapt.log
+
+   bowtie2 --very-sensitive -X 2000 --no-mixed --no-discordant \
+     -x ${genome_index} -1 ${output_dir}/trimmed/sample_R1.trimmed.fastq.gz \
+     -2 ${output_dir}/trimmed/sample_R2.trimmed.fastq.gz | \
+     samtools view -bS - | samtools sort -o ${output_dir}/aligned/sample.bam
+   samtools index ${output_dir}/aligned/sample.bam
+
+   macs2 callpeak -t ${output_dir}/aligned/sample.bam \
+     --format BAMPE --nomodel --extsize ${extsize} -n sample_test \
+     --outdir ${output_dir}/peaks/ > ${output_dir}/logs/macs2.log
+
+   bamCoverage -b ${output_dir}/aligned/sample.bam \
+     -o ${output_dir}/tracks/sample.bw \
+     --normalizeUsing RPGC --effectiveGenomeSize 2913022398
+
+   multiqc ${output_dir}/ -o ${output_dir}/
+
+   echo "Test pipeline complete. Outputs written to ${output_dir}"
+
+Container Support
+-----------------
+
+The Cut&Tag test pipeline supports full containerization for reproducibility.
+
+**Apptainer/Singularity**:
+
+.. code-block:: bash
+
+   apptainer exec cutandtag_latest.sif bash run_cutandtag_pipeline.sh --config config.yaml
+
+**Docker** (Linux or WSL):
+
+.. code-block:: bash
+
+   docker run --rm -v $(pwd):/data -w /data ghcr.io/akhileshkaushal/cutandtag:latest \
+     bash run_cutandtag_pipeline.sh --config config.yaml
+
+Container Images:
+
+- DockerHub: ``ghcr.io/akhileshkaushal/cutandtag:latest``
+- Includes all tools via ``environment.yml`` or ``Dockerfile``
+- Recommended for reproducible deployment across HPC and cloud

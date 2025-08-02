@@ -1,0 +1,29 @@
+Cut&Tag Analysis Pipeline
+=========================
+
+This documentation provides a complete overview of the Cut&Tag preprocessing and analysis pipeline. It includes installation steps, input/output specifications, step-by-step processing, advanced options, and a published case study.
+
+.. note::
+   This documentation is intended for both experimental and computational biologists working with chromatin profiling data, especially in low-input or rare-cell contexts.
+
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Pipeline Documentation
+
+   intro
+   install
+   run_pipeline
+   advanced_analysis
+   test_structure_containerisation
+   casestudy
+   references
+
+Indices and Tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

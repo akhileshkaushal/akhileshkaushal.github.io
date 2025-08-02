@@ -1,0 +1,337 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cut&amp;Tag Analysis Pipeline: Step-by-Step &mdash; Cut&amp;Tag Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/cutntag/run_pipeline.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced Analysis Options" href="advanced_analysis.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Cut&Tag Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Cut&amp;Tag Preprocessing and Analysis Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#key-applications">Key Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#benefits-over-chip-seq">Benefits Over ChIP-seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-experimental-designs">Supported Experimental Designs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#typical-workflow-steps">Typical Workflow Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installation-methods">Installation Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#optional-setup-for-gpu-enabled-servers-for-visualization-or-peak-modeling">Optional Setup for GPU-enabled Servers (for visualization or peak modeling)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#testing-your-installation">Testing Your Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Cut&amp;Tag Analysis Pipeline: Step-by-Step</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview-of-differences-from-chip-seq">Overview of Differences from ChIP-seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-steps">Pipeline Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adapter-trimming">2. Adapter Trimming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alignment-to-reference-genome">3. Alignment to Reference Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#post-alignment-processing">4. Post-Alignment Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fragment-size-estimation">5. Fragment Size Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#peak-calling">6. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#peak-annotation">7. Peak Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#signal-visualization">8. Signal Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#replicate-quality-assessment">9. Replicate Quality Assessment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#downstream-analyses-optional">10. Downstream Analyses (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Analysis Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#spike-in-normalization-optional">1. Spike-in Normalization (Optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#read-deduplication">2. Read Deduplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#background-signal-correction">3. Background Signal Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#comparative-peak-analysis">4. Comparative Peak Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#fragmentation-pattern-analysis">5. Fragmentation Pattern Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="test_structure_containerisation.html">Test Dataset and Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#outputs">Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#sample-metadata">Sample Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#project-layout">Project Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#wrapper-script-run-cutandtag-pipeline-sh">Wrapper Script: <code class="docutils literal notranslate"><span class="pre">run_cutandtag_pipeline.sh</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#container-support">Container Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#case-study-single-cell-and-low-input-chromatin-profiling-using-cut-tag">Case Study: Single-Cell and Low-Input Chromatin Profiling Using CUT&amp;Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#background-and-rationale">1. Background and Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#experimental-strategy-and-innovations">2. Experimental Strategy and Innovations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#key-findings-and-results">3. Key Findings and Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#detailed-protocol-modifications">4. Detailed Protocol Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#data-analysis">5. Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#biological-insights">6. Biological Insights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#future-applications">7. Future Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#key-publications">Key Publications</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cut&Tag Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cut&amp;Tag Analysis Pipeline: Step-by-Step</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/run_pipeline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_analysis.html" class="btn btn-neutral float-right" title="Advanced Analysis Options" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cut-tag-analysis-pipeline-step-by-step">
+<span id="run-pipeline"></span><h1>Cut&amp;Tag Analysis Pipeline: Step-by-Step<a class="headerlink" href="#cut-tag-analysis-pipeline-step-by-step" title="Link to this heading"></a></h1>
+<p>This section outlines the complete bioinformatics workflow for analyzing Cleavage Under Targets and Tagmentation (Cut&amp;Tag) data. While conceptually similar to ChIP-seq, Cut&amp;Tag exhibits distinct enzymatic behavior and signal characteristics that necessitate specific preprocessing and quality control strategies.</p>
+<section id="overview-of-differences-from-chip-seq">
+<h2>Overview of Differences from ChIP-seq<a class="headerlink" href="#overview-of-differences-from-chip-seq" title="Link to this heading"></a></h2>
+<p>Unlike ChIP-seq, which relies on crosslinking and sonication, Cut&amp;Tag:
+- Uses <strong>in situ Tn5 transposase</strong> tethered via Protein A/G to antibody-bound targets.
+- Generates <strong>short, tightly centered fragments</strong> around binding sites.
+- Results in <strong>lower background</strong>, often obviating the need for extensive filtering.
+- Typically produces <strong>lower library complexity</strong> but with higher specificity.</p>
+<p>Thus, Cut&amp;Tag data:
+- Requires <strong>fragment-centric</strong> visualization
+- Benefits from <strong>paired-end reads</strong> for fragment inference
+- Avoids crosslinking artifacts
+- Is compatible with <strong>lower input DNA</strong></p>
+</section>
+<section id="pipeline-steps">
+<h2>Pipeline Steps<a class="headerlink" href="#pipeline-steps" title="Link to this heading"></a></h2>
+</section>
+<section id="quality-control">
+<h2>1. Quality Control<a class="headerlink" href="#quality-control" title="Link to this heading"></a></h2>
+<p>Assess raw sequencing quality using <cite>FastQC</cite> and summarize with <cite>MultiQC</cite>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fastqc<span class="w"> </span>*.fastq.gz<span class="w"> </span>-o<span class="w"> </span>fastqc_reports/
+multiqc<span class="w"> </span>fastqc_reports/<span class="w"> </span>-o<span class="w"> </span>multiqc_output/
+</pre></div>
+</div>
+<p>Key checks:
+- Per-base sequence quality
+- Overrepresented adapter sequences (e.g., Nextera or Tn5-specific)
+- Base duplication (typically higher in Cut&amp;Tag due to low input)</p>
+</section>
+<section id="adapter-trimming">
+<h2>2. Adapter Trimming<a class="headerlink" href="#adapter-trimming" title="Link to this heading"></a></h2>
+<p>Cut&amp;Tag typically uses <strong>Nextera-compatible adapters</strong>, which must be removed prior to alignment.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cutadapt<span class="w"> </span>-a<span class="w"> </span>CTGTCTCTTATACACATCT<span class="w"> </span>-A<span class="w"> </span>CTGTCTCTTATACACATCT<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-q<span class="w"> </span><span class="m">20</span><span class="w"> </span>-m<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>sample_R1_trimmed.fastq.gz<span class="w"> </span>-p<span class="w"> </span>sample_R2_trimmed.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>sample_R1.fastq.gz<span class="w"> </span>sample_R2.fastq.gz
+</pre></div>
+</div>
+<p>Notes:
+- For paired-end reads, ensure proper synchronization
+- Tn5 integrates at staggered positions, so trimming read-through adapters is critical</p>
+</section>
+<section id="alignment-to-reference-genome">
+<h2>3. Alignment to Reference Genome<a class="headerlink" href="#alignment-to-reference-genome" title="Link to this heading"></a></h2>
+<p>Align reads with <cite>bowtie2</cite> in paired-end mode using Cut&amp;Tag-specific options:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bowtie2<span class="w"> </span>--very-sensitive<span class="w"> </span>-X<span class="w"> </span><span class="m">2000</span><span class="w"> </span>--no-mixed<span class="w"> </span>--no-discordant<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-x<span class="w"> </span>/path/to/genome_index<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-1<span class="w"> </span>sample_R1_trimmed.fastq.gz<span class="w"> </span>-2<span class="w"> </span>sample_R2_trimmed.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-S<span class="w"> </span>sample.sam
+</pre></div>
+</div>
+<p>Cut&amp;Tag considerations:
+- Fragment sizes are tight; avoid discordant alignments
+- Use <cite>–very-sensitive</cite> to capture soft-clipped or short alignments
+- For <strong>single-end reads</strong>, append <cite>–local</cite> and manually filter based on length</p>
+</section>
+<section id="post-alignment-processing">
+<h2>4. Post-Alignment Processing<a class="headerlink" href="#post-alignment-processing" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>samtools<span class="w"> </span>view<span class="w"> </span>-bS<span class="w"> </span>sample.sam<span class="w"> </span><span class="p">|</span><span class="w"> </span>samtools<span class="w"> </span>sort<span class="w"> </span>-o<span class="w"> </span>sample.sorted.bam
+samtools<span class="w"> </span>index<span class="w"> </span>sample.sorted.bam
+samtools<span class="w"> </span>view<span class="w"> </span>-b<span class="w"> </span>-q<span class="w"> </span><span class="m">30</span><span class="w"> </span>sample.sorted.bam<span class="w"> </span>&gt;<span class="w"> </span>sample.filtered.bam
+</pre></div>
+</div>
+<p>Additional:
+- Remove mitochondrial reads (often overrepresented):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>samtools<span class="w"> </span>idxstats<span class="w"> </span>sample.filtered.bam<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>chrM<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>samtools<span class="w"> </span>view<span class="w"> </span>-b<span class="w"> </span>sample.filtered.bam<span class="w"> </span>&gt;<span class="w"> </span>sample.noMT.bam
+</pre></div>
+</div>
+</section>
+<section id="fragment-size-estimation">
+<h2>5. Fragment Size Estimation<a class="headerlink" href="#fragment-size-estimation" title="Link to this heading"></a></h2>
+<p>Due to the fragment-centric nature of Cut&amp;Tag, assessing fragment length profiles is essential.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bamPEFragmentSize<span class="w"> </span>-b<span class="w"> </span>sample.noMT.bam<span class="w"> </span>-hist<span class="w"> </span>fraglen.png<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-T<span class="w"> </span><span class="s2">&quot;Fragment Size Distribution&quot;</span><span class="w"> </span>--maxFragmentLength<span class="w"> </span><span class="m">1000</span>
+</pre></div>
+</div>
+<p>Cut&amp;Tag-specific patterns:
+- Clear mono-nucleosome peak (~150 bp)
+- Sub-nucleosomal peak (&lt;120 bp)
+- Minimal di-/tri-nucleosome peaks unless over-tagmented</p>
+</section>
+<section id="peak-calling">
+<h2>6. Peak Calling<a class="headerlink" href="#peak-calling" title="Link to this heading"></a></h2>
+<p>Use <cite>MACS2</cite> in paired-end mode (<cite>–format BAMPE</cite>) without model building.</p>
+<p>For TFs (narrow peaks):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>macs2<span class="w"> </span>callpeak<span class="w"> </span>-t<span class="w"> </span>sample.noMT.bam<span class="w"> </span>-c<span class="w"> </span>input.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--format<span class="w"> </span>BAMPE<span class="w"> </span>--nomodel<span class="w"> </span>--extsize<span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-g<span class="w"> </span>hs<span class="w"> </span>-n<span class="w"> </span>sample_narrow<span class="w"> </span>--outdir<span class="w"> </span>macs2_output
+</pre></div>
+</div>
+<p>For histone marks (broad peaks):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>macs2<span class="w"> </span>callpeak<span class="w"> </span>-t<span class="w"> </span>sample.noMT.bam<span class="w"> </span>-c<span class="w"> </span>input.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--format<span class="w"> </span>BAMPE<span class="w"> </span>--broad<span class="w"> </span>--broad-cutoff<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-g<span class="w"> </span>hs<span class="w"> </span>-n<span class="w"> </span>sample_broad<span class="w"> </span>--outdir<span class="w"> </span>macs2_output
+</pre></div>
+</div>
+<p>Cut&amp;Tag-specific tip:
+- If lacking input control, IgG or mock-treated controls may be substituted
+- SEACR (Sparse Enrichment Analysis for CUT&amp;RUN) can be considered for minimal background</p>
+</section>
+<section id="peak-annotation">
+<h2>7. Peak Annotation<a class="headerlink" href="#peak-annotation" title="Link to this heading"></a></h2>
+<p>Link peaks to genes or regulatory features.</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">ChIPseeker</span><span class="p">)</span>
+<span class="n">peak</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">readPeakFile</span><span class="p">(</span><span class="s">&quot;sample_narrow_peaks.narrowPeak&quot;</span><span class="p">)</span>
+<span class="n">peakAnno</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">annotatePeak</span><span class="p">(</span><span class="n">peak</span><span class="p">,</span><span class="w"> </span><span class="n">tssRegion</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">-2000</span><span class="p">,</span><span class="w"> </span><span class="m">2000</span><span class="p">),</span><span class="w"> </span><span class="n">TxDb</span><span class="o">=</span><span class="n">txdb</span><span class="p">,</span><span class="w"> </span><span class="n">annoDb</span><span class="o">=</span><span class="s">&quot;org.Hs.eg.db&quot;</span><span class="p">)</span>
+<span class="nf">plotAnnoPie</span><span class="p">(</span><span class="n">peakAnno</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Annotation outputs:
+- Promoter enrichment
+- Intergenic distal peaks
+- Functional gene associations</p>
+</section>
+<section id="signal-visualization">
+<h2>8. Signal Visualization<a class="headerlink" href="#signal-visualization" title="Link to this heading"></a></h2>
+<p>Create browser tracks and TSS plots.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bamCoverage<span class="w"> </span>-b<span class="w"> </span>sample.noMT.bam<span class="w"> </span>-o<span class="w"> </span>sample.bw<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--normalizeUsing<span class="w"> </span>RPGC<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--effectiveGenomeSize<span class="w"> </span><span class="m">2913022398</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--binSize<span class="w"> </span><span class="m">10</span><span class="w"> </span>--extendReads
+</pre></div>
+</div>
+<p>TSS plot:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>computeMatrix<span class="w"> </span>reference-point<span class="w"> </span>-S<span class="w"> </span>sample.bw<span class="w"> </span>-R<span class="w"> </span>tss.bed<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-a<span class="w"> </span><span class="m">2000</span><span class="w"> </span>-b<span class="w"> </span><span class="m">2000</span><span class="w"> </span>-bs<span class="w"> </span><span class="m">25</span><span class="w"> </span>-out<span class="w"> </span>matrix.gz
+plotHeatmap<span class="w"> </span>-m<span class="w"> </span>matrix.gz<span class="w"> </span>-out<span class="w"> </span>tss_heatmap.png
+plotProfile<span class="w"> </span>-m<span class="w"> </span>matrix.gz<span class="w"> </span>-out<span class="w"> </span>tss_profile.png
+</pre></div>
+</div>
+<p>Cut&amp;Tag-specific considerations:
+- Short fragments generate sharper, symmetric TSS signals
+- Use fine binning (e.g., 25 bp) to capture narrow peaks</p>
+</section>
+<section id="replicate-quality-assessment">
+<h2>9. Replicate Quality Assessment<a class="headerlink" href="#replicate-quality-assessment" title="Link to this heading"></a></h2>
+<p>Compare technical and biological replicates for consistency.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>multiBamSummary<span class="w"> </span>bins<span class="w"> </span>-b<span class="w"> </span>rep1.bam<span class="w"> </span>rep2.bam<span class="w"> </span>rep3.bam<span class="w"> </span>-o<span class="w"> </span>reps.npz
+plotCorrelation<span class="w"> </span>-in<span class="w"> </span>reps.npz<span class="w"> </span>--corMethod<span class="w"> </span>spearman<span class="w"> </span>--whatToPlot<span class="w"> </span>heatmap<span class="w"> </span>-o<span class="w"> </span>correlation.png
+</pre></div>
+</div>
+<p>Optional: Evaluate signal enrichment metrics (NSC, RSC) using <cite>phantompeakqualtools</cite>.</p>
+</section>
+<section id="downstream-analyses-optional">
+<h2>10. Downstream Analyses (Optional)<a class="headerlink" href="#downstream-analyses-optional" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Motif enrichment</strong> under peaks using HOMER or MEME</p></li>
+<li><p><strong>Differential binding analysis</strong> via DiffBind or csaw</p></li>
+<li><p><strong>Pathway enrichment</strong> of peak-associated genes</p></li>
+<li><p><strong>Super-enhancer detection</strong> using ROSE</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_analysis.html" class="btn btn-neutral float-right" title="Advanced Analysis Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

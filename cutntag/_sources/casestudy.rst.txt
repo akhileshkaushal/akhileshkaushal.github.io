@@ -1,0 +1,99 @@
+.. _casestudy:
+
+Case Study
+===========
+
+Case Study: Single-Cell and Low-Input Chromatin Profiling Using CUT\&Tag
+-------------------------------------------------------------------------
+
+This case study is based on the article *"CUT\&Tag for efficient epigenomic profiling of small samples and single cells"* by Kaya-Okur et al., published in *Nature Communications* (2019).
+
+1. Background and Rationale
+-----------------------------
+
+Mapping protein-DNA interactions is fundamental to understanding gene regulation, chromatin dynamics, and epigenetic programming. Traditional methods like ChIP-seq require large amounts of starting material and often suffer from low signal-to-noise ratio. Kaya-Okur et al. introduced **Cleavage Under Targets and Tagmentation (CUT\&Tag)**, enabling high-resolution, low-background, and low-input epigenomic profiling.
+
+The authors further demonstrated that CUT\&Tag can be adapted for **single-cell** applications, offering scalability and precision in rare or heterogeneous samples.
+
+2. Experimental Strategy and Innovations
+-----------------------------------------
+
+**CUT\&Tag Workflow**:
+
+* Antibody binds target chromatin protein.
+* Protein A-Tn5 fusion (loaded with adapters) binds the antibody.
+* Upon Mg²⁺ activation, Tn5 integrates adapters, producing sequencing-ready fragments.
+
+**Advantages Over ChIP-seq**:
+
+* In situ processing minimizes loss and noise.
+* Requires as few as 60 cells.
+* Generates sharper, high-confidence peaks.
+* Simplified library prep workflow.
+
+3. Key Findings and Results
+----------------------------
+
+**Histone Profiling in K562 Cells**:
+
+* Targets included: H3K27me3, H3K4me1/2/3, H3K27ac.
+* Even at n=60 cells, CUT\&Tag produced high-quality signal.
+* Signal-to-noise ratio exceeded ChIP-seq and CUT\&RUN.
+* H3K4me2 enrichment correlated with gene activity.
+
+**Comparison with Other Methods**:
+
+* CUT\&Tag yielded narrower peaks than CUT\&RUN.
+* Less off-target activity than ChIP-seq.
+* Effective on permeabilized nuclei.
+
+**Single-Cell CUT\&Tag**:
+
+* Used ICELL8 platform for nanowell barcoding.
+* Hundreds of nuclei profiled for H3K27me3 and H3K4me2.
+* Aggregated profiles matched bulk; individual profiles revealed epigenomic heterogeneity.
+
+4. Detailed Protocol Modifications
+-----------------------------------
+
+**Buffer Composition**:
+
+* 20 mM HEPES, 150 mM NaCl, 0.5 mM Spermidine, protease inhibitors.
+
+**Tn5 Fusion Protein**:
+
+* Protein A fused to hyperactive Tn5.
+* Preloaded with mosaic-end adapters.
+
+**PCR and Library Prep**:
+
+* MgCl₂-activated in situ tagmentation.
+* 12-14 PCR cycles sufficed.
+
+5. Data Analysis
+-----------------
+
+* **Alignment**: Bowtie2 (`--very-sensitive -X 2000`)
+* **Filtering**: MAPQ > 30, mitochondrial reads removed.
+* **Peak Calling**: MACS2 (custom parameters per mark).
+* **Visualization**: deepTools (`bamCoverage`, `plotProfile`), IGV.
+* **Single-cell**: Barcoded libraries demultiplexed using ICELL8 metadata.
+
+6. Biological Insights
+-----------------------
+
+* CUT\&Tag revealed high-resolution maps of active/repressed elements.
+* Single-cell profiles captured enhancer and promoter heterogeneity.
+* Enabled trajectory and clustering based on histone mark distribution.
+
+7. Future Applications
+-----------------------
+
+* Multi-modal integration with scRNA-seq or ATAC-seq.
+* Combinatorial indexing to scale up single-cell workflows.
+* Applicable to fixed tissue or biopsy-derived nuclei.
+
+Conclusion
+===========
+
+CUT\&Tag is a robust, efficient, and low-input method for chromatin profiling. This study validated its utility for bulk and single-cell epigenomic studies with superior resolution and minimal background. The protocol is poised to transform epigenetics by enabling precise profiling from limited or rare biological samples.

@@ -1,0 +1,67 @@
+.. _intro:
+
+Cut&Tag Preprocessing and Analysis Pipeline
+===========================================
+
+**Author:** Akhilesh Kaushal  
+
+Overview
+--------
+
+This pipeline provides a complete, reproducible, and scalable workflow for the preprocessing and analysis of Cleavage Under Targets and Tagmentation (Cut&Tag) data. Cut&Tag is a targeted epigenomic profiling technique that leverages antibody-targeted tagmentation to map DNA-protein interactions at high resolution. It offers significant improvements over traditional ChIP-seq in terms of sensitivity, cost-efficiency, and input requirements.
+
+Cut&Tag enables **in situ tagmentation** using a fusion protein consisting of Protein A/G tethered to Tn5 transposase. This approach facilitates direct adapter integration at antibody-bound genomic regions, minimizing background signal and reducing the need for chromatin fragmentation or crosslinking.
+
+Key Applications
+----------------
+
+- **Histone modification profiling**
+  - Examples: H3K27ac, H3K4me3 (active), H3K27me3, H3K9me3 (repressive)
+- **Transcription factor (TF) binding site mapping**
+  - Applicable even in samples with very low cell numbers
+- **Epigenomic profiling of rare or primary cell populations**
+  - Suitable for primary tissues, sorted cell types, and clinical specimens
+- **Single-cell chromatin accessibility and TF binding**
+  - Adapted protocols such as scCut&Tag and multi-modal single-cell designs
+
+Benefits Over ChIP-seq
+----------------------
+
+Cut&Tag offers a number of advantages that make it ideal for chromatin profiling, especially when working with precious or low-input samples:
+
+- **Lower input requirements**: Requires as few as 1,000–10,000 cells per experiment
+- **Higher signal-to-noise ratio**: In situ tagmentation yields reduced background
+- **Eliminates need for sonication**: No mechanical fragmentation of chromatin required
+- **Faster library preparation**: Library construction is integrated with binding/tagmentation
+- **Cost-effective and scalable**: Ideal for both small-scale and high-throughput experiments
+- **Minimal formaldehyde crosslinking**: Preserves native chromatin structure
+
+Supported Experimental Designs
+------------------------------
+
+This pipeline is compatible with a variety of experimental setups, including:
+
+- **Read Types**:
+  - Single-end or paired-end sequencing
+- **Replicates**:
+  - Technical and biological replicates supported with differential analysis capability
+- **Controls**:
+  - Mock antibody controls or IgG
+  - Spike-in controls (e.g., Drosophila DNA) for normalization
+- **Peak Calling**:
+  - Supports both **narrow peak** calling (e.g., for TFs like CTCF, GATA1)
+  - And **broad peak** calling (e.g., for histone marks like H3K27me3)
+
+Typical Workflow Steps
+----------------------
+
+1. **Raw read preprocessing** (adapter trimming, quality filtering)
+2. **Alignment to reference genome**
+3. **Deduplication and filtering**
+4. **Fragment length estimation and QC**
+5. **Peak calling (MACS2, SEACR, or custom models)**
+6. **Differential analysis (e.g., DiffBind, csaw)**
+7. **Visualization (bigWig, heatmaps, genome browser tracks)**
+8. **Reporting and downstream enrichment (e.g., GO, pathway, motif)**
+
+

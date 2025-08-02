@@ -1,0 +1,168 @@
+.. _advanced_analysis:
+
+Advanced Analysis Options
+=========================
+
+This section outlines advanced Cut&Tag analytical modules that go beyond the core pipeline. These approaches enhance interpretability, reproducibility, and resolution, especially in comparative or large-scale studies.
+
+1. Spike-in Normalization (Optional)
+------------------------------------
+
+Spike-in normalization is recommended for **quantitative comparisons** across samples, such as time-course or drug-response studies.
+
+**Purpose**:
+- Normalize global signal differences across libraries
+- Correct for variations in enzyme activity, input DNA, or sequencing depth
+
+**Common spike-ins**:
+- *Drosophila melanogaster* (dm6) chromatin or nuclei
+- *Saccharomyces cerevisiae* (yeast) chromatin (less common)
+
+**Workflow**:
+
+1. Create a **composite genome**: Concatenate `hg38` and `dm6` FASTA sequences and index with Bowtie2:
+
+   .. code-block:: bash
+
+      cat hg38.fa dm6.fa > hg38_dm6.fa
+      bowtie2-build hg38_dm6.fa hg38_dm6
+
+2. Align reads to the composite genome:
+
+   .. code-block:: bash
+
+      bowtie2 -x hg38_dm6 -1 sample_R1.fastq.gz -2 sample_R2.fastq.gz \
+        --very-sensitive -X 2000 --no-mixed --no-discordant -S sample.sam
+
+3. Count reads uniquely mapped to dm6:
+
+   .. code-block:: bash
+
+      samtools view -h sample.bam | grep "dm6" | wc -l
+
+4. Use spike-in counts to compute **scaling factors** for downstream normalization (e.g., bigWig generation, DESeq2 offsets).
+
+**Tools**:
+- `samtools`, `featureCounts`, or `deepTools bamCompare` for scaling
+- Ensure spike-in control read counts are sufficient for calibration (≥100,000 reads recommended)
+
+2. Read Deduplication
+---------------------
+
+Deduplication is generally **not recommended** for Cut&Tag due to:
+- Low input DNA
+- High PCR duplication due to limited complexity
+- Tn5 tagmentation yielding precise cut sites
+
+However, in specific cases with **sufficient complexity and depth**, duplicates may be removed cautiously:
+
+**Tools**:
+- `Picard MarkDuplicates`
+- `samtools markdup`
+
+**Command example**:
+
+.. code-block:: bash
+
+   samtools sort -o sorted.bam input.bam
+   samtools fixmate -m sorted.bam fixmate.bam
+   samtools sort -o fixmate_sorted.bam fixmate.bam
+   samtools markdup -r fixmate_sorted.bam dedup.bam
+
+**Tip**: Use fragment distribution plots before and after deduplication to assess impact.
+
+3. Background Signal Correction
+-------------------------------
+
+To reduce false-positive peaks, background correction using control libraries is recommended.
+
+**Control types**:
+- IgG-only sample (preferable)
+- No-antibody/blank tagmentation (common in some protocols)
+
+**Peak calling with control**:
+
+.. code-block:: bash
+
+   macs2 callpeak -t experiment.bam -c control.bam \
+     --format BAMPE --nomodel --extsize 200 \
+     -g hs -n sample_vs_control --outdir macs2_control/
+
+**Optional**: Visualize control-subtracted signals using `deepTools bamCompare`:
+
+.. code-block:: bash
+
+   bamCompare -b1 experiment.bam -b2 control.bam \
+     --operation subtract --normalizeUsing RPGC \
+     -o experiment_minus_control.bw
+
+4. Comparative Peak Analysis
+----------------------------
+
+To compare occupancy across samples, conditions, or marks:
+
+**Options**:
+- `bedtools intersect`: Identify overlapping or unique peaks
+- `DiffBind`: Quantify binding differences with statistical testing
+- `ChIPpeakAnno` or `csaw`: R-based overlap tools
+
+**Examples**:
+
+- Identify shared binding sites:
+
+  .. code-block:: bash
+
+     bedtools intersect -a sample1_peaks.narrowPeak -b sample2_peaks.narrowPeak -u > shared_peaks.bed
+
+- Quantify peak overlap in R:
+
+  .. code-block:: R
+
+     library(VennDiagram)
+     venn.plot <- draw.pairwise.venn(area1 = 4000, area2 = 3500, cross.area = 2500,
+                                     category = c("Condition A", "Condition B"), fill = c("skyblue", "lightgreen"))
+
+- Compute Jaccard similarity:
+
+  .. code-block:: bash
+
+     bedtools jaccard -a sample1.bed -b sample2.bed
+
+- Perform DE binding analysis:
+
+  .. code-block:: R
+
+     library(DiffBind)
+     dba <- dba(sampleSheet="metadata/sample_sheet.csv")
+     dba <- dba.count(dba)
+     dba <- dba.contrast(dba, categories=DBA_CONDITION)
+     dba <- dba.analyze(dba)
+     dba.plotMA(dba)
+
+5. Fragmentation Pattern Analysis
+---------------------------------
+
+Cut&Tag libraries exhibit **nucleosomal footprints** due to Tn5 insertion at nucleosome-free sites.
+
+Use fragment size histograms to:
+- Confirm mono- and di-nucleosome peaks
+- Evaluate library fragmentation quality
+
+**Tool**:
+- `deepTools bamPEFragmentSize`
+
+.. code-block:: bash
+
+   bamPEFragmentSize -b sample.bam \
+     -hist fragment_length.png \
+     --maxFragmentLength 1000 \
+     -T "Fragment Length Distribution"
+
+**Expected patterns**:
+- <100 bp: nucleosome-free fragments
+- ~150 bp: mono-nucleosome
+- ~300 bp: di-nucleosome
+- Sharp unimodal distribution indicates high library quality
+
+
+

@@ -1,0 +1,287 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; Cut&amp;Tag Analysis Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/cutntag/install.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Cut&amp;Tag Analysis Pipeline: Step-by-Step" href="run_pipeline.html" />
+    <link rel="prev" title="Cut&amp;Tag Preprocessing and Analysis Pipeline" href="intro.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Cut&Tag Analysis Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pipeline Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Cut&amp;Tag Preprocessing and Analysis Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#key-applications">Key Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#benefits-over-chip-seq">Benefits Over ChIP-seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-experimental-designs">Supported Experimental Designs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#typical-workflow-steps">Typical Workflow Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-methods">Installation Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-setup-for-gpu-enabled-servers-for-visualization-or-peak-modeling">Optional Setup for GPU-enabled Servers (for visualization or peak modeling)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-your-installation">Testing Your Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline.html">Cut&amp;Tag Analysis Pipeline: Step-by-Step</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#overview-of-differences-from-chip-seq">Overview of Differences from ChIP-seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#pipeline-steps">Pipeline Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#quality-control">1. Quality Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#adapter-trimming">2. Adapter Trimming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#alignment-to-reference-genome">3. Alignment to Reference Genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#post-alignment-processing">4. Post-Alignment Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#fragment-size-estimation">5. Fragment Size Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#peak-calling">6. Peak Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#peak-annotation">7. Peak Annotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#signal-visualization">8. Signal Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#replicate-quality-assessment">9. Replicate Quality Assessment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#downstream-analyses-optional">10. Downstream Analyses (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Analysis Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#spike-in-normalization-optional">1. Spike-in Normalization (Optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#read-deduplication">2. Read Deduplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#background-signal-correction">3. Background Signal Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#comparative-peak-analysis">4. Comparative Peak Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#fragmentation-pattern-analysis">5. Fragmentation Pattern Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="test_structure_containerisation.html">Test Dataset and Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#outputs">Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#sample-metadata">Sample Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#project-layout">Project Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#wrapper-script-run-cutandtag-pipeline-sh">Wrapper Script: <code class="docutils literal notranslate"><span class="pre">run_cutandtag_pipeline.sh</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structure_containerisation.html#container-support">Container Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#case-study-single-cell-and-low-input-chromatin-profiling-using-cut-tag">Case Study: Single-Cell and Low-Input Chromatin Profiling Using CUT&amp;Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#background-and-rationale">1. Background and Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#experimental-strategy-and-innovations">2. Experimental Strategy and Innovations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#key-findings-and-results">3. Key Findings and Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#detailed-protocol-modifications">4. Detailed Protocol Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#data-analysis">5. Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#biological-insights">6. Biological Insights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#future-applications">7. Future Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html#conclusion">Conclusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#key-publications">Key Publications</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cut&Tag Analysis Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/install.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Cut&amp;Tag Preprocessing and Analysis Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_pipeline.html" class="btn btn-neutral float-right" title="Cut&amp;Tag Analysis Pipeline: Step-by-Step" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<p>This section provides step-by-step instructions to install the Cut&amp;Tag pipeline and its dependencies in a reproducible environment. The pipeline is implemented using Python, shell scripts, and standard bioinformatics tools. To ensure reproducibility across platforms, we support both <strong>Conda-based installation</strong> and <strong>Apptainer (Singularity) containers</strong>.</p>
+<section id="system-requirements">
+<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Operating System</strong>: Linux or macOS (x86_64)</p></li>
+<li><p><strong>Memory</strong>: Minimum 16 GB RAM (32 GB recommended for peak calling)</p></li>
+<li><p><strong>Disk space</strong>: At least 100 GB free space (depending on number of samples)</p></li>
+<li><p><strong>Python</strong>: Version 3.8 or later</p></li>
+<li><p><strong>Recommended</strong>: HPC environment with SLURM or compatible batch scheduler</p></li>
+</ul>
+</section>
+<section id="installation-methods">
+<h2>Installation Methods<a class="headerlink" href="#installation-methods" title="Link to this heading"></a></h2>
+<p>You can install and run the pipeline using one of the following approaches:</p>
+<p><strong>Option 1: Conda-based Setup</strong></p>
+<ol class="arabic">
+<li><p>Install [Miniconda](<a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">https://docs.conda.io/en/latest/miniconda.html</a>) (if not already installed):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash<span class="w"> </span>Miniconda3-latest-Linux-x86_64.sh
+</pre></div>
+</div>
+</li>
+<li><p>Create and activate a new Conda environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>cutntag_env<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10<span class="w"> </span>-y
+conda<span class="w"> </span>activate<span class="w"> </span>cutntag_env
+</pre></div>
+</div>
+</li>
+<li><p>Install required packages via <cite>bioconda</cite> and <cite>conda-forge</cite>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>bioconda<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>fastqc<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>cutadapt<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>bowtie2<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>samtools<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>picard<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>macs2<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>bedtools<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>deeptools<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>multiqc<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>subread<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>ucsc-bedgraphtobigwig<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>pandas<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>matplotlib<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>seaborn<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>scipy<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>click
+</pre></div>
+</div>
+</li>
+<li><p>Verify tool versions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fastqc<span class="w"> </span>--version
+cutadapt<span class="w"> </span>--version
+bowtie2<span class="w"> </span>--version
+macs2<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>This ensures the environment is correctly configured.</p>
+</li>
+</ol>
+<p><strong>Option 2: Apptainer (Singularity) Container</strong></p>
+<p>Apptainer (formerly Singularity) is recommended for deploying the pipeline in HPC environments to guarantee reproducibility and isolate dependencies.</p>
+<ol class="arabic">
+<li><p>Install Apptainer:</p>
+<p>Follow official instructions from: <a class="reference external" href="https://apptainer.org/docs/">https://apptainer.org/docs/</a></p>
+</li>
+<li><p>Pull and build the container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apptainer<span class="w"> </span>pull<span class="w"> </span>cutntag_pipeline.sif<span class="w"> </span>docker://&lt;your-dockerhub-image&gt;
+</pre></div>
+</div>
+<p><em>(A prebuilt container can be provided or built locally using a Dockerfile. Contact the author or refer to the containerization section.)</em></p>
+</li>
+<li><p>Run the pipeline within the container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apptainer<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>cutntag_pipeline.sif<span class="w"> </span>bash<span class="w"> </span>run_pipeline.sh<span class="w"> </span>--help
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="optional-setup-for-gpu-enabled-servers-for-visualization-or-peak-modeling">
+<h2>Optional Setup for GPU-enabled Servers (for visualization or peak modeling)<a class="headerlink" href="#optional-setup-for-gpu-enabled-servers-for-visualization-or-peak-modeling" title="Link to this heading"></a></h2>
+<p>If you’re running the pipeline on a server with GPU support and intend to use deep learning-based peak calling or image rendering tools (e.g., using TensorFlow, PyTorch, or IGV snapshot scripting), install additional dependencies as needed.</p>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Always use version-controlled environments via <cite>conda env export</cite> or container recipes.</p></li>
+<li><p>Store pipeline configuration and sample metadata separately for clean project structure.</p></li>
+<li><p>Use symbolic links and consistent file naming conventions for raw data.</p></li>
+</ul>
+</section>
+<section id="testing-your-installation">
+<h2>Testing Your Installation<a class="headerlink" href="#testing-your-installation" title="Link to this heading"></a></h2>
+<p>Run the included test dataset to verify your installation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>test/test_cutntag_pipeline.sh
+</pre></div>
+</div>
+<p>This will process a small synthetic dataset and generate a MultiQC report in the <cite>test_output/</cite> directory.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Once installation is complete, proceed to the <a class="reference internal" href="run_pipeline.html#run-pipeline"><span class="std std-ref">Cut&amp;Tag Analysis Pipeline: Step-by-Step</span></a> section for raw data preprocessing and quality control.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Cut&amp;Tag Preprocessing and Analysis Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_pipeline.html" class="btn btn-neutral float-right" title="Cut&amp;Tag Analysis Pipeline: Step-by-Step" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
