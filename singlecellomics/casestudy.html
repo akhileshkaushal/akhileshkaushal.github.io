@@ -213,20 +213,20 @@
 </section>
 <section id="computational-workflow">
 <h2>Computational Workflow<a class="headerlink" href="#computational-workflow" title="Link to this heading"></a></h2>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p><strong>Preprocessing</strong>
 - GEX + ADT + VDJ: Processed using <cite>cellranger multi</cite> with a YAML configuration for all modalities
 - ATAC: Processed using <cite>cellranger-atac</cite> for fragment counting and peak calling
 - CUT&amp;Tag: Aligned with <cite>bowtie2</cite>, deduplicated, and peak-called via <cite>MACS2</cite>
 - Methylation: Aligned with <cite>bismark</cite>, methylation calls with <cite>methylDackel</cite></p></li>
-<li><p><strong>Quality Control</strong></p></li>
-</ol>
-<p><strong>Cell Filtering</strong></p>
+<li><p><strong>Quality Control</strong></p>
+<blockquote>
+<div><p><strong>Cell Filtering</strong></p>
 <ul class="simple">
-<li><p>Using <cite>Seurat</cite>:
-- Gene count &gt;200 and &lt;5000
-- Mitochondrial genes &lt;10%
-- ADT signal thresholding to remove ambient barcode contamination</p></li>
+<li><p>Using <cite>Seurat</cite>:</p></li>
+<li><p>Gene count &gt;200 and &lt;5000</p></li>
+<li><p>Mitochondrial genes &lt;10%</p></li>
+<li><p>ADT signal thresholding to remove ambient barcode contamination</p></li>
 </ul>
 <p><strong>Doublet Detection</strong></p>
 <ul class="simple">
@@ -243,17 +243,24 @@
 <li><p>CpG coverage thresholding</p></li>
 <li><p>Bisulfite conversion rate checks</p></li>
 </ul>
-<ol class="arabic simple" start="3">
-<li><p><strong>Normalization and Integration</strong>
-- RNA: <cite>SCTransform</cite>
-- ADT: <cite>CLR</cite> transformation
-- ATAC: Latent Semantic Indexing (LSI)
-- Methylation: Principal Component Analysis (PCA) on β-values
-- Multimodal integration using <cite>FindMultiModalNeighbors()</cite> in Seurat and <cite>MOFA+</cite></p></li>
-<li><p><strong>Dimensionality Reduction and Clustering</strong>
-- WNN-based UMAP projection using RNA + ADT + ATAC
-- Leiden clustering (resolution = 0.8)
-- Cell-type annotation using marker gene panels and <cite>SingleR</cite></p></li>
+</div></blockquote>
+</li>
+<li><p><strong>Normalization and Integration</strong></p>
+<ul class="simple">
+<li><p>RNA: <cite>SCTransform</cite></p></li>
+<li><p>ADT: <cite>CLR</cite> transformation</p></li>
+<li><p>ATAC: Latent Semantic Indexing (LSI)</p></li>
+<li><p>Methylation: Principal Component Analysis (PCA) on β-values</p></li>
+<li><p>Multimodal integration using <cite>FindMultiModalNeighbors()</cite> in Seurat and <cite>MOFA+</cite></p></li>
+</ul>
+</li>
+<li><p><strong>Dimensionality Reduction and Clustering</strong></p>
+<ul class="simple">
+<li><p>WNN-based UMAP projection using RNA + ADT + ATAC</p></li>
+<li><p>Leiden clustering (resolution = 0.8)</p></li>
+<li><p>Cell-type annotation using marker gene panels and <cite>SingleR</cite></p></li>
+</ul>
+</li>
 </ol>
 </section>
 <section id="biological-findings">
@@ -281,11 +288,14 @@
 <li><p><cite>CD25</cite> / <cite>CTLA4</cite> for activated Tregs</p></li>
 </ul>
 </li>
-<li><p><strong>Clonotype Expansion</strong>
-- VDJ data from <cite>cellranger vdj</cite> and parsed using <cite>scRepertoire</cite>
-- Clonally expanded CD8+ populations highly enriched in exhausted clusters
-- Treg clonotypes found in both tumor and peripheral samples (suggesting trafficking)
-- Somatic hypermutation (SHM) rates elevated in tumor-resident plasma cells (via <cite>IgBlast</cite>)</p></li>
+<li><p><strong>Clonotype Expansion</strong></p>
+<ul class="simple">
+<li><p>VDJ data from <cite>cellranger vdj</cite> and parsed using <cite>scRepertoire</cite></p></li>
+<li><p>Clonally expanded CD8+ populations highly enriched in exhausted clusters</p></li>
+<li><p>Treg clonotypes found in both tumor and peripheral samples (suggesting trafficking)</p></li>
+<li><p>Somatic hypermutation (SHM) rates elevated in tumor-resident plasma cells (via <cite>IgBlast</cite>)</p></li>
+</ul>
+</li>
 <li><p><strong>Chromatin and Epigenetic Landscape</strong></p>
 <p><strong>scATAC-seq</strong></p>
 <ul class="simple">
@@ -304,17 +314,31 @@
 </ul>
 </li>
 <li><p><strong>Trajectory Inference and Cell Fate</strong></p>
+<blockquote>
+<div><blockquote>
+<div><ul class="simple">
+<li><p>Pseudotime ordering using <cite>Monocle 3</cite> revealed:</p></li>
+<li><p>Transition from naïve → effector → exhausted states</p></li>
+</ul>
+</div></blockquote>
 <ul class="simple">
-<li><p>Pseudotime ordering using <cite>Monocle 3</cite> revealed:
-- Transition from naïve → effector → exhausted states
-- Bifurcation into memory-like vs. terminally exhausted CD8+ T cells</p></li>
+<li><dl class="simple">
+<dt>Bifurcation into memory-like vs. terminally exhausted CD8+ T cells</dt><dd><ul>
 <li><p>Co-embedding with ATAC accessibility supported bifurcated regulatory paths</p></li>
 </ul>
+</dd>
+</dl>
 </li>
-<li><p><strong>Spatial Anchoring (optional)</strong>
-- Mapped cell types onto spatial RNA data using <cite>Tangram</cite>
-- Tregs enriched at tumor-stroma interface
-- TRM cells localized within tumor nests</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Spatial Anchoring (optional)</strong></p>
+<ul class="simple">
+<li><p>Mapped cell types onto spatial RNA data using <cite>Tangram</cite></p></li>
+<li><p>Tregs enriched at tumor-stroma interface</p></li>
+<li><p>TRM cells localized within tumor nests</p></li>
+</ul>
+</li>
 </ol>
 </section>
 <section id="conclusion">

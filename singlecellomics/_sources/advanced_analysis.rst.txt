@@ -18,112 +18,111 @@ Overview of Supported Modalities
 1. Multi-Omic Integration Strategies
 --------------------------------------
 
-**Weighted Nearest Neighbor (WNN)**
-  - Developed in Seurat v4, allows integration of multiple modalities (e.g., RNA + protein + ATAC)
-  - Computes separate nearest neighbor graphs for each modality and merges using optimized weights
-  - Supports UMAP, clustering, and differential analysis in joint latent space
+	**Weighted Nearest Neighbor (WNN)**
+		- Developed in Seurat v4, allows integration of multiple modalities (e.g., RNA + protein + ATAC)
+		- Computes separate nearest neighbor graphs for each modality and merges using optimized weights
+		- Supports UMAP, clustering, and differential analysis in joint latent space
 
-**Multimodal Variational Autoencoders (MVAEs)**
-  - Deep learning-based frameworks (e.g., totalVI, scVI, MultiVI)
-  - Integrate RNA, protein, ATAC, and methylation data using shared latent variables
-  - Useful for batch correction, denoising, and imputation
+	**Multimodal Variational Autoencoders (MVAEs)**
+		- Deep learning-based frameworks (e.g., totalVI, scVI, MultiVI)
+		- Integrate RNA, protein, ATAC, and methylation data using shared latent variables
+		- Useful for batch correction, denoising, and imputation
 
-**Canonical Correlation Analysis (CCA)**
-  - Legacy approach in Seurat for RNA–protein or RNA–epigenetic co-embedding
-  - Still applicable to datasets with two modalities and large feature overlap
+	**Canonical Correlation Analysis (CCA)**
+		- Legacy approach in Seurat for RNA–protein or RNA–epigenetic co-embedding
+		- Still applicable to datasets with two modalities and large feature overlap
 
-**Multi-Omic Factor Analysis (MOFA+)**
-  - Matrix factorization approach that identifies latent factors driving variation across omics layers
-  - Integrates diverse omics (RNA, ATAC, methylation, histone, proteomic)
+	**Multi-Omic Factor Analysis (MOFA+)**
+		- Matrix factorization approach that identifies latent factors driving variation across omics layers
+		- Integrates diverse omics (RNA, ATAC, methylation, histone, proteomic)
 
 2. Epigenetic Profiling with scATAC-seq and CUT&Tag
 ---------------------------------------------------
 
-**scATAC-seq**
+	**scATAC-seq**
 
-- Detects open chromatin regions, enhancers, and promoters  
-- Identify transcription factor motifs using `chromVAR`, `cisTopic`, or `ArchR`  
-- Integrate with scRNA-seq using `Seurat` WNN or `ArchR`'s constrained alignment
+		- Detects open chromatin regions, enhancers, and promoters  
+		- Identify transcription factor motifs using `chromVAR`, `cisTopic`, or `ArchR`  
+		- Integrate with scRNA-seq using `Seurat` WNN or `ArchR`'s constrained alignment
 
-**CUT&Tag (Cleavage Under Targets and Tagmentation)**
+	**CUT&Tag (Cleavage Under Targets and Tagmentation)**
 
-- Profiles histone modifications and transcription factor binding  
-- Superior signal-to-noise ratio compared to scChIP-seq  
-- Use `Signac`, `epiScanpy`, or custom pipelines for integration
+		- Profiles histone modifications and transcription factor binding  
+		- Superior signal-to-noise ratio compared to scChIP-seq  
+		- Use `Signac`, `epiScanpy`, or custom pipelines for integration
 
-**TF Inference**
+	**TF Inference**
 
-- Infer active TFs from scATAC/CUT&Tag using:
-  - Motif enrichment (`HOMER`, `chromVAR`)  
-  - Footprinting (`TOBIAS`, `PIQ`)  
-  - Gene regulatory networks (`SCENIC`, `pySCENIC`)
-
+	- Infer active TFs from scATAC/CUT&Tag using:
+		- Motif enrichment (`HOMER`, `chromVAR`)  
+		- Footprinting (`TOBIAS`, `PIQ`)  
+		- Gene regulatory networks (`SCENIC`, `pySCENIC`)
 
 3. DNA Methylation Integration
 ------------------------------
 
-**scBS-seq / snmC-seq**
+	**scBS-seq / snmC-seq**
 
-- Provide methylation status at single-CpG resolution  
-- Identify hypo/hypermethylated regions in specific cell states  
+		- Provide methylation status at single-CpG resolution  
+		- Identify hypo/hypermethylated regions in specific cell states  
 
-**Tools**
+	**Tools**
 
-- `methylKit` (bulk-style aggregation)  
-- `epiScanpy` (single-cell dimensionality reduction)  
-- `methAtlas` for cell type deconvolution
+		- `methylKit` (bulk-style aggregation)  
+		- `epiScanpy` (single-cell dimensionality reduction)  
+		- `methAtlas` for cell type deconvolution
 
-**Integration with RNA-seq**
+	**Integration with RNA-seq**
 
-- Correlate promoter methylation with gene expression  
-- Use `MOFA+` or joint matrix factorization to model inverse relationships
+		- Correlate promoter methylation with gene expression  
+		- Use `MOFA+` or joint matrix factorization to model inverse relationships
 
-**Cross-modality Visualization**
+	**Cross-modality Visualization**
 
-- Overlay chromatin accessibility, gene expression, and methylation along pseudo-time trajectories
+		- Overlay chromatin accessibility, gene expression, and methylation along pseudo-time trajectories
 
 
 4. Spatial Transcriptomics Overlay
 ----------------------------------
 
-- Overlay single-cell clusters on spatial maps using:
-  - `Seurat::TransferData()` with spatial RNA
-  - `Tangram` (deep learning for cell-type mapping to Visium slices)
-  - `cell2location` for probabilistic cell deconvolution
+	- Overlay single-cell clusters on spatial maps using:
+		- `Seurat::TransferData()` with spatial RNA
+		- `Tangram` (deep learning for cell-type mapping to Visium slices)
+		- `cell2location` for probabilistic cell deconvolution
 
-- Add ADT, ATAC, or methylation signal intensities to spatial positions
-- Identify spatial niches (e.g., immune hotspots, tumor borders, stem-like zones)
+	- Add ADT, ATAC, or methylation signal intensities to spatial positions
+	- Identify spatial niches (e.g., immune hotspots, tumor borders, stem-like zones)
 
 5. Cross-Modal Regulatory Inference
 -----------------------------------
 
-- **SCENIC+ATAC/CUT&Tag:**
-  - Derive TF-gene networks supported by both motif activity and co-expression
-  - Visualize regulon specificity scores across tissue regions or cell states
+	- **SCENIC+ATAC/CUT&Tag:**
+		- Derive TF-gene networks supported by both motif activity and co-expression
+		- Visualize regulon specificity scores across tissue regions or cell states
 
-- **Joint Peak-to-Gene Linking (RNA + ATAC):**
-  - Link distal accessible chromatin regions to target gene expression
-  - Use `ArchR`’s `addPeak2GeneLinks()` or `Cicero` co-accessibility scores
+	- **Joint Peak-to-Gene Linking (RNA + ATAC):**
+		- Link distal accessible chromatin regions to target gene expression
+		- Use `ArchR`’s `addPeak2GeneLinks()` or `Cicero` co-accessibility scores
 
-- **Latent Time Inference:**
-  - Combine transcriptome + ATAC + methylome to order cells along developmental/activation trajectories
-  - Use `Waddington-OT`, `scVelo + ATAC velocity`, or `Palantir`
+	- **Latent Time Inference:**
+		- Combine transcriptome + ATAC + methylome to order cells along developmental/activation trajectories
+		- Use `Waddington-OT`, `scVelo + ATAC velocity`, or `Palantir`
 
 Example Applications
 --------------------
 
-- Mapping epigenetic reprogramming during T cell exhaustion in tumors
-- Identifying chromatin features predictive of stemness or metastasis
-- Linking enhancer rewiring to immune checkpoint resistance
-- Spatially resolving TF networks in inflamed tissue microenvironments
-- Deconvolving methylation-dependent transcriptional regulation
+	- Mapping epigenetic reprogramming during T cell exhaustion in tumors
+	- Identifying chromatin features predictive of stemness or metastasis
+	- Linking enhancer rewiring to immune checkpoint resistance
+	- Spatially resolving TF networks in inflamed tissue microenvironments
+	- Deconvolving methylation-dependent transcriptional regulation
 
 Best Practices
 --------------
 
-- Apply rigorous QC and batch correction per modality before integration
-- Match resolution and depth across omics layers (e.g., 10x 5' + ADT + VDJ + ATAC)
-- Leverage visualization overlays to avoid over-interpretation of noisy features
+	- Apply rigorous QC and batch correction per modality before integration
+	- Match resolution and depth across omics layers (e.g., 10x 5' + ADT + VDJ + ATAC)
+	- Leverage visualization overlays to avoid over-interpretation of noisy features
 
 Conclusion
 ----------

@@ -198,7 +198,8 @@
 </section>
 <section id="multi-omic-integration-strategies">
 <h2>1. Multi-Omic Integration Strategies<a class="headerlink" href="#multi-omic-integration-strategies" title="Link to this heading"></a></h2>
-<dl class="simple">
+<blockquote>
+<div><dl class="simple">
 <dt><strong>Weighted Nearest Neighbor (WNN)</strong></dt><dd><ul class="simple">
 <li><p>Developed in Seurat v4, allows integration of multiple modalities (e.g., RNA + protein + ATAC)</p></li>
 <li><p>Computes separate nearest neighbor graphs for each modality and merges using optimized weights</p></li>
@@ -222,94 +223,144 @@
 </ul>
 </dd>
 </dl>
+</div></blockquote>
 </section>
 <section id="epigenetic-profiling-with-scatac-seq-and-cut-tag">
 <h2>2. Epigenetic Profiling with scATAC-seq and CUT&amp;Tag<a class="headerlink" href="#epigenetic-profiling-with-scatac-seq-and-cut-tag" title="Link to this heading"></a></h2>
-<p><strong>scATAC-seq</strong></p>
-<ul class="simple">
+<blockquote>
+<div><p><strong>scATAC-seq</strong></p>
+<blockquote>
+<div><ul class="simple">
 <li><p>Detects open chromatin regions, enhancers, and promoters</p></li>
 <li><p>Identify transcription factor motifs using <cite>chromVAR</cite>, <cite>cisTopic</cite>, or <cite>ArchR</cite></p></li>
 <li><p>Integrate with scRNA-seq using <cite>Seurat</cite> WNN or <cite>ArchR</cite>’s constrained alignment</p></li>
 </ul>
+</div></blockquote>
 <p><strong>CUT&amp;Tag (Cleavage Under Targets and Tagmentation)</strong></p>
-<ul class="simple">
+<blockquote>
+<div><ul class="simple">
 <li><p>Profiles histone modifications and transcription factor binding</p></li>
 <li><p>Superior signal-to-noise ratio compared to scChIP-seq</p></li>
 <li><p>Use <cite>Signac</cite>, <cite>epiScanpy</cite>, or custom pipelines for integration</p></li>
 </ul>
+</div></blockquote>
 <p><strong>TF Inference</strong></p>
 <ul class="simple">
-<li><p>Infer active TFs from scATAC/CUT&amp;Tag using:
-- Motif enrichment (<cite>HOMER</cite>, <cite>chromVAR</cite>)
-- Footprinting (<cite>TOBIAS</cite>, <cite>PIQ</cite>)
-- Gene regulatory networks (<cite>SCENIC</cite>, <cite>pySCENIC</cite>)</p></li>
+<li><dl class="simple">
+<dt>Infer active TFs from scATAC/CUT&amp;Tag using:</dt><dd><ul>
+<li><p>Motif enrichment (<cite>HOMER</cite>, <cite>chromVAR</cite>)</p></li>
+<li><p>Footprinting (<cite>TOBIAS</cite>, <cite>PIQ</cite>)</p></li>
+<li><p>Gene regulatory networks (<cite>SCENIC</cite>, <cite>pySCENIC</cite>)</p></li>
 </ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
 </section>
 <section id="dna-methylation-integration">
 <h2>3. DNA Methylation Integration<a class="headerlink" href="#dna-methylation-integration" title="Link to this heading"></a></h2>
-<p><strong>scBS-seq / snmC-seq</strong></p>
-<ul class="simple">
+<blockquote>
+<div><p><strong>scBS-seq / snmC-seq</strong></p>
+<blockquote>
+<div><ul class="simple">
 <li><p>Provide methylation status at single-CpG resolution</p></li>
 <li><p>Identify hypo/hypermethylated regions in specific cell states</p></li>
 </ul>
+</div></blockquote>
 <p><strong>Tools</strong></p>
-<ul class="simple">
+<blockquote>
+<div><ul class="simple">
 <li><p><cite>methylKit</cite> (bulk-style aggregation)</p></li>
 <li><p><cite>epiScanpy</cite> (single-cell dimensionality reduction)</p></li>
 <li><p><cite>methAtlas</cite> for cell type deconvolution</p></li>
 </ul>
+</div></blockquote>
 <p><strong>Integration with RNA-seq</strong></p>
-<ul class="simple">
+<blockquote>
+<div><ul class="simple">
 <li><p>Correlate promoter methylation with gene expression</p></li>
 <li><p>Use <cite>MOFA+</cite> or joint matrix factorization to model inverse relationships</p></li>
 </ul>
+</div></blockquote>
 <p><strong>Cross-modality Visualization</strong></p>
-<ul class="simple">
+<blockquote>
+<div><ul class="simple">
 <li><p>Overlay chromatin accessibility, gene expression, and methylation along pseudo-time trajectories</p></li>
 </ul>
+</div></blockquote>
+</div></blockquote>
 </section>
 <section id="spatial-transcriptomics-overlay">
 <h2>4. Spatial Transcriptomics Overlay<a class="headerlink" href="#spatial-transcriptomics-overlay" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Overlay single-cell clusters on spatial maps using:
-- <cite>Seurat::TransferData()</cite> with spatial RNA
-- <cite>Tangram</cite> (deep learning for cell-type mapping to Visium slices)
-- <cite>cell2location</cite> for probabilistic cell deconvolution</p></li>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>Overlay single-cell clusters on spatial maps using:</dt><dd><ul>
+<li><p><cite>Seurat::TransferData()</cite> with spatial RNA</p></li>
+<li><p><cite>Tangram</cite> (deep learning for cell-type mapping to Visium slices)</p></li>
+<li><p><cite>cell2location</cite> for probabilistic cell deconvolution</p></li>
+</ul>
+</dd>
+</dl>
+</li>
 <li><p>Add ADT, ATAC, or methylation signal intensities to spatial positions</p></li>
 <li><p>Identify spatial niches (e.g., immune hotspots, tumor borders, stem-like zones)</p></li>
 </ul>
+</div></blockquote>
 </section>
 <section id="cross-modal-regulatory-inference">
 <h2>5. Cross-Modal Regulatory Inference<a class="headerlink" href="#cross-modal-regulatory-inference" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><strong>SCENIC+ATAC/CUT&amp;Tag:</strong>
-- Derive TF-gene networks supported by both motif activity and co-expression
-- Visualize regulon specificity scores across tissue regions or cell states</p></li>
-<li><p><strong>Joint Peak-to-Gene Linking (RNA + ATAC):</strong>
-- Link distal accessible chromatin regions to target gene expression
-- Use <cite>ArchR</cite>’s <cite>addPeak2GeneLinks()</cite> or <cite>Cicero</cite> co-accessibility scores</p></li>
-<li><p><strong>Latent Time Inference:</strong>
-- Combine transcriptome + ATAC + methylome to order cells along developmental/activation trajectories
-- Use <cite>Waddington-OT</cite>, <cite>scVelo + ATAC velocity</cite>, or <cite>Palantir</cite></p></li>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><strong>SCENIC+ATAC/CUT&amp;Tag:</strong></dt><dd><ul>
+<li><p>Derive TF-gene networks supported by both motif activity and co-expression</p></li>
+<li><p>Visualize regulon specificity scores across tissue regions or cell states</p></li>
 </ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Joint Peak-to-Gene Linking (RNA + ATAC):</strong></dt><dd><ul>
+<li><p>Link distal accessible chromatin regions to target gene expression</p></li>
+<li><p>Use <cite>ArchR</cite>’s <cite>addPeak2GeneLinks()</cite> or <cite>Cicero</cite> co-accessibility scores</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Latent Time Inference:</strong></dt><dd><ul>
+<li><p>Combine transcriptome + ATAC + methylome to order cells along developmental/activation trajectories</p></li>
+<li><p>Use <cite>Waddington-OT</cite>, <cite>scVelo + ATAC velocity</cite>, or <cite>Palantir</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
 </section>
 <section id="example-applications">
 <h2>Example Applications<a class="headerlink" href="#example-applications" title="Link to this heading"></a></h2>
-<ul class="simple">
+<blockquote>
+<div><ul class="simple">
 <li><p>Mapping epigenetic reprogramming during T cell exhaustion in tumors</p></li>
 <li><p>Identifying chromatin features predictive of stemness or metastasis</p></li>
 <li><p>Linking enhancer rewiring to immune checkpoint resistance</p></li>
 <li><p>Spatially resolving TF networks in inflamed tissue microenvironments</p></li>
 <li><p>Deconvolving methylation-dependent transcriptional regulation</p></li>
 </ul>
+</div></blockquote>
 </section>
 <section id="best-practices">
 <h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
-<ul class="simple">
+<blockquote>
+<div><ul class="simple">
 <li><p>Apply rigorous QC and batch correction per modality before integration</p></li>
 <li><p>Match resolution and depth across omics layers (e.g., 10x 5’ + ADT + VDJ + ATAC)</p></li>
 <li><p>Leverage visualization overlays to avoid over-interpretation of noisy features</p></li>
 </ul>
+</div></blockquote>
 </section>
 <section id="conclusion">
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
