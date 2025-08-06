@@ -1,0 +1,364 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WGS/WES Variant Calling Pipeline &mdash; WGS/WES Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/wgswes/intro.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Run the WGS/WES Pipeline" href="run_pipeline.html" />
+    <link rel="prev" title="Whole-Exome Sequencing in Relapsing CLL" href="index.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            WGS/WES Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">WGS/WES Variant Calling Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#when-to-choose-wgs-vs-wes">When to Choose WGS vs WES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#design-principles">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#high-level-workflow">High-Level Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inputs-and-outputs">Inputs and Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quality-coverage-and-qc">Quality, Coverage, and QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filtering-strategy-notes">Filtering Strategy Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reference-and-resource-recommendations">Reference and Resource Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reproducibility-execution">Reproducibility &amp; Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-stewardship-compliance">Data Stewardship &amp; Compliance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#limitations-non-goals">Limitations &amp; Non-Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#whats-next">What’s Next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline.html">Run the WGS/WES Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#pipeline-inputs-layout">Pipeline Inputs &amp; Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#step-by-step-workflow">Step-by-Step Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#raw-read-qc">1) Raw Read QC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#adapter-quality-trimming-optional-but-recommended-for-wes">2) Adapter/Quality Trimming (optional but recommended for WES)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#alignment-to-reference">3) Alignment to Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#duplicate-marking-bqsr">4) Duplicate Marking &amp; BQSR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#variant-calling">5) Variant Calling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#variant-filtering">6) Variant Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#annotation">7) Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#cohort-level-qc-reports">8) Cohort-Level QC &amp; Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#parallelization-performance">Parallelization &amp; Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#wes-specific-notes">WES-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#expected-outputs">Expected Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#trio-and-family-based-analysis">Trio and Family-Based Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#joint-calling-for-large-cohorts">Joint Calling for Large Cohorts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#copy-number-variation-cnv-analysis">Copy Number Variation (CNV) Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#mitochondrial-variant-analysis">Mitochondrial Variant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#tumor-purity-estimation-adjustment">Tumor Purity Estimation &amp; Adjustment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#integration-and-reporting">Integration and Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotated_example.html">Annotated Examples &amp; Interpretation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumornormal-variant-calling">Example: Tumor–Normal Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumor-only-variant-calling">Example: Tumor-Only Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-germline-variant-calling">Example: Germline Variant Calling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#modular-workflow-overview">Modular Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#support-for-germline-and-somatic-calling">Support for Germline and Somatic Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#containerisation">Containerisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#scalability-and-workflow-automation">Scalability and Workflow Automation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#example-directory-layout">Example Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#best-practices-for-execution">Best Practices for Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wes_cll_methods.html">Stage-to-Tool Mapping With Example Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#example-commands-bash">Example commands (bash)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#reproducibility-checklist">Reproducibility checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: ITH-aware Somatic Interpretation for WGS/WES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#what-was-built">What Was Built</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#cohort-profiling-and-heterogeneity">Cohort Profiling and Heterogeneity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#drug-screening-and-response-definition">Drug Screening and Response Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#expression-signatures-predicting-response">Expression Signatures Predicting Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#mechanism-of-lenvatinib-resistance-combination-strategy">Mechanism of Lenvatinib Resistance &amp; Combination Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#ith-aware-somatic-interpretation-recommendations">ITH-aware Somatic Interpretation &amp; Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#primary-study">Primary Study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#supporting-literature">Supporting Literature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#databases-and-resources">Databases and Resources</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WGS/WES Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">WGS/WES Variant Calling Pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/intro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="index.html" class="btn btn-neutral float-left" title="Whole-Exome Sequencing in Relapsing CLL" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_pipeline.html" class="btn btn-neutral float-right" title="Run the WGS/WES Pipeline" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="wgs-wes-variant-calling-pipeline">
+<h1>WGS/WES Variant Calling Pipeline<a class="headerlink" href="#wgs-wes-variant-calling-pipeline" title="Link to this heading"></a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Akhilesh Kaushal</p>
+</dd>
+<dt class="field-even">Version<span class="colon">:</span></dt>
+<dd class="field-even"><p>1.0.0</p>
+</dd>
+<dt class="field-odd">Keywords<span class="colon">:</span></dt>
+<dd class="field-odd"><p>WGS, WES, Germline, Somatic, GATK, Apptainer, Docker, Singularity</p>
+</dd>
+</dl>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>This documentation introduces a <strong>comprehensive, reproducible</strong> pipeline for variant discovery from <strong>Whole Genome Sequencing (WGS)</strong> and <strong>Whole Exome Sequencing (WES)</strong> data. It supports both <strong>germline</strong> and <strong>somatic</strong> analyses and can operate <strong>with or without matched normal</strong> samples. The workflow aligns with <strong>GATK Best Practices</strong>, emphasizing high-quality read preprocessing, robust variant discovery, calibrated filtering, and rigorous quality control (QC), followed by standards-compliant annotation for downstream interpretation.</p>
+</section>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Germline</strong>: population-scale studies, rare disease genetics, trio/quad analyses, and cohort joint genotyping.</p></li>
+<li><p><strong>Somatic (Tumor/Normal)</strong>: cancer genomics using matched tumor–normal pairs; optimized for sensitivity with artifact suppression.</p></li>
+<li><p><strong>Somatic (Tumor-only)</strong>: analyses without normal tissue using <strong>Panel of Normals (PoN)</strong> and population allele frequency filtering.</p></li>
+</ul>
+</section>
+<section id="supported-data-types">
+<h2>Supported Data Types<a class="headerlink" href="#supported-data-types" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>WGS</strong>: 30× coverage typical (higher for somatic); uniform genome-wide capture.</p></li>
+<li><p><strong>WES</strong>: capture-based enrichment (e.g., Agilent SureSelect, IDT xGen). Requires target BED (and optional “padding” for near-target indels).</p></li>
+</ul>
+</section>
+<section id="when-to-choose-wgs-vs-wes">
+<h2>When to Choose WGS vs WES<a class="headerlink" href="#when-to-choose-wgs-vs-wes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>WGS</strong>: comprehensive coverage (coding + noncoding), superior indel/SV detection, better uniformity; higher cost and storage.</p></li>
+<li><p><strong>WES</strong>: cost-effective for coding regions, higher effective coverage over exons, limited noncoding insight and capture biases.</p></li>
+</ul>
+</section>
+<section id="design-principles">
+<h2>Design Principles<a class="headerlink" href="#design-principles" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Standards-aligned</strong>: adheres to GATK4 Best Practices; no indel realignment (deprecated); <strong>BQSR</strong> performed using known sites.</p></li>
+<li><p><strong>Reproducible</strong>: containerized with <strong>Apptainer/Singularity</strong> or <strong>Docker</strong>; deterministic configuration captured in environment files.</p></li>
+<li><p><strong>Modular</strong>: pluggable steps for alignment, calling, filtering, and annotation; optional mitochondrial and CNV modules.</p></li>
+<li><p><strong>Scalable</strong>: HPC/Cloud-friendly; parallelization by sample/chromosome/scatter-gather.</p></li>
+<li><p><strong>Auditable</strong>: rich QC (FastQC/MultiQC, alignment metrics, coverage profiling) and provenance tracking.</p></li>
+</ul>
+</section>
+<section id="high-level-workflow">
+<h2>High-Level Workflow<a class="headerlink" href="#high-level-workflow" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><strong>Common Preprocessing</strong></dt><dd><ul class="simple">
+<li><p>Input FASTQ (gz)</p></li>
+<li><p>Adapter/quality assessment (<strong>FastQC</strong>, <strong>MultiQC</strong>)</p></li>
+<li><p>Alignment (<strong>BWA-MEM2</strong> or <strong>BWA-MEM</strong>) to <strong>GRCh38/hg38</strong> (ALT-aware, decoys if applicable)</p></li>
+<li><p>Sorting, duplicate marking (<strong>Picard/GATK MarkDuplicates(Spark)</strong>; UMI-aware dedup possible)</p></li>
+<li><p>Base Quality Score Recalibration (<strong>BQSR</strong>) using known variant sites (dbSNP, Mills indels, 1000G indels)</p></li>
+</ul>
+</dd>
+<dt><strong>Germline Path</strong></dt><dd><ul class="simple">
+<li><p>Per-sample calling: <strong>GATK HaplotypeCaller</strong> in <strong>GVCF</strong> mode</p></li>
+<li><p>Cohort integration: <strong>GenomicsDBImport</strong> (or CombineGVCFs) → <strong>GenotypeGVCFs</strong></p></li>
+<li><p>Variant filtering: <strong>VQSR</strong> (recommended for sufficiently large cohorts) or <strong>hard filters</strong> (small cohorts)</p></li>
+<li><p>Annotation: <strong>VEP/Funcotator/ANNOVAR</strong> with gnomAD, dbSNP, dbNSFP, ClinVar (interpretation only), ±HGVS</p></li>
+</ul>
+</dd>
+<dt><strong>Somatic (Tumor/Normal) Path</strong></dt><dd><ul class="simple">
+<li><p>Calling: <strong>GATK Mutect2</strong> with matched normal, <strong>germline resource</strong> (e.g., gnomAD), and optional <strong>PoN</strong></p></li>
+<li><p>Post-processing: <strong>LearnReadOrientationModel</strong>, <strong>CalculateContamination</strong>, <strong>FilterMutectCalls</strong>, optional <strong>FilterByOrientationBias</strong> (FFPE)</p></li>
+<li><p>Optional modules: mitochondrial calling (Mutect2 mitochondria mode), CNV (GATK ModelSegments/CallCopyRatioSegments)</p></li>
+</ul>
+</dd>
+<dt><strong>Somatic (Tumor-only) Path</strong></dt><dd><ul class="simple">
+<li><p>Calling: <strong>Mutect2</strong> without matched normal</p></li>
+<li><p>Artifact suppression: <strong>PoN</strong> (ideally ≥30 normals, technology-matched), gnomAD-based germline filtering, orientation bias model, contamination estimation</p></li>
+<li><p><strong>Caveat</strong>: higher false-positive risk and limited certainty of somatic status; careful post-filters and orthogonal validation recommended.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="inputs-and-outputs">
+<h2>Inputs and Outputs<a class="headerlink" href="#inputs-and-outputs" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><strong>Inputs</strong></dt><dd><ul class="simple">
+<li><p>Paired-end <strong>FASTQ</strong> files (R1/R2), consistent sample naming</p></li>
+<li><p><strong>Reference</strong> genome (GRCh38/hg38 recommended), indices and dictionary</p></li>
+<li><p>Known sites for BQSR (dbSNP; Mills/1000G indels)</p></li>
+<li><p><strong>WES</strong>: target BED (+ optional padded BED)</p></li>
+<li><p><strong>Somatic</strong>: matched normal BAM/FASTQ when available; <strong>PoN</strong> VCF (or cohort of normals to build one); gnomAD resource</p></li>
+</ul>
+</dd>
+<dt><strong>Outputs</strong></dt><dd><ul class="simple">
+<li><p>Recalibrated <strong>BAM/CRAM</strong> + index and metrics</p></li>
+<li><p><strong>VCF/BCF</strong> (germline joint-called, or somatic filtered calls), with indices</p></li>
+<li><p>QC reports (MultiQC), coverage summaries (e.g., <strong>mosdepth</strong>, <strong>Qualimap</strong>)</p></li>
+<li><p>Annotated variant files (e.g., VEP/Funcotator outputs) for interpretation</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="quality-coverage-and-qc">
+<h2>Quality, Coverage, and QC<a class="headerlink" href="#quality-coverage-and-qc" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>WGS</strong>: ≥30× mean depth for germline; somatic studies often require higher tumor depth (e.g., 60–100×) and ≥30× normal.</p></li>
+<li><p><strong>WES</strong>: ≥80–120× mean on-target; report on-target %, uniformity, and % bases ≥20×/30×.</p></li>
+<li><p><strong>Contamination</strong>: estimate via <strong>VerifyBamID2</strong> (germline) or <strong>CalculateContamination</strong> (somatic); flag swaps with <strong>Somalier</strong>.</p></li>
+<li><p><strong>Sex chromosomes</strong>: handle PAR/non-PAR; report sex inference for consistency checks.</p></li>
+<li><p><strong>UMIs</strong>: if present, use UMI-aware collapsing/dedup (e.g., <strong>fgbio</strong>) to reduce PCR artifacts.</p></li>
+</ul>
+</section>
+<section id="filtering-strategy-notes">
+<h2>Filtering Strategy Notes<a class="headerlink" href="#filtering-strategy-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>VQSR</strong> is preferred for large cohorts (stable tranche modeling); for small studies, use <strong>hard filters</strong> with empirically chosen cutoffs.</p></li>
+<li><p><strong>Somatic</strong> filtering combines: artifact modeling (orientation/FFPE), contamination estimates, PoN, and population AF thresholds.</p></li>
+<li><p><strong>ClinVar</strong> is for <strong>interpretation</strong>, not for hard filtering criteria.</p></li>
+</ul>
+</section>
+<section id="reference-and-resource-recommendations">
+<h2>Reference and Resource Recommendations<a class="headerlink" href="#reference-and-resource-recommendations" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Genome</strong>: GRCh38/hg38 with ALT contigs and decoys where applicable.</p></li>
+<li><p><strong>Known sites</strong>: dbSNP (latest), Mills and 1000G indels.</p></li>
+<li><p><strong>Population AF</strong>: <strong>gnomAD</strong> (exomes + genomes) as a germline resource in somatic workflows.</p></li>
+<li><p><strong>Cancer knowledge bases</strong> (annotation only): <strong>COSMIC</strong>, <strong>CIViC</strong>, <strong>OncoKB</strong> (license terms may apply).</p></li>
+</ul>
+</section>
+<section id="reproducibility-execution">
+<h2>Reproducibility &amp; Execution<a class="headerlink" href="#reproducibility-execution" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Provided <strong>Apptainer/Singularity</strong> and <strong>Docker</strong> images for stable toolchains.</p></li>
+<li><p>YAML/JSON configuration captures references, intervals, parameters, and resource sizing.</p></li>
+<li><p>Scales on Slurm/SGE/PBS or cloud batch services; supports scatter/gather by interval list.</p></li>
+</ul>
+</section>
+<section id="data-stewardship-compliance">
+<h2>Data Stewardship &amp; Compliance<a class="headerlink" href="#data-stewardship-compliance" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Maintain sample sheets with immutable IDs, checksums for all inputs/outputs, and complete metadata.</p></li>
+<li><p>Remove or avoid embedding PHI in filenames/headers; adhere to <strong>HIPAA/GDPR</strong> and institutional IRB policies.</p></li>
+<li><p>Store large artifacts in object storage with lifecycle policies; keep a minimal, query-friendly variant store.</p></li>
+</ul>
+</section>
+<section id="limitations-non-goals">
+<h2>Limitations &amp; Non-Goals<a class="headerlink" href="#limitations-non-goals" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Tumor-only analyses cannot definitively distinguish all germline from somatic variation; interpret with caution.</p></li>
+<li><p>Structural variant and repeat expansion calling are <strong>optional</strong> modules and may require specialized callers and validation.</p></li>
+<li><p>Clinical reporting requires orthogonal confirmation and domain-specific review beyond this pipeline.</p></li>
+</ul>
+</section>
+<section id="whats-next">
+<h2>What’s Next<a class="headerlink" href="#whats-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>See <a class="reference internal" href="run_pipeline.html"><span class="doc">Run the WGS/WES Pipeline</span></a> for exact commands, parameters, and file layouts.</p></li>
+<li><p>Explore <a class="reference internal" href="advanced_analysis.html"><span class="doc">Advanced Analysis</span></a> for joint calling, trios, tumor purity handling, CNV/mtDNA options, and best-practice filters.</p></li>
+<li><p>Review <a class="reference internal" href="structure_and_containerisation.html"><span class="doc">Pipeline Structure and Containerisation</span></a> for environment reproducibility.</p></li>
+<li><p>Consult <a class="reference internal" href="references.html"><span class="doc">References</span></a> for standards and key literature.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This pipeline assumes high-quality libraries and appropriate experimental design. For FFPE, ultra-low input, or single-cell protocols, additional artifact controls and validation are recommended.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Whole-Exome Sequencing in Relapsing CLL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_pipeline.html" class="btn btn-neutral float-right" title="Run the WGS/WES Pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

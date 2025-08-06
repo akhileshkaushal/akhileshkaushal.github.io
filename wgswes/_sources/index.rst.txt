@@ -1,0 +1,35 @@
+.. WES_CLL documentation master file
+
+Whole-Exome Sequencing in Relapsing CLL
+=======================================
+
+This documentation covers the bioinformatics workflow, modernized pipeline recommendations, and key genomic findings from **Ljungström et al., Blood (2016)**, focusing on whole-exome sequencing (WES) of chronic lymphocytic leukemia (CLL) in pre-treatment and relapse settings.
+
+The case study provides:
+- Scientific context and study hypothesis
+- Original bioinformatics methodology
+- Modernized WES pipeline recommendations
+- Key genomic findings and interpretation guidelines
+- Diagrammatic overview of historical vs modern workflows
+
+.. note::
+   While the original study used a legacy pipeline (BWA-MEM to hg19, GATK3, VarScan2 with 10% VAF cutoff), this documentation updates all methods to current best practices (BWA-MEM2, GRCh38, GATK4 Mutect2, lower VAF thresholds).
+
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Sections:
+   
+   
+   intro
+   run_pipeline
+   advanced_analysis
+   annotated_example
+   structure_and_containerisation
+   wes_cll_methods
+   casestudy
+   references
+
+

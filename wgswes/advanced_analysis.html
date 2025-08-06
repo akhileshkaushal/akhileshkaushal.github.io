@@ -1,0 +1,381 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Analysis &mdash; WGS/WES Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/wgswes/advanced_analysis.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Annotated Examples &amp; Interpretation" href="annotated_example.html" />
+    <link rel="prev" title="Run the WGS/WES Pipeline" href="run_pipeline.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            WGS/WES Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">WGS/WES Variant Calling Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#when-to-choose-wgs-vs-wes">When to Choose WGS vs WES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#design-principles">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#high-level-workflow">High-Level Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#inputs-and-outputs">Inputs and Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#quality-coverage-and-qc">Quality, Coverage, and QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#filtering-strategy-notes">Filtering Strategy Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#reference-and-resource-recommendations">Reference and Resource Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#reproducibility-execution">Reproducibility &amp; Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#data-stewardship-compliance">Data Stewardship &amp; Compliance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#limitations-non-goals">Limitations &amp; Non-Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#whats-next">What’s Next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline.html">Run the WGS/WES Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#pipeline-inputs-layout">Pipeline Inputs &amp; Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#step-by-step-workflow">Step-by-Step Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#raw-read-qc">1) Raw Read QC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#adapter-quality-trimming-optional-but-recommended-for-wes">2) Adapter/Quality Trimming (optional but recommended for WES)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#alignment-to-reference">3) Alignment to Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#duplicate-marking-bqsr">4) Duplicate Marking &amp; BQSR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#variant-calling">5) Variant Calling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#variant-filtering">6) Variant Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#annotation">7) Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#cohort-level-qc-reports">8) Cohort-Level QC &amp; Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#parallelization-performance">Parallelization &amp; Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#wes-specific-notes">WES-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#expected-outputs">Expected Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#trio-and-family-based-analysis">Trio and Family-Based Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#joint-calling-for-large-cohorts">Joint Calling for Large Cohorts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#copy-number-variation-cnv-analysis">Copy Number Variation (CNV) Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mitochondrial-variant-analysis">Mitochondrial Variant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tumor-purity-estimation-adjustment">Tumor Purity Estimation &amp; Adjustment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integration-and-reporting">Integration and Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotated_example.html">Annotated Examples &amp; Interpretation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumornormal-variant-calling">Example: Tumor–Normal Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumor-only-variant-calling">Example: Tumor-Only Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-germline-variant-calling">Example: Germline Variant Calling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#modular-workflow-overview">Modular Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#support-for-germline-and-somatic-calling">Support for Germline and Somatic Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#containerisation">Containerisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#scalability-and-workflow-automation">Scalability and Workflow Automation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#example-directory-layout">Example Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#best-practices-for-execution">Best Practices for Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wes_cll_methods.html">Stage-to-Tool Mapping With Example Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#example-commands-bash">Example commands (bash)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#reproducibility-checklist">Reproducibility checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: ITH-aware Somatic Interpretation for WGS/WES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#what-was-built">What Was Built</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#cohort-profiling-and-heterogeneity">Cohort Profiling and Heterogeneity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#drug-screening-and-response-definition">Drug Screening and Response Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#expression-signatures-predicting-response">Expression Signatures Predicting Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#mechanism-of-lenvatinib-resistance-combination-strategy">Mechanism of Lenvatinib Resistance &amp; Combination Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#ith-aware-somatic-interpretation-recommendations">ITH-aware Somatic Interpretation &amp; Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#primary-study">Primary Study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#supporting-literature">Supporting Literature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#databases-and-resources">Databases and Resources</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WGS/WES Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Advanced Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/advanced_analysis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="run_pipeline.html" class="btn btn-neutral float-left" title="Run the WGS/WES Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="annotated_example.html" class="btn btn-neutral float-right" title="Annotated Examples &amp; Interpretation" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="advanced-analysis">
+<h1>Advanced Analysis<a class="headerlink" href="#advanced-analysis" title="Link to this heading"></a></h1>
+<p>This section covers advanced workflows and analysis modules extending the standard WGS/WES pipeline. These include <strong>family-based (trio/quad) analyses</strong>, <strong>joint-calling strategies for large cohorts</strong>, <strong>copy-number and mitochondrial genome analysis</strong>, and <strong>somatic tumor purity assessment and adjustment</strong>.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#trio-and-family-based-analysis" id="id1">Trio and Family-Based Analysis</a></p></li>
+<li><p><a class="reference internal" href="#joint-calling-for-large-cohorts" id="id2">Joint Calling for Large Cohorts</a></p></li>
+<li><p><a class="reference internal" href="#copy-number-variation-cnv-analysis" id="id3">Copy Number Variation (CNV) Analysis</a></p></li>
+<li><p><a class="reference internal" href="#mitochondrial-variant-analysis" id="id4">Mitochondrial Variant Analysis</a></p></li>
+<li><p><a class="reference internal" href="#tumor-purity-estimation-adjustment" id="id5">Tumor Purity Estimation &amp; Adjustment</a></p></li>
+<li><p><a class="reference internal" href="#integration-and-reporting" id="id6">Integration and Reporting</a></p></li>
+<li><p><a class="reference internal" href="#next-steps" id="id7">Next Steps</a></p></li>
+</ul>
+</nav>
+<section id="trio-and-family-based-analysis">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Trio and Family-Based Analysis</a><a class="headerlink" href="#trio-and-family-based-analysis" title="Link to this heading"></a></h2>
+<p><strong>Overview</strong></p>
+<p>Family-based designs (e.g., trios: proband + parents; quads: proband + parents + sibling) enhance the detection of de novo variants, phase genotypes, and improve filtering accuracy.</p>
+<p><strong>Workflow</strong></p>
+<ol class="arabic">
+<li><p><strong>Joint Genotyping</strong>
+Run <cite>HaplotypeCaller</cite> in <strong>GVCF</strong> mode for all family members → <cite>GenotypeGVCFs</cite> → single multi-sample VCF.</p></li>
+<li><p><strong>Relationship Verification</strong>
+Use <strong>KING</strong>, <strong>PLINK</strong>, or <strong>Somalier</strong> to verify reported relationships and detect swaps.</p></li>
+<li><p><strong>De Novo Detection</strong>
+Tools:
+- <strong>GATK VariantAnnotator</strong> with <cite>-A PossibleDeNovo</cite>
+- <strong>DeNovoGear</strong>
+- <strong>TrioDeNovo</strong></p>
+<p>Example (GATK de novo annotation):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>VariantAnnotator<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>family.joint.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-A<span class="w"> </span>PossibleDeNovo<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--pedigree<span class="w"> </span>family.ped<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>family.denovo_annotated.vcf.gz
+</pre></div>
+</div>
+</li>
+<li><p><strong>Mendelian Inconsistency Checks</strong>
+Use <strong>bcftools +mendelian</strong> plugin to identify violations.</p></li>
+<li><p><strong>Filtering and Prioritization</strong>
+- Restrict to high-confidence de novo calls (PASS, depth &gt;10 in all samples).
+- Annotate with <strong>VEP</strong> or <strong>ANNOVAR</strong> to assess functional impact and allele frequency.</p></li>
+</ol>
+<p><strong>Tips</strong>
+- Include only variants in high-confidence regions (e.g., GIAB).
+- For exomes, restrict analysis to targets ± padding.</p>
+</section>
+<section id="joint-calling-for-large-cohorts">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Joint Calling for Large Cohorts</a><a class="headerlink" href="#joint-calling-for-large-cohorts" title="Link to this heading"></a></h2>
+<p><strong>Advantages</strong>
+- Consistent genotyping across samples.
+- Improved variant quality metrics (VQSR modeling).
+- Better sensitivity for rare variant discovery.</p>
+<p><strong>Best Practices</strong>
+- Always call variants in <strong>GVCF</strong> mode per sample.
+- Use <cite>GenomicsDBImport</cite> or <cite>CombineGVCFs</cite> for aggregation.
+- For &gt;500 samples, use <strong>scatter/gather</strong> and <strong>sharded GenomicsDB workspaces</strong>.</p>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>GenomicsDBImport<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--genomicsdb-workspace-path<span class="w"> </span>cohort_gdb<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sample-name-map<span class="w"> </span>gvcf_samples.map<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--reader-threads<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--batch-size<span class="w"> </span><span class="m">50</span>
+
+gatk<span class="w"> </span>GenotypeGVCFs<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>gendb://cohort_gdb<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>cohort.unfiltered.vcf.gz
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>VQSR requires several thousand high-quality SNPs/indels for stable model training. For small cohorts, use hard filters.</p>
+</div>
+</section>
+<section id="copy-number-variation-cnv-analysis">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Copy Number Variation (CNV) Analysis</a><a class="headerlink" href="#copy-number-variation-cnv-analysis" title="Link to this heading"></a></h2>
+<p><strong>Germline CNVs</strong>
+- Tools: <strong>GATK gCNV</strong>, <strong>XHMM</strong>, <strong>ExomeDepth</strong> (WES-specific).
+- Requires matched control cohort or PoN.</p>
+<p>Example (GATK gCNV WES mode):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>PreprocessIntervals<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--interval-merging-rule<span class="w"> </span>OVERLAPPING_ONLY<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-L<span class="w"> </span>refs/targets_exome.bed<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>targets.interval_list
+
+gatk<span class="w"> </span>AnnotateIntervals<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-L<span class="w"> </span>targets.interval_list<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>targets.annotated.tsv
+
+gatk<span class="w"> </span>CollectReadCounts<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>SAMPLE.recal.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-L<span class="w"> </span>targets.interval_list<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--interval-merging-rule<span class="w"> </span>OVERLAPPING_ONLY<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>SAMPLE.counts.hdf5
+</pre></div>
+</div>
+<p><strong>Somatic CNVs</strong>
+- Tool: <strong>GATK ModelSegments</strong> with matched tumor-normal or tumor-only modes.
+- Input: read counts + allele counts from common SNPs.</p>
+<p>Example (somatic CNV):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>CollectReadCounts<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>tumor.bam<span class="w"> </span>-L<span class="w"> </span>genome_intervals.interval_list<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--interval-merging-rule<span class="w"> </span>OVERLAPPING_ONLY<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>tumor.counts.hdf5
+
+gatk<span class="w"> </span>CollectAllelicCounts<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>tumor.bam<span class="w"> </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-L<span class="w"> </span>snps.interval_list<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>tumor.allelicCounts.tsv
+
+gatk<span class="w"> </span>ModelSegments<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--denoised-copy-ratios<span class="w"> </span>tumor.denoisedCR.tsv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--allelic-counts<span class="w"> </span>tumor.allelicCounts.tsv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>cnv_segments/
+
+gatk<span class="w"> </span>CallCopyRatioSegments<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>cnv_segments/called_copy_ratios.seg<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>cnv_segments/cnv_calls.seg
+</pre></div>
+</div>
+</section>
+<section id="mitochondrial-variant-analysis">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Mitochondrial Variant Analysis</a><a class="headerlink" href="#mitochondrial-variant-analysis" title="Link to this heading"></a></h2>
+<p>Mitochondrial variants can be called from WGS (and sometimes WES) using GATK Mutect2 in mitochondrial mode.</p>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>Mutect2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>SAMPLE.recal.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mitochondria-mode<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>SAMPLE.mitochondria.unfiltered.vcf.gz
+
+gatk<span class="w"> </span>FilterMutectCalls<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>SAMPLE.mitochondria.unfiltered.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>SAMPLE.mitochondria.filtered.vcf.gz
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For mitochondrial analysis, use a dedicated circularized mtDNA reference to minimize alignment artifacts.</p>
+</div>
+</section>
+<section id="tumor-purity-estimation-adjustment">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Tumor Purity Estimation &amp; Adjustment</a><a class="headerlink" href="#tumor-purity-estimation-adjustment" title="Link to this heading"></a></h2>
+<p><strong>Why it matters</strong>
+- Low purity can reduce somatic variant allele fractions (VAFs), impacting sensitivity.</p>
+<p><strong>Tools</strong>
+- <strong>PureCN</strong> (integrates CNV + VAF).
+- <strong>FACETS</strong>, <strong>ABSOLUTE</strong>.
+- <strong>Sequenza</strong> (tumor/normal only).</p>
+<p>Example (FACETS tumor-normal):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Rscript<span class="w"> </span>run_facets.R<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tumor<span class="w"> </span>tumor.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--normal<span class="w"> </span>normal.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--genome<span class="w"> </span>hg38<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>facets_results/
+</pre></div>
+</div>
+<p><strong>Adjustment Strategies</strong>
+- Lower <cite>–min-af</cite> in Mutect2 for low-purity tumors.
+- Use CNV-aware filtering to retain real variants with low VAF in amplified regions.
+- Flag likely subclonal variants for separate interpretation.</p>
+</section>
+<section id="integration-and-reporting">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Integration and Reporting</a><a class="headerlink" href="#integration-and-reporting" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Combine SNVs/indels, CNVs, and mtDNA calls into a unified <strong>multi-omic report</strong>.</p></li>
+<li><p>Summarize per-sample key metrics: purity, ploidy, mutation burden, % genome altered.</p></li>
+<li><p>Annotate variants with clinical relevance (COSMIC, ClinVar, OncoKB) — <strong>interpretation only</strong>.</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Next Steps</a><a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>See <a class="reference internal" href="structure_and_containerisation.html"><span class="doc">Pipeline Structure and Containerisation</span></a> for reproducibility and execution setup.</p></li>
+<li><p>Refer to <a class="reference internal" href="references.html"><span class="doc">References</span></a> for literature on family-based designs, CNV/mtDNA detection, and tumor purity modeling.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="run_pipeline.html" class="btn btn-neutral float-left" title="Run the WGS/WES Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="annotated_example.html" class="btn btn-neutral float-right" title="Annotated Examples &amp; Interpretation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

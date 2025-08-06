@@ -1,0 +1,499 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline Structure and Containerisation &mdash; WGS/WES Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/wgswes/structure_and_containerisation.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Stage-to-Tool Mapping With Example Commands" href="wes_cll_methods.html" />
+    <link rel="prev" title="Annotated Examples &amp; Interpretation" href="annotated_example.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            WGS/WES Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">WGS/WES Variant Calling Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#when-to-choose-wgs-vs-wes">When to Choose WGS vs WES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#design-principles">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#high-level-workflow">High-Level Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#inputs-and-outputs">Inputs and Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#quality-coverage-and-qc">Quality, Coverage, and QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#filtering-strategy-notes">Filtering Strategy Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#reference-and-resource-recommendations">Reference and Resource Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#reproducibility-execution">Reproducibility &amp; Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#data-stewardship-compliance">Data Stewardship &amp; Compliance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#limitations-non-goals">Limitations &amp; Non-Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#whats-next">What’s Next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline.html">Run the WGS/WES Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#pipeline-inputs-layout">Pipeline Inputs &amp; Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#step-by-step-workflow">Step-by-Step Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#raw-read-qc">1) Raw Read QC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#adapter-quality-trimming-optional-but-recommended-for-wes">2) Adapter/Quality Trimming (optional but recommended for WES)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#alignment-to-reference">3) Alignment to Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#duplicate-marking-bqsr">4) Duplicate Marking &amp; BQSR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#variant-calling">5) Variant Calling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#variant-filtering">6) Variant Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#annotation">7) Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#cohort-level-qc-reports">8) Cohort-Level QC &amp; Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#parallelization-performance">Parallelization &amp; Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#wes-specific-notes">WES-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#expected-outputs">Expected Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#trio-and-family-based-analysis">Trio and Family-Based Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#joint-calling-for-large-cohorts">Joint Calling for Large Cohorts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#copy-number-variation-cnv-analysis">Copy Number Variation (CNV) Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#mitochondrial-variant-analysis">Mitochondrial Variant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#tumor-purity-estimation-adjustment">Tumor Purity Estimation &amp; Adjustment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#integration-and-reporting">Integration and Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotated_example.html">Annotated Examples &amp; Interpretation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumornormal-variant-calling">Example: Tumor–Normal Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumor-only-variant-calling">Example: Tumor-Only Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-germline-variant-calling">Example: Germline Variant Calling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#modular-workflow-overview">Modular Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#support-for-germline-and-somatic-calling">Support for Germline and Somatic Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#containerisation">Containerisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scalability-and-workflow-automation">Scalability and Workflow Automation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-directory-layout">Example Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices-for-execution">Best Practices for Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wes_cll_methods.html">Stage-to-Tool Mapping With Example Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#example-commands-bash">Example commands (bash)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#reproducibility-checklist">Reproducibility checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study: ITH-aware Somatic Interpretation for WGS/WES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#what-was-built">What Was Built</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#cohort-profiling-and-heterogeneity">Cohort Profiling and Heterogeneity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#drug-screening-and-response-definition">Drug Screening and Response Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#expression-signatures-predicting-response">Expression Signatures Predicting Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#mechanism-of-lenvatinib-resistance-combination-strategy">Mechanism of Lenvatinib Resistance &amp; Combination Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#ith-aware-somatic-interpretation-recommendations">ITH-aware Somatic Interpretation &amp; Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy.html#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#primary-study">Primary Study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#supporting-literature">Supporting Literature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#databases-and-resources">Databases and Resources</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WGS/WES Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pipeline Structure and Containerisation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/structure_and_containerisation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="annotated_example.html" class="btn btn-neutral float-left" title="Annotated Examples &amp; Interpretation" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="wes_cll_methods.html" class="btn btn-neutral float-right" title="Stage-to-Tool Mapping With Example Commands" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-structure-and-containerisation">
+<h1>Pipeline Structure and Containerisation<a class="headerlink" href="#pipeline-structure-and-containerisation" title="Link to this heading"></a></h1>
+<p>This WGS/WES pipeline is structured into <strong>modular stages</strong> supporting <strong>germline</strong> and <strong>somatic</strong> workflows, designed for <strong>flexibility</strong>, <strong>reproducibility</strong>, and <strong>scalability</strong>. It operates seamlessly on <strong>local servers</strong>, <strong>HPC clusters</strong>, and <strong>cloud platforms</strong>, and accommodates <strong>tumor-only</strong>, <strong>tumor–normal paired</strong>, <strong>trio-based</strong>, and <strong>large cohort</strong> analyses.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#modular-workflow-overview" id="id1">Modular Workflow Overview</a></p></li>
+<li><p><a class="reference internal" href="#support-for-germline-and-somatic-calling" id="id2">Support for Germline and Somatic Calling</a></p></li>
+<li><p><a class="reference internal" href="#containerisation" id="id3">Containerisation</a></p></li>
+<li><p><a class="reference internal" href="#scalability-and-workflow-automation" id="id4">Scalability and Workflow Automation</a></p></li>
+<li><p><a class="reference internal" href="#example-directory-layout" id="id5">Example Directory Layout</a></p></li>
+<li><p><a class="reference internal" href="#best-practices-for-execution" id="id6">Best Practices for Execution</a></p></li>
+</ul>
+</nav>
+<section id="modular-workflow-overview">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Modular Workflow Overview</a><a class="headerlink" href="#modular-workflow-overview" title="Link to this heading"></a></h2>
+<p><strong>Module 1: Data Input</strong></p>
+<ul class="simple">
+<li><p><strong>Accepts:</strong></p>
+<ul>
+<li><p>Paired-end <strong>FASTQ</strong> files (<code class="docutils literal notranslate"><span class="pre">R1</span></code>, <code class="docutils literal notranslate"><span class="pre">R2</span></code>)</p></li>
+<li><p>Sample metadata (TSV/CSV) with columns such as:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">SampleID</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Type</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ReadGroup</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BAM/FASTQ</span> <span class="pre">path</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Target</span> <span class="pre">BED</span></code> (for WES)</p></li>
+</ul>
+</li>
+<li><p>Optional <strong>Panel of Normals (PoN)</strong> VCF for somatic workflows</p></li>
+<li><p>Optional <strong>germline resource</strong> VCF (e.g., gnomAD) for tumor-only somatic calling</p></li>
+</ul>
+</li>
+<li><p><strong>File formats supported:</strong></p>
+<ul>
+<li><p>Compressed (<code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code>)</p></li>
+<li><p>Uncompressed FASTQ</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Module 2: Quality Control and Preprocessing</strong></p>
+<ul class="simple">
+<li><p><strong>Tools:</strong></p>
+<ul>
+<li><p><strong>FastQC</strong></p></li>
+<li><p><strong>MultiQC</strong></p></li>
+<li><p><strong>fastp</strong></p></li>
+<li><p><strong>Cutadapt</strong> <em>(optional)</em></p></li>
+<li><p><strong>Trimmomatic</strong> <em>(optional)</em></p></li>
+</ul>
+</li>
+<li><p><strong>Functions:</strong></p>
+<ul>
+<li><p>Adapter trimming</p></li>
+<li><p>Low-quality base clipping</p></li>
+<li><p>Poly-G trimming for NovaSeq data</p></li>
+<li><p>Optional UMI extraction for UMI-aware workflows</p></li>
+</ul>
+</li>
+<li><p><strong>QC metrics:</strong></p>
+<ul>
+<li><p>Per-base quality scores</p></li>
+<li><p>GC content</p></li>
+<li><p>Adapter contamination</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Module 3: Alignment</strong></p>
+<ul class="simple">
+<li><p><strong>Tool:</strong> <strong>BWA-MEM2</strong> (or <strong>BWA-MEM</strong>)</p></li>
+<li><p><strong>Reference:</strong> <strong>GRCh38</strong> or <strong>GRCh37</strong>
+<em>(ALT-aware and decoy-inclusive builds recommended)</em></p></li>
+<li><p><strong>Features:</strong></p>
+<ul>
+<li><p>Read group (<code class="docutils literal notranslate"><span class="pre">&#64;RG</span></code>) tags automatically assigned from metadata</p></li>
+<li><p>Optional <strong>alignment benchmarking</strong> with <code class="docutils literal notranslate"><span class="pre">samtools</span> <span class="pre">stats</span></code></p></li>
+<li><p>Contamination check with <strong>VerifyBamID2</strong> or <strong>Picard CollectWgsMetrics</strong></p></li>
+</ul>
+</li>
+<li><p><strong>Output:</strong> Sorted BAM with alignment metrics</p></li>
+</ul>
+<p><strong>Module 4: Post-Alignment Processing</strong></p>
+<ul class="simple">
+<li><p><strong>Tools:</strong></p>
+<ul>
+<li><p><strong>GATK MarkDuplicatesSpark</strong></p></li>
+<li><p><strong>Picard MarkDuplicates</strong></p></li>
+</ul>
+</li>
+<li><p><strong>Functions:</strong></p>
+<ul>
+<li><p>Sorting</p></li>
+<li><p>Duplicate marking</p></li>
+<li><p>Insert size calculation</p></li>
+<li><p>Optical duplicate detection (<strong>Picard</strong>)</p></li>
+</ul>
+</li>
+<li><p><strong>Outputs:</strong> Duplicate-marked BAM + metrics</p></li>
+</ul>
+<p><strong>Module 5: Base Quality Score Recalibration (BQSR)</strong></p>
+<ul class="simple">
+<li><p><strong>Tool:</strong> <strong>GATK BaseRecalibrator</strong></p></li>
+<li><p><strong>Uses known sites:</strong></p>
+<ul>
+<li><p><strong>dbSNP</strong></p></li>
+<li><p><strong>Mills and 1000G gold standard indels</strong></p></li>
+<li><p><em>(Optional)</em> <strong>1000G Phase1 indels</strong></p></li>
+</ul>
+</li>
+<li><p><strong>Somatic workflows:</strong> BQSR is optional but recommended for quality consistency</p></li>
+<li><p><strong>Output:</strong> Recalibrated BAM/CRAM</p></li>
+</ul>
+<p><strong>Module 6: Variant Calling</strong></p>
+<ul class="simple">
+<li><p><strong>Germline:</strong></p>
+<ul>
+<li><p><strong>GATK HaplotypeCaller</strong> in GVCF mode</p></li>
+<li><p><strong>GenotypeGVCFs</strong> for joint calling</p></li>
+</ul>
+</li>
+<li><p><strong>Somatic:</strong></p>
+<ul>
+<li><p><strong>GATK Mutect2</strong> with matched normal (tumor–normal) or without normal (tumor-only)</p></li>
+<li><p>Tumor-only mode uses PoN + gnomAD filtering</p></li>
+<li><p><em>(Optional)</em> <strong>mitochondrial mode</strong> for mtDNA variant calling</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Module 7: Variant Filtering and Annotation</strong></p>
+<ul class="simple">
+<li><p><strong>Somatic:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">FilterMutectCalls</span></code></p></li>
+<li><p>Orientation bias filtering (<code class="docutils literal notranslate"><span class="pre">FilterByOrientationBias</span></code>)</p></li>
+<li><p>Contamination adjustment (<code class="docutils literal notranslate"><span class="pre">CalculateContamination</span></code>)</p></li>
+</ul>
+</li>
+<li><p><strong>Germline:</strong></p>
+<ul>
+<li><p>VQSR or hard filters</p></li>
+</ul>
+</li>
+<li><p><strong>Annotation:</strong></p>
+<ul>
+<li><p><strong>Tools:</strong> <strong>VEP</strong>, <strong>ANNOVAR</strong>, <strong>snpEff</strong></p></li>
+<li><p><strong>Databases:</strong> <strong>ClinVar</strong>, <strong>gnomAD</strong>, <strong>COSMIC</strong>, <strong>dbNSFP</strong></p></li>
+<li><p><em>(Optional)</em> clinical overlays: <strong>OncoKB</strong>, <strong>CIViC</strong></p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Module 8: Optional Analysis</strong></p>
+<ul class="simple">
+<li><p>CNV calling: <strong>CNVkit</strong>, <strong>GATK gCNV</strong>, <strong>ModelSegments</strong></p></li>
+<li><p>MSI status: <strong>MSIsensor</strong>, <strong>MANTIS</strong></p></li>
+<li><p>Mutational signatures: <strong>SigProfilerExtractor</strong>, <strong>deconstructSigs</strong></p></li>
+<li><p>Tumor mutational burden (TMB) calculation</p></li>
+<li><p>Loss of heterozygosity (LOH) detection</p></li>
+</ul>
+</section>
+<section id="support-for-germline-and-somatic-calling">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Support for Germline and Somatic Calling</a><a class="headerlink" href="#support-for-germline-and-somatic-calling" title="Link to this heading"></a></h2>
+<p><strong>Germline Workflows</strong></p>
+<ul class="simple">
+<li><p>Targeted for:
+- Rare disease studies
+- Family-based inheritance analysis (trios/quads)
+- Population-scale cohorts</p></li>
+<li><p>Supports:
+- Cohort joint calling
+- VQSR for large datasets
+- Mendelian filtering and de novo detection in trios</p></li>
+</ul>
+<p><strong>Somatic Workflows</strong></p>
+<ul class="simple">
+<li><p>Designed for cancer genomics</p></li>
+<li><p>Supports:
+- Tumor–normal paired analysis
+- Tumor-only calling with artifact suppression
+- Cohort-level filtering for recurrent artifact removal</p></li>
+<li><p>PoN integration to filter technical noise and recurrent sequencing artifacts</p></li>
+<li><p>Germline resource VCF to flag common germline variants</p></li>
+</ul>
+</section>
+<section id="containerisation">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Containerisation</a><a class="headerlink" href="#containerisation" title="Link to this heading"></a></h2>
+<p><strong>Why containerisation?</strong></p>
+<ul class="simple">
+<li><p>Eliminates environment drift</p></li>
+<li><p>Ensures tool version consistency</p></li>
+<li><p>Makes workflows portable across platforms</p></li>
+</ul>
+<p><strong>Docker</strong></p>
+<ul class="simple">
+<li><p>Includes:
+- GATK
+- BWA-MEM2
+- samtools/bcftools
+- FastQC, MultiQC
+- VEP, ANNOVAR (licensed copy required)</p></li>
+<li><p>Version pinning in Dockerfile</p></li>
+<li><p>Suitable for:
+- Local execution
+- Cloud-native workflows (AWS Batch, Terra, DNAnexus, Seven Bridges)</p></li>
+</ul>
+<p><strong>Apptainer (Singularity)</strong></p>
+<ul class="simple">
+<li><p>Designed for HPC without root privileges</p></li>
+<li><p>Compatible with:
+- SLURM
+- PBS
+- LSF</p></li>
+<li><p>Auto-mounts:
+- Input data directories
+- Output result directories</p></li>
+<li><p>Container versions tracked in a <strong>manifest file</strong></p></li>
+<li><p>SHA256 checksum verification before execution</p></li>
+</ul>
+<p><strong>Reproducibility measures</strong></p>
+<ul class="simple">
+<li><p>Container image IDs stored in run logs</p></li>
+<li><p>All tool versions reported in <cite>pipeline_versions.log</cite></p></li>
+<li><p>Environment variables and configuration saved per run</p></li>
+</ul>
+</section>
+<section id="scalability-and-workflow-automation">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Scalability and Workflow Automation</a><a class="headerlink" href="#scalability-and-workflow-automation" title="Link to this heading"></a></h2>
+<p><strong>Orchestration Support</strong></p>
+<ul class="simple">
+<li><p>Compatible with:</p>
+<ul>
+<li><p><strong>Nextflow</strong></p></li>
+<li><p><strong>Snakemake</strong></p></li>
+<li><p><strong>Cromwell/WDL</strong></p></li>
+</ul>
+</li>
+<li><p>Features:</p>
+<ul>
+<li><p>Checkpointing between modules</p></li>
+<li><p>Resume capability after failure</p></li>
+<li><p>Automatic logging of:</p>
+<ul>
+<li><p>Tool commands</p></li>
+<li><p>Version info</p></li>
+<li><p>Resource usage</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Parallelisation</strong></p>
+<ul class="simple">
+<li><p>Scatter–gather per sample or per chromosome</p></li>
+<li><p>Interval-based parallelism for GATK</p></li>
+</ul>
+<p><strong>Cloud Support</strong></p>
+<ul class="simple">
+<li><p>Ready for:
+- Terra
+- DNAnexus
+- Seven Bridges</p></li>
+<li><p>GA4GH-compliant WDL/CWL wrappers</p></li>
+</ul>
+<p><strong>Customisation</strong></p>
+<ul class="simple">
+<li><p>Configurable:
+- CPU/memory per step
+- Retry logic for failed jobs
+- Job monitoring and reporting</p></li>
+</ul>
+<p><strong>Future extensions</strong></p>
+<ul class="simple">
+<li><p>ML-based variant scoring</p></li>
+<li><p>Panel-specific annotation overlays</p></li>
+<li><p>WGS/WES harmonisation into joint multi-sample VCFs</p></li>
+</ul>
+</section>
+<section id="example-directory-layout">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Example Directory Layout</a><a class="headerlink" href="#example-directory-layout" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pipeline/
+├── bin/           # Scripts
+├── config/        # YAML/JSON configs
+├── containers/    # Docker/Singularity manifests
+├── docs/         # Documentation
+├── modules/      # Pipeline stages
+├── refs/         # Reference data
+├── results/      # Final outputs
+└── work/         # Intermediate files
+</pre></div>
+</div>
+</section>
+<section id="best-practices-for-execution">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Best Practices for Execution</a><a class="headerlink" href="#best-practices-for-execution" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Pin container versions and reference datasets per project</p></li>
+<li><p>Store all pipeline logs and QC outputs in a dedicated <cite>logs/</cite> directory</p></li>
+<li><p>Verify checksums of references before starting</p></li>
+<li><p>Maintain a central manifest of all PoN and germline resource files</p></li>
+<li><p>Archive final VCFs with associated annotation databases for reproducibility</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="annotated_example.html" class="btn btn-neutral float-left" title="Annotated Examples &amp; Interpretation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="wes_cll_methods.html" class="btn btn-neutral float-right" title="Stage-to-Tool Mapping With Example Commands" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -121,26 +121,6 @@
     }
   },
   {
-    "id": "wgbs",
-    "name": "WGBS Pipeline",
-    "description": "Preprocessing and methylation analysis of Whole Genome Bisulfite Sequencing data.",
-    "version": "1.0.0",
-    "link": "wgbs/index.html",
-    "detail_html": "wgbs/index.html",
-    "tags": ["WGBS", "Methylation", "Bismark"],
-    "details": {
-      "steps": [
-        "Alignment with Bismark to bisulfite-converted genome",
-        "Methylation extraction and coverage stats",
-        "Differential methylation analysis using DSS or methylKit",
-        "Tiling and gene-centric methylation reports",
-        "Visualization with methylation metaplots"
-      ],
-      "repo": "https://github.com/akhileshkaushal/wgbs-pipeline",
-      "usage": "bash run_wgbs.sh --config wgbs_config.yaml"
-    }
-  },
-  {
     "id": "wgswes",
     "name": "WGS/WES Variant Calling Pipeline",
     "description": "Comprehensive germline and somatic variant calling pipeline from whole genome/exome data.",
@@ -162,6 +142,27 @@
       "usage": "bash run_variant_pipeline.sh --config variant_config.yaml"
     }
   },
+  {
+    "id": "wgbs",
+    "name": "WGBS Pipeline",
+    "description": "Preprocessing and methylation analysis of Whole Genome Bisulfite Sequencing data.",
+    "version": "1.0.0",
+    "link": "wgbs/index.html",
+    "detail_html": "wgbs/index.html",
+    "tags": ["WGBS", "Methylation", "Bismark"],
+    "details": {
+      "steps": [
+        "Alignment with Bismark to bisulfite-converted genome",
+        "Methylation extraction and coverage stats",
+        "Differential methylation analysis using DSS or methylKit",
+        "Tiling and gene-centric methylation reports",
+        "Visualization with methylation metaplots"
+      ],
+      "repo": "https://github.com/akhileshkaushal/wgbs-pipeline",
+      "usage": "bash run_wgbs.sh --config wgbs_config.yaml"
+    }
+  },
+  
   {
     "id": "hiplex-demux",
     "name": "HiPlex Demultiplexer",
