@@ -60,13 +60,42 @@ WES targets ~50 Mb of coding sequence, enabling cost-effective detection of soma
 
 - **WES Sequencing**: Genomic DNA from CLL cells (>90% purity via CD19+ sorting), matched normals. Exons captured with Agilent SureSelect Human All Exon v4+UTR (~71 Mb). Sequenced on Illumina HiSeq 2000/2500 (100 bp paired-end; mean depth 100x for sensitivity to VAF ~5%).
 - **Bioinformatics Pipeline** (supplemental Methods; reproducible with versioned tools):
-  - **Alignment**: BWA (v0.7.5) to hg19/GRCh37; duplicates marked with Picard (v1.96); base quality recalibration and indel realignment with GATK (v2.8).
-  - **Variant Calling**: MuTect (v1.1.4) for somatic SNVs (tumor-normal paired; filters for depth ≥10, VAF ≥0.05, no germline evidence); SomaticIndelDetector (GATK) for indels. Filtered for artifacts using dbSNP, 1000 Genomes, and in-house PoN.
-  - **Annotation**: ANNOVAR (v2014-07-14) for functional impact (e.g., nonsynonymous, splicing); COSMIC and ClinVar for cancer relevance; dN/dS ratios for driver inference (dN/dS >1 for positive selection in RPS15).
-  - **Copy Number and LOH**: ExomeCNV for CNAs (segmentation via CBS); FACETS (v0.3.9) for allele-specific CN and purity/ploidy estimation, enabling cancer cell fraction (CCF) calculation.
-  - **Clonal Evolution**: SciClone (v1.0) for subclonal clustering based on VAF and CN-adjusted variant clusters (e.g., clonal if CCF >0.9; Figure 2); phylogenetic trees via maximum parsimony (custom scripts).
-  - **Mutation Signatures**: DeconstructSigs (v1.6) for SBS signatures (e.g., aging-related SBS1/5 dominant; no FCR-specific signature).
-  - **Key Advantages of Tumor-Normal**: Eliminates germline false positives; enables low-VAF detection for subclones. Tumor-only alternative uses external databases but increases noise.
+
+  - **Alignment**:  
+    BWA (v0.7.5) to hg19/GRCh37; duplicates marked with Picard (v1.96);  
+    base quality recalibration and indel realignment with GATK (v2.8).
+
+  - **Variant Calling**:  
+    MuTect (v1.1.4) for somatic SNVs (tumor–normal paired;  
+    filters for depth ≥ 10, VAF ≥ 0.05, no germline evidence);  
+    SomaticIndelDetector (GATK) for indels.  
+    Filtered for artifacts using dbSNP, 1000 Genomes, and in-house PoN.
+
+  - **Annotation**:  
+    ANNOVAR (v2014-07-14) for functional impact (e.g., nonsynonymous, splicing);  
+    COSMIC and ClinVar for cancer relevance;  
+    dN/dS ratios for driver inference (dN/dS > 1 for positive selection in RPS15).
+
+  - **Copy Number and LOH**:  
+    ExomeCNV for CNAs (segmentation via CBS);  
+    FACETS (v0.3.9) for allele-specific CN and purity/ploidy estimation,  
+    enabling cancer cell fraction (CCF) calculation.
+
+  - **Clonal Evolution**:  
+    SciClone (v1.0) for subclonal clustering based on VAF and CN-adjusted variant clusters  
+    (e.g., clonal if CCF > 0.9; Figure 2);  
+    phylogenetic trees via maximum parsimony (custom scripts).
+
+  - **Mutation Signatures**:  
+    DeconstructSigs (v1.6) for SBS signatures  
+    (e.g., aging-related SBS1/5 dominant; no FCR-specific signature).
+
+  - **Key Advantages of Tumor–Normal**:  
+    Eliminates germline false positives;  
+    enables low-VAF detection for subclones.  
+    Tumor-only alternative uses external databases but increases noise.
+
+  
 - **Key Findings from WES**: 728 somatic mutations total; RPS15 as novel driver (q<0.01 by MutSigCV); clonal expansion under FCR pressure (e.g., TP53 VAF increase in 8/11 cases); no hypermutation post-therapy.
 
 Drug Screening and Response Definition

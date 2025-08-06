@@ -231,14 +231,37 @@ Ljungström <em>et al.</em>, “Whole-exome sequencing in relapsing chronic lymp
 <p>WES targets ~50 Mb of coding sequence, enabling cost-effective detection of somatic variants in low-mutation-rate cancers like CLL. The study prioritized tumor-normal paired mode for accurate somatic calling.</p>
 <ul class="simple">
 <li><p><strong>WES Sequencing</strong>: Genomic DNA from CLL cells (&gt;90% purity via CD19+ sorting), matched normals. Exons captured with Agilent SureSelect Human All Exon v4+UTR (~71 Mb). Sequenced on Illumina HiSeq 2000/2500 (100 bp paired-end; mean depth 100x for sensitivity to VAF ~5%).</p></li>
-<li><p><strong>Bioinformatics Pipeline</strong> (supplemental Methods; reproducible with versioned tools):
-- <strong>Alignment</strong>: BWA (v0.7.5) to hg19/GRCh37; duplicates marked with Picard (v1.96); base quality recalibration and indel realignment with GATK (v2.8).
-- <strong>Variant Calling</strong>: MuTect (v1.1.4) for somatic SNVs (tumor-normal paired; filters for depth ≥10, VAF ≥0.05, no germline evidence); SomaticIndelDetector (GATK) for indels. Filtered for artifacts using dbSNP, 1000 Genomes, and in-house PoN.
-- <strong>Annotation</strong>: ANNOVAR (v2014-07-14) for functional impact (e.g., nonsynonymous, splicing); COSMIC and ClinVar for cancer relevance; dN/dS ratios for driver inference (dN/dS &gt;1 for positive selection in RPS15).
-- <strong>Copy Number and LOH</strong>: ExomeCNV for CNAs (segmentation via CBS); FACETS (v0.3.9) for allele-specific CN and purity/ploidy estimation, enabling cancer cell fraction (CCF) calculation.
-- <strong>Clonal Evolution</strong>: SciClone (v1.0) for subclonal clustering based on VAF and CN-adjusted variant clusters (e.g., clonal if CCF &gt;0.9; Figure 2); phylogenetic trees via maximum parsimony (custom scripts).
-- <strong>Mutation Signatures</strong>: DeconstructSigs (v1.6) for SBS signatures (e.g., aging-related SBS1/5 dominant; no FCR-specific signature).
-- <strong>Key Advantages of Tumor-Normal</strong>: Eliminates germline false positives; enables low-VAF detection for subclones. Tumor-only alternative uses external databases but increases noise.</p></li>
+<li><p><strong>Bioinformatics Pipeline</strong> (supplemental Methods; reproducible with versioned tools):</p>
+<ul>
+<li><p><strong>Alignment</strong>:
+BWA (v0.7.5) to hg19/GRCh37; duplicates marked with Picard (v1.96);
+base quality recalibration and indel realignment with GATK (v2.8).</p></li>
+<li><p><strong>Variant Calling</strong>:
+MuTect (v1.1.4) for somatic SNVs (tumor–normal paired;
+filters for depth ≥ 10, VAF ≥ 0.05, no germline evidence);
+SomaticIndelDetector (GATK) for indels.
+Filtered for artifacts using dbSNP, 1000 Genomes, and in-house PoN.</p></li>
+<li><p><strong>Annotation</strong>:
+ANNOVAR (v2014-07-14) for functional impact (e.g., nonsynonymous, splicing);
+COSMIC and ClinVar for cancer relevance;
+dN/dS ratios for driver inference (dN/dS &gt; 1 for positive selection in RPS15).</p></li>
+<li><p><strong>Copy Number and LOH</strong>:
+ExomeCNV for CNAs (segmentation via CBS);
+FACETS (v0.3.9) for allele-specific CN and purity/ploidy estimation,
+enabling cancer cell fraction (CCF) calculation.</p></li>
+<li><p><strong>Clonal Evolution</strong>:
+SciClone (v1.0) for subclonal clustering based on VAF and CN-adjusted variant clusters
+(e.g., clonal if CCF &gt; 0.9; Figure 2);
+phylogenetic trees via maximum parsimony (custom scripts).</p></li>
+<li><p><strong>Mutation Signatures</strong>:
+DeconstructSigs (v1.6) for SBS signatures
+(e.g., aging-related SBS1/5 dominant; no FCR-specific signature).</p></li>
+<li><p><strong>Key Advantages of Tumor–Normal</strong>:
+Eliminates germline false positives;
+enables low-VAF detection for subclones.
+Tumor-only alternative uses external databases but increases noise.</p></li>
+</ul>
+</li>
 <li><p><strong>Key Findings from WES</strong>: 728 somatic mutations total; RPS15 as novel driver (q&lt;0.01 by MutSigCV); clonal expansion under FCR pressure (e.g., TP53 VAF increase in 8/11 cases); no hypermutation post-therapy.</p></li>
 </ul>
 </section>
