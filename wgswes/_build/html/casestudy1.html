@@ -1,0 +1,424 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study: ITH-aware Somatic Interpretation for WGS/WES &mdash; WGS/WES Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/wgswes/casestudy1.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Case Study: WES in Relapsing CLL: RPS15 Mutations and Clonal Evolution" href="casestudy2.html" />
+    <link rel="prev" title="Stage-to-Tool Mapping With Example Commands" href="wes_cll_methods.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            WGS/WES Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">WGS/WES Variant Calling Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#when-to-choose-wgs-vs-wes">When to Choose WGS vs WES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#design-principles">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#high-level-workflow">High-Level Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#inputs-and-outputs">Inputs and Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#quality-coverage-and-qc">Quality, Coverage, and QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#filtering-strategy-notes">Filtering Strategy Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#reference-and-resource-recommendations">Reference and Resource Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#reproducibility-execution">Reproducibility &amp; Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#data-stewardship-compliance">Data Stewardship &amp; Compliance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#limitations-non-goals">Limitations &amp; Non-Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#whats-next">What’s Next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_pipeline.html">Run the WGS/WES Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#pipeline-inputs-layout">Pipeline Inputs &amp; Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#step-by-step-workflow">Step-by-Step Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#raw-read-qc">1) Raw Read QC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#adapter-quality-trimming-optional-but-recommended-for-wes">2) Adapter/Quality Trimming (optional but recommended for WES)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#alignment-to-reference">3) Alignment to Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#duplicate-marking-bqsr">4) Duplicate Marking &amp; BQSR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#variant-calling">5) Variant Calling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#variant-filtering">6) Variant Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#annotation">7) Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="run_pipeline.html#cohort-level-qc-reports">8) Cohort-Level QC &amp; Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#parallelization-performance">Parallelization &amp; Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#wes-specific-notes">WES-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#expected-outputs">Expected Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_pipeline.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#trio-and-family-based-analysis">Trio and Family-Based Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#joint-calling-for-large-cohorts">Joint Calling for Large Cohorts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#copy-number-variation-cnv-analysis">Copy Number Variation (CNV) Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#mitochondrial-variant-analysis">Mitochondrial Variant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#tumor-purity-estimation-adjustment">Tumor Purity Estimation &amp; Adjustment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#integration-and-reporting">Integration and Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotated_example.html">Annotated Examples &amp; Interpretation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumornormal-variant-calling">Example: Tumor–Normal Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumor-only-variant-calling">Example: Tumor-Only Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-germline-variant-calling">Example: Germline Variant Calling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#modular-workflow-overview">Modular Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#support-for-germline-and-somatic-calling">Support for Germline and Somatic Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#containerisation">Containerisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#scalability-and-workflow-automation">Scalability and Workflow Automation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#example-directory-layout">Example Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#best-practices-for-execution">Best Practices for Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wes_cll_methods.html">Stage-to-Tool Mapping With Example Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#example-commands-bash">Example Commands (Bash)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#reproducibility-checklist">Reproducibility Checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Case Study: ITH-aware Somatic Interpretation for WGS/WES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-was-built">What Was Built</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cohort-profiling-and-heterogeneity">Cohort Profiling and Heterogeneity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#drug-screening-and-response-definition">Drug Screening and Response Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#expression-signatures-predicting-response">Expression Signatures Predicting Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mechanism-of-lenvatinib-resistance-combination-strategy">Mechanism of Lenvatinib Resistance &amp; Combination Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ith-aware-somatic-interpretation-recommendations">ITH-aware Somatic Interpretation &amp; Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy2.html">Case Study: WES in Relapsing CLL: RPS15 Mutations and Clonal Evolution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#what-was-built">What Was Built</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#cohort-profiling-and-heterogeneity">Cohort Profiling and Heterogeneity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#genomic-profiling-methods-wes-focus">Genomic Profiling Methods (WES Focus)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#drug-screening-and-response-definition">Drug Screening and Response Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#expression-signatures-predicting-response">Expression Signatures Predicting Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#mechanism-of-relapse-targeted-strategies">Mechanism of Relapse &amp; Targeted Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#clonal-evolution-aware-somatic-interpretation-recommendations">Clonal Evolution-Aware Somatic Interpretation &amp; Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#primary-study">Primary Study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#supporting-literature">Supporting Literature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#databases-and-resources">Databases and Resources</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WGS/WES Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Case Study: ITH-aware Somatic Interpretation for WGS/WES</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/casestudy1.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="wes_cll_methods.html" class="btn btn-neutral float-left" title="Stage-to-Tool Mapping With Example Commands" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="casestudy2.html" class="btn btn-neutral float-right" title="Case Study: WES in Relapsing CLL: RPS15 Mutations and Clonal Evolution" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="case-study-ith-aware-somatic-interpretation-for-wgs-wes">
+<h1>Case Study: ITH-aware Somatic Interpretation for WGS/WES<a class="headerlink" href="#case-study-ith-aware-somatic-interpretation-for-wgs-wes" title="Link to this heading"></a></h1>
+<p><strong>Focus</strong>: Sampling strategy, when to prioritize tumor-normal over tumor-only, ITH-aware filtering and reporting, RNA-based response signatures, and mechanism-informed combinations (c-Jun/JNK/β-catenin axis).</p>
+<p><strong>Primary reference</strong>:
+Yang <em>et al.</em>, “Pharmacogenomic profiling of intra-tumor heterogeneity using a large organoid biobank of liver cancer,” <em>Cancer Cell</em> (2024), DOI: 10.1016/j.ccell.2024.03.004.</p>
+<p>This seminal study, published in April 2024, has since been cited in emerging research on organoid-based models for liver cancer, including works exploring pharmacogenomic vulnerabilities and advances in tumor heterogeneity modeling.</p>
+<blockquote>
+<div><p>The authors established a biobank of 399 organoids from 144 primary liver cancer (PLC) patients, quantified intra-tumor heterogeneity (ITH), developed predictive multi-gene expression signatures for drug responses, and elucidated c-Jun-mediated resistance to lenvatinib, proposing a rational combination therapy strategy.</p>
+</div></blockquote>
+<section id="what-was-built">
+<h2>What Was Built<a class="headerlink" href="#what-was-built" title="Link to this heading"></a></h2>
+<p><strong>Living PLC organoid biobank</strong></p>
+<p>Intra-tumor heterogeneity (ITH) refers to the genetic, epigenetic, and phenotypic variations within a single tumor, arising from subclonal evolution and environmental pressures. To model this in primary liver cancer (PLC, encompassing hepatocellular carcinoma [HCC], intrahepatic cholangiocarcinoma [ICC], and combined HCC-ICC [cHCC-ICC]), the researchers created a “living biobank” of patient-derived organoids (PDOs).</p>
+<ul class="simple">
+<li><p><strong>Scale</strong>: 399 tumor organoids derived from 144 patients, sourced from 528 multi-regional samples of surgical resections (e.g., center, edge, and intermediate regions of tumors).</p></li>
+<li><p><strong>Sampling</strong>: Multi-regional approach to capture spatial ITH, including inter-tumor (between patients) and intra-tumor (within the same tumor) variations. This enabled simultaneous genomic and functional analyses.</p></li>
+<li><p><strong>Recapitulation</strong>: Organoids faithfully mirrored parental tumors in histology (e.g., H&amp;E staining showing trabecular patterns in HCC), genomics (mutations and copy number alterations [CNAs]), and transcriptomics (high correlations in RNA-seq profiles for markers like AFP, GPC3 for HCC).</p></li>
+<li><p><strong>Utility</strong>: Ideal for high-throughput drug sensitivity screening, mechanistic studies (e.g., knockdown/overexpression), and xenograft validations, bridging ex vivo modeling with clinical phenotypes.</p></li>
+</ul>
+<p><strong>Establishment details</strong></p>
+<p>Organoid culture success is critical for biobanking, with rates varying by tumor type and processing.</p>
+<ul class="simple">
+<li><p>Overall establishment rate: <strong>75.6%</strong> (399/528 regions), higher for HCC (80.5%) than ICC (64.5%) or cHCC-ICC (68.2%).</p></li>
+<li><p>Success factors:
+- Proportion of viable cells at tissue acquisition (assessed via trypan blue exclusion).
+- Time from resection to processing (ideally &lt;2 hours to minimize ischemia).
+- Enzymatic digestion method (e.g., collagenase-based for gentle dissociation).</p></li>
+<li><p>Culture protocol (based on established methods like Broutier et al., 2016):
+- Basal medium: Advanced DMEM/F12 supplemented with penicillin/streptomycin, Glutamax, HEPES, B27 (without vitamin A), N2, N-acetyl-L-cysteine, nicotinamide.
+- Growth factors: Recombinant human EGF, FGF10, HGF, gastrin, forskolin.
+- Wnt pathway agonists: Noggin, R-spondin1 (Rspo1), Wnt3a.
+- Inhibitors: A83-01 (TGF-β), Y-27632 (ROCK).
+- Embedded in 5-10% Matrigel; passaged every 1-3 weeks via mechanical/trypsin dissociation.
+- Cryopreservation: Viable recovery post-thawing, enabling long-term storage.</p></li>
+</ul>
+<p>This biobank (detailed in Figure 1) allowed comprehensive profiling, revealing ITH’s impact on drug resistance.</p>
+</section>
+<section id="cohort-profiling-and-heterogeneity">
+<h2>Cohort Profiling and Heterogeneity<a class="headerlink" href="#cohort-profiling-and-heterogeneity" title="Link to this heading"></a></h2>
+<p><strong>Concordance and ITH</strong></p>
+<p>PDOs showed strong fidelity to tumors:</p>
+<ul class="simple">
+<li><p>Histological: IHC for markers like HepPar1, AFP (HCC), KRT19 (ICC).</p></li>
+<li><p>Genomic: High concordance in variant allele frequencies (VAFs) for COSMIC cancer genes (e.g., TP53, CTNNB1).</p></li>
+<li><p>Transcriptomic: Pearson correlations &gt;0.8 between paired tumor-organoid RNA-seq (n=99 pairs; Figure 1H).</p></li>
+</ul>
+<p>Multi-regional sampling uncovered extensive ITH, with higher mutation/CNA ITH linked to poorer overall survival (OS; hazard ratios via Cox proportional hazards, p&lt;0.05; Figure 2E).</p>
+<p><strong>Trunk/branch structure</strong></p>
+<p>Tumors evolve via branching phylogenies, where “trunk” mutations are shared (early events) and “branch” mutations are region-specific (late events).</p>
+<ul class="simple">
+<li><p><strong>Trunk-dominant tumors</strong>: 12/32 patients (trunk ratio [TR] &gt;1), with most drivers (e.g., TP53) in the trunk.</p></li>
+<li><p><strong>Branch-dominant tumors</strong>: 20/32 patients (TR ≤1), featuring region-private alterations (e.g., divergent drivers in different organoids; Figure 2B).</p></li>
+<li><p><strong>Clinical implication</strong>: Branch-dominant ITH correlated with lenvatinib resistance (e.g., variable target expression like FGFRs; Figure 2F) and worse OS. Single-biopsy analyses may miss branch events, underestimating resistance.</p></li>
+</ul>
+<p><strong>Genomic Profiling Methods – Whole-Exome Sequencing (WES)</strong></p>
+<p>Whole-exome sequencing (WES) targets the protein-coding regions (~1–2% of the genome) and is well-suited for detecting somatic mutations and copy-number alterations (CNAs) in cancer driver genes.
+In this study, tumor–normal paired WES was emphasized to accurately distinguish somatic from germline variants.</p>
+<p><strong>WES Sequencing</strong></p>
+<ul class="simple">
+<li><p><strong>Samples</strong>: Genomic DNA was extracted from:
+- Organoids (<strong>n</strong> = 399)
+- Matched tumors (subset)
+- Matched normal samples from adjacent liver or blood (<strong>n</strong> = 144)</p></li>
+<li><p><strong>Library preparation</strong>: Exons captured using <em>Agilent SureSelectXT Human All Exon V6</em> (~60 Mb target size)</p></li>
+<li><p><strong>Sequencing</strong>: Illumina NovaSeq 6000 platform
+- 150 bp paired-end reads
+- Target coverage: ~100–200× to enable detection of low-VAF subclones</p></li>
+</ul>
+<p><strong>Bioinformatics Pipeline</strong> (see STAR Methods for full reproducibility)</p>
+<ul class="simple">
+<li><p><strong>Alignment</strong>:
+- <cite>bwa-mem2</cite> (v2.0) to GRCh38/hg38 reference
+- Duplicate reads marked with <em>GATK MarkDuplicates</em></p></li>
+<li><p><strong>Variant Calling</strong>:
+- <em>GATK</em> (v4.1.2.0) best practices
+- Somatic SNVs/indels called with <em>MuTect2</em> in tumor–normal mode
+- Germline filtering via Panel of Normals (PoN)
+- Post-calling filters: VAF ≥ 0.05, depth ≥ 20, COSMIC annotation presence</p></li>
+<li><p><strong>CNA Detection</strong>:
+- <em>CNVkit</em> (v0.9.7.b1) – read-depth segmentation with CBS algorithm
+- <em>GISTIC2</em> (v2.0) – focal and arm-level CNA significance (q &lt; 0.25)
+- CNA intratumoral heterogeneity (CNA-ITH) = variance in copy ratios across regions</p></li>
+<li><p><strong>Phylogenetic Reconstruction</strong>:
+- <em>MEGA5</em> – neighbor-joining trees based on shared/private mutation presence/absence</p></li>
+<li><p><strong>ITH Quantification</strong>:
+- Mutation-ITH = fraction of private mutations
+- CNA-ITH = Jaccard distance on CNA segments
+- TR (trunk ratio) = trunk / branch mutations
+- Correlations: Spearman’s ρ showed positive association between mutation- and CNA-ITH (p &lt; 0.05)
+- Survival analysis: Kaplan–Meier with log-rank test (two-sided)</p></li>
+<li><p><strong>Advantages of Tumor–Normal Design</strong>:
+- Reduces false positives (e.g., via <em>GATK CalculateContamination</em>)
+- Improves VAF accuracy for subclonal inference
+- Tumor-only fallback possible using PoN/germline resources, but may miss low-VAF events</p></li>
+</ul>
+<p><strong>Key Findings from WES</strong></p>
+<ul class="simple">
+<li><p>Recovered known PLC drivers:
+- <em>TP53</em> (~50%)
+- <em>CTNNB1</em> (~30%)</p></li>
+<li><p>ITH levels alone were not predictive of specific drug responses</p></li>
+<li><p>Branch-dominant phylogenies were enriched for resistance phenotypes</p></li>
+<li><p>Findings support multi-region sampling and complementary transcriptomic profiling</p></li>
+</ul>
+</section>
+<section id="drug-screening-and-response-definition">
+<h2>Drug Screening and Response Definition<a class="headerlink" href="#drug-screening-and-response-definition" title="Link to this heading"></a></h2>
+<p>Drug screening in PDOs assesses functional ITH, where phenotypic responses (e.g., viability) vary across regions.</p>
+<p><strong>Agents tested</strong></p>
+<ul class="simple">
+<li><p>Clinically relevant: Four tyrosine kinase inhibitors (TKIs; lenvatinib, sorafenib, regorafenib, apatinib), anti-VEGF (bevacizumab), FGFR inhibitor (pemigatinib), IDH1 inhibitor (ivosidenib).</p></li>
+<li><p>Mechanism-focused: c-Jun inhibitors (veratramine, SR11302, NY2267); novel conjugate PKUF-01 (lenvatinib-veratramine; synthesized in-house).</p></li>
+<li><p>Additional: Chemotherapy (gemcitabine, cisplatin) for context.</p></li>
+</ul>
+<p><strong>Response metrics</strong></p>
+<ul class="simple">
+<li><p>Assays: Organoids seeded in 96/384-well plates (ultra-low attachment; ~100 organoids/well in 5% Matrigel). 7-point dose-response (5-10-fold dilutions; 72h exposure). Viability via CellTiter-Glo (ATP-based luminescence).</p></li>
+<li><p>Metrics: IC50 (half-maximal inhibitory concentration); normalized area under curve (AUC; 0-1 scale, lower = sensitive). High correlation (Spearman ρ &gt;0.79; Figure S3A).</p></li>
+<li><p>Patient-level: “Worst-region” rule—most resistant organoid dictates sensitivity (reflecting ITH-driven escape; Figure 3D).</p></li>
+<li><p>Thresholds: Percentile-based on clinical objective response rates (ORRs; e.g., lenvatinib 24.1% → top 24.1% sensitive; Figure 3E).</p></li>
+</ul>
+<p><strong>Passage stability</strong></p>
+<ul class="simple">
+<li><p>Tested in 16 organoids: 12/16 stable lenvatinib sensitivity (early vs. late passages; Figure S3B).</p></li>
+<li><p>4/16 showed drift (resistance gain), attributable to subclone selection—underscoring need for early-passage testing.</p></li>
+</ul>
+<p><strong>Clinical alignment</strong></p>
+<ul class="simple">
+<li><p>Validated in 14 relapsed patients: Organoid sensitivities matched outcomes (e.g., lenvatinib responders sensitive in all regions; progressors had resistant regions; Figure S3H).</p></li>
+<li><p>Xenografts: Multi-region PDOs from resistant patients confirmed heterogeneous tumor growth under lenvatinib (Figure 3H).</p></li>
+</ul>
+</section>
+<section id="expression-signatures-predicting-response">
+<h2>Expression Signatures Predicting Response<a class="headerlink" href="#expression-signatures-predicting-response" title="Link to this heading"></a></h2>
+<p>Transcriptomic modeling integrates RNA-seq with drug data for predictive biomarkers, as genomic ITH alone lacked specificity.</p>
+<ul class="simple">
+<li><p><strong>RNA-seq</strong>: Illumina paired-end; Salmon/edgeR for quantification/differential expression. Variance analysis (ANOVA) for ITH.</p></li>
+</ul>
+<p><strong>Lenvatinib signature</strong></p>
+<ul class="simple">
+<li><p>Cohorts: Training (n=106 organoids), validation (n=106).</p></li>
+<li><p>Workflow: 254 genes correlated with AUC (Spearman, p&lt;0.05; e.g., positive: JUN, WNT pathway; negative: cell cycle genes; Figure 4B,C).</p></li>
+<li><p>Refined: 13-gene panel via machine learning (elastic net regression; STAR Methods). AUROC 0.86 (train), 0.81 (valid; Figure 4F).</p></li>
+<li><p>External: TCGA-LIHC (n=371) clustered into ~25% “sensitive” (matching ORR; unsupervised k-means; Figure 4D).</p></li>
+</ul>
+<p><strong>Other TKIs</strong></p>
+<ul class="simple">
+<li><p>Sorafenib: 199-gene signature, AUROC &gt;0.9 (Figure 4L).</p></li>
+<li><p>Regorafenib/Apatinib: Similar (AUROCs 0.8-0.7).</p></li>
+<li><p>Alignment: Predicted clinical responses in relapsed cases (e.g., signature scores vs. progression; Figure 4L).</p></li>
+</ul>
+<p>Signatures (Table S5) enable patient stratification, with ITH-aware aggregation (worst-region score).</p>
+</section>
+<section id="mechanism-of-lenvatinib-resistance-combination-strategy">
+<h2>Mechanism of Lenvatinib Resistance &amp; Combination Strategy<a class="headerlink" href="#mechanism-of-lenvatinib-resistance-combination-strategy" title="Link to this heading"></a></h2>
+<p>Lenvatinib targets VEGFR/FGFR; resistance often via bypass signaling.</p>
+<p><strong>Upstream targets</strong></p>
+<ul class="simple">
+<li><p>FGFR1-4 highly expressed (RNA-seq); siRNA knockdown reduced sensitivity (Figure S5A).</p></li>
+</ul>
+<p><strong>c-Jun axis</strong></p>
+<ul class="simple">
+<li><p>c-Jun (transcription factor) overexpressed in resistant PDOs (Figure 5A).</p></li>
+<li><p>Manipulation: shRNA knockdown sensitized (IC50 drop in 21/6 resistant organoids; Figure 5G); overexpression conferred resistance (Figure 5S).</p></li>
+<li><p>Upstream: JNK (activator) and Wnt/β-catenin (stabilizer). Knockdown/activation modulated sensitivity reciprocally (Figures 5K, S5).</p></li>
+<li><p>Mechanism: c-Jun activates JNK/β-catenin loop, bypassing FGFR inhibition (Western blots for phospho-c-Jun; Figure 5M).</p></li>
+</ul>
+<p><strong>PKUF-01</strong></p>
+<ul class="simple">
+<li><p>Design: Lenvatinib-veratramine conjugate (dual FGFR/c-Jun targeting; synthesis in STAR Methods).</p></li>
+<li><p>Efficacy: Sensitized 27/144 patients (59% of resistant; Figure S5E); reduced IC50s ex vivo; superior xenograft control (Figure 6H).</p></li>
+<li><p>Limitation: Poor oral bioavailability in vivo, suggesting need for formulation optimization.</p></li>
+</ul>
+</section>
+<section id="ith-aware-somatic-interpretation-recommendations">
+<h2>ITH-aware Somatic Interpretation &amp; Recommendations<a class="headerlink" href="#ith-aware-somatic-interpretation-recommendations" title="Link to this heading"></a></h2>
+<p><strong>Why ITH matters</strong></p>
+<p>ITH drives therapy failure; multi-region analysis dropped predicted lenvatinib benefit from 72.9% (per-organoid) to 37.1% (per-patient; Figure 3I).</p>
+<p><strong>Sampling strategy</strong></p>
+<ul class="simple">
+<li><p>Multi-region (≥3 sites/tumor) plus metastases if available.</p></li>
+<li><p>Prioritize tumor-normal WES for somatic confidence (vs. tumor-only, which relies on databases like gnomAD for germline filtering).</p></li>
+</ul>
+<p><strong>ITH-aware filtering</strong></p>
+<ul class="simple">
+<li><p>Consolidate multi-region VCFs; classify variants (trunk/branch/private) via phylogenetics (e.g., MEGA5).</p></li>
+<li><p>“Worst-region” for sensitivity; integrate WES/RNA-seq (e.g., VAF-CN-expression triangles for subclone validation).</p></li>
+</ul>
+<p><strong>RNA-based response signatures</strong></p>
+<ul class="simple">
+<li><p>Pre-treatment RNA-seq from WES regions; compute scores per-region, aggregate conservatively.</p></li>
+<li><p>Research-use only; enrich for trials (e.g., NCT numbers for TKI combos).</p></li>
+</ul>
+<p><strong>Mechanism-aware reporting</strong></p>
+<ul class="simple">
+<li><p>Flag c-Jun/JNK/β-catenin activation (e.g., via IHC/RNA).</p></li>
+<li><p>Recommend combinations (lenvatinib + JNK inhibitors like SP600125; PKUF-01 analogs).</p></li>
+<li><p>Include trials (e.g., lenvatinib combos in HCC).</p></li>
+</ul>
+<p><strong>Implementation tips</strong></p>
+<ul class="simple">
+<li><p>Matched normals for GATK; maintain PoN/germline VCFs.</p></li>
+<li><p>Log versions (e.g., GATK v4.1.2.0) for reproducibility; containerize (Docker/Singularity).</p></li>
+</ul>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Small clinical validation (n=14 relapsed); signatures research-grade, require prospective trials.</p></li>
+<li><p>Passage drift in ~25% lines (subclonal evolution).</p></li>
+<li><p>PKUF-01 bioavailability issues.</p></li>
+<li><p>WES limits: Misses non-coding variants; WGS could enhance for structural variants/intratumoral fusions. Recent studies advocate integrated WGS/RNA for fuller ITH mapping.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="wes_cll_methods.html" class="btn btn-neutral float-left" title="Stage-to-Tool Mapping With Example Commands" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="casestudy2.html" class="btn btn-neutral float-right" title="Case Study: WES in Relapsing CLL: RPS15 Mutations and Clonal Evolution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

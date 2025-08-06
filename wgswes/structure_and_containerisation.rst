@@ -1,0 +1,272 @@
+Pipeline Structure and Containerisation
+===========================================
+
+This WGS/WES pipeline is structured into **modular stages** supporting **germline** and **somatic** workflows, designed for **flexibility**, **reproducibility**, and **scalability**. It operates seamlessly on **local servers**, **HPC clusters**, and **cloud platforms**, and accommodates **tumor-only**, **tumor–normal paired**, **trio-based**, and **large cohort** analyses.
+
+.. contents::
+   :local:
+   :depth: 2
+
+Modular Workflow Overview
+--------------------------
+**Module 1: Data Input**
+
+- **Accepts:**
+  
+  - Paired-end **FASTQ** files (``R1``, ``R2``)
+  - Sample metadata (TSV/CSV) with columns such as:
+    
+    - ``SampleID``
+    - ``Type``
+    - ``ReadGroup``
+    - ``BAM/FASTQ path``
+    - ``Target BED`` (for WES)
+  
+  - Optional **Panel of Normals (PoN)** VCF for somatic workflows
+  - Optional **germline resource** VCF (e.g., gnomAD) for tumor-only somatic calling
+
+- **File formats supported:**
+  
+  - Compressed (``.fastq.gz``)
+  - Uncompressed FASTQ
+
+**Module 2: Quality Control and Preprocessing**
+
+- **Tools:**
+  
+  - **FastQC**
+  - **MultiQC**
+  - **fastp**
+  - **Cutadapt** *(optional)*
+  - **Trimmomatic** *(optional)*
+
+- **Functions:**
+  
+  - Adapter trimming
+  - Low-quality base clipping
+  - Poly-G trimming for NovaSeq data
+  - Optional UMI extraction for UMI-aware workflows
+
+- **QC metrics:**
+  
+  - Per-base quality scores
+  - GC content
+  - Adapter contamination
+
+**Module 3: Alignment**
+
+- **Tool:** **BWA-MEM2** (or **BWA-MEM**)
+- **Reference:** **GRCh38** or **GRCh37**  
+  *(ALT-aware and decoy-inclusive builds recommended)*
+- **Features:**
+  
+  - Read group (``@RG``) tags automatically assigned from metadata
+  - Optional **alignment benchmarking** with ``samtools stats``
+  - Contamination check with **VerifyBamID2** or **Picard CollectWgsMetrics**
+  
+- **Output:** Sorted BAM with alignment metrics
+
+**Module 4: Post-Alignment Processing**
+
+- **Tools:**
+  
+  - **GATK MarkDuplicatesSpark**
+  - **Picard MarkDuplicates**
+  
+- **Functions:**
+  
+  - Sorting
+  - Duplicate marking
+  - Insert size calculation
+  - Optical duplicate detection (**Picard**)
+  
+- **Outputs:** Duplicate-marked BAM + metrics
+
+**Module 5: Base Quality Score Recalibration (BQSR)**
+
+- **Tool:** **GATK BaseRecalibrator**
+- **Uses known sites:**
+  
+  - **dbSNP**
+  - **Mills and 1000G gold standard indels**
+  - *(Optional)* **1000G Phase1 indels**
+  
+- **Somatic workflows:** BQSR is optional but recommended for quality consistency
+- **Output:** Recalibrated BAM/CRAM
+
+**Module 6: Variant Calling**
+
+- **Germline:**
+  
+  - **GATK HaplotypeCaller** in GVCF mode
+  - **GenotypeGVCFs** for joint calling
+  
+- **Somatic:**
+  
+  - **GATK Mutect2** with matched normal (tumor–normal) or without normal (tumor-only)
+  - Tumor-only mode uses PoN + gnomAD filtering
+  - *(Optional)* **mitochondrial mode** for mtDNA variant calling
+
+**Module 7: Variant Filtering and Annotation**
+
+- **Somatic:**
+  
+  - ``FilterMutectCalls``
+  - Orientation bias filtering (``FilterByOrientationBias``)
+  - Contamination adjustment (``CalculateContamination``)
+  
+- **Germline:**
+  
+  - VQSR or hard filters
+  
+- **Annotation:**
+  
+  - **Tools:** **VEP**, **ANNOVAR**, **snpEff**
+  - **Databases:** **ClinVar**, **gnomAD**, **COSMIC**, **dbNSFP**
+  - *(Optional)* clinical overlays: **OncoKB**, **CIViC**
+
+**Module 8: Optional Analysis**
+
+- CNV calling: **CNVkit**, **GATK gCNV**, **ModelSegments**
+- MSI status: **MSIsensor**, **MANTIS**
+- Mutational signatures: **SigProfilerExtractor**, **deconstructSigs**
+- Tumor mutational burden (TMB) calculation
+- Loss of heterozygosity (LOH) detection
+
+
+Support for Germline and Somatic Calling
+------------------------------------------
+
+**Germline Workflows**
+
+- Targeted for:
+  - Rare disease studies
+  - Family-based inheritance analysis (trios/quads)
+  - Population-scale cohorts
+- Supports:
+  - Cohort joint calling
+  - VQSR for large datasets
+  - Mendelian filtering and de novo detection in trios
+
+**Somatic Workflows**
+
+- Designed for cancer genomics
+- Supports:
+  - Tumor–normal paired analysis
+  - Tumor-only calling with artifact suppression
+  - Cohort-level filtering for recurrent artifact removal
+- PoN integration to filter technical noise and recurrent sequencing artifacts
+- Germline resource VCF to flag common germline variants
+
+Containerisation
+----------------
+
+**Why containerisation?**
+
+- Eliminates environment drift
+- Ensures tool version consistency
+- Makes workflows portable across platforms
+
+**Docker**
+
+- Includes:
+  - GATK
+  - BWA-MEM2
+  - samtools/bcftools
+  - FastQC, MultiQC
+  - VEP, ANNOVAR (licensed copy required)
+- Version pinning in Dockerfile
+- Suitable for:
+  - Local execution
+  - Cloud-native workflows (AWS Batch, Terra, DNAnexus, Seven Bridges)
+
+**Apptainer (Singularity)**
+
+- Designed for HPC without root privileges
+- Compatible with:
+  - SLURM
+  - PBS
+  - LSF
+- Auto-mounts:
+  - Input data directories
+  - Output result directories
+- Container versions tracked in a **manifest file**
+- SHA256 checksum verification before execution
+
+**Reproducibility measures**
+
+- Container image IDs stored in run logs
+- All tool versions reported in `pipeline_versions.log`
+- Environment variables and configuration saved per run
+
+Scalability and Workflow Automation
+-----------------------------------
+
+**Orchestration Support**
+
+- Compatible with:
+  
+  - **Nextflow**
+  - **Snakemake**
+  - **Cromwell/WDL**
+
+- Features:
+  
+  - Checkpointing between modules
+  - Resume capability after failure
+  - Automatic logging of:
+    
+    - Tool commands
+    - Version info
+    - Resource usage
+
+
+**Parallelisation**
+
+- Scatter–gather per sample or per chromosome
+- Interval-based parallelism for GATK
+
+**Cloud Support**
+
+- Ready for:
+  - Terra
+  - DNAnexus
+  - Seven Bridges
+- GA4GH-compliant WDL/CWL wrappers
+
+**Customisation**
+
+- Configurable:
+  - CPU/memory per step
+  - Retry logic for failed jobs
+  - Job monitoring and reporting
+
+**Future extensions**
+
+- ML-based variant scoring
+- Panel-specific annotation overlays
+- WGS/WES harmonisation into joint multi-sample VCFs
+
+Example Directory Layout
+-------------------------
+
+.. code-block:: text
+
+    pipeline/
+    ├── bin/           # Scripts
+    ├── config/        # YAML/JSON configs
+    ├── containers/    # Docker/Singularity manifests
+    ├── docs/         # Documentation
+    ├── modules/      # Pipeline stages
+    ├── refs/         # Reference data
+    ├── results/      # Final outputs
+    └── work/         # Intermediate files
+
+Best Practices for Execution
+----------------------------
+
+- Pin container versions and reference datasets per project
+- Store all pipeline logs and QC outputs in a dedicated `logs/` directory
+- Verify checksums of references before starting
+- Maintain a central manifest of all PoN and germline resource files
+- Archive final VCFs with associated annotation databases for reproducibility

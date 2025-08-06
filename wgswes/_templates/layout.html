@@ -1,0 +1,17 @@
+{# _templates/layout.html #}
+{% extends "!layout.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  <link rel="icon" href="{{ pathto('_static/images/favicon.ico', 1) }}">
+{% endblock %}
+
+{% block header %}
+  <div class="custom-header">
+    <a href="https://akhileshkaushal.github.io">
+      <img src="{{ pathto('_static/images/logo.png', 1) }}" alt="Logo" height="50" />
+    </a>
+    <h1>Transcriptomic Analysis Portal</h1>
+  </div>
+  {{ super() }}
+{% endblock %}

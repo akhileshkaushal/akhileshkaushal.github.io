@@ -1,0 +1,628 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Run the WGS/WES Pipeline &mdash; WGS/WES Pipeline 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9482ece9" />
+
+  
+    <link rel="canonical" href="https://akhileshkaushal.github.io/wgswes/run_pipeline.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ebf8126"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced Analysis" href="advanced_analysis.html" />
+    <link rel="prev" title="WGS/WES Variant Calling Pipeline" href="intro.html" />
+   
+  <link rel="icon" href="_static/images/favicon.ico">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            WGS/WES Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">WGS/WES Variant Calling Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#supported-data-types">Supported Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#when-to-choose-wgs-vs-wes">When to Choose WGS vs WES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#design-principles">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#high-level-workflow">High-Level Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#inputs-and-outputs">Inputs and Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#quality-coverage-and-qc">Quality, Coverage, and QC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#filtering-strategy-notes">Filtering Strategy Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#reference-and-resource-recommendations">Reference and Resource Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#reproducibility-execution">Reproducibility &amp; Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#data-stewardship-compliance">Data Stewardship &amp; Compliance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#limitations-non-goals">Limitations &amp; Non-Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#whats-next">What’s Next</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Run the WGS/WES Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-inputs-layout">Pipeline Inputs &amp; Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-by-step-workflow">Step-by-Step Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#raw-read-qc">1) Raw Read QC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adapter-quality-trimming-optional-but-recommended-for-wes">2) Adapter/Quality Trimming (optional but recommended for WES)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alignment-to-reference">3) Alignment to Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#duplicate-marking-bqsr">4) Duplicate Marking &amp; BQSR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variant-calling">5) Variant Calling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variant-filtering">6) Variant Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#annotation">7) Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cohort-level-qc-reports">8) Cohort-Level QC &amp; Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#parallelization-performance">Parallelization &amp; Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wes-specific-notes">WES-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#expected-outputs">Expected Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_analysis.html">Advanced Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#trio-and-family-based-analysis">Trio and Family-Based Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#joint-calling-for-large-cohorts">Joint Calling for Large Cohorts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#copy-number-variation-cnv-analysis">Copy Number Variation (CNV) Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#mitochondrial-variant-analysis">Mitochondrial Variant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#tumor-purity-estimation-adjustment">Tumor Purity Estimation &amp; Adjustment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#integration-and-reporting">Integration and Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_analysis.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotated_example.html">Annotated Examples &amp; Interpretation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumornormal-variant-calling">Example: Tumor–Normal Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-tumor-only-variant-calling">Example: Tumor-Only Variant Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotated_example.html#example-germline-variant-calling">Example: Germline Variant Calling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_and_containerisation.html">Pipeline Structure and Containerisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#modular-workflow-overview">Modular Workflow Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#support-for-germline-and-somatic-calling">Support for Germline and Somatic Calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#containerisation">Containerisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#scalability-and-workflow-automation">Scalability and Workflow Automation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#example-directory-layout">Example Directory Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_and_containerisation.html#best-practices-for-execution">Best Practices for Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wes_cll_methods.html">Stage-to-Tool Mapping With Example Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#example-commands-bash">Example Commands (Bash)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wes_cll_methods.html#reproducibility-checklist">Reproducibility Checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy1.html">Case Study: ITH-aware Somatic Interpretation for WGS/WES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy1.html#what-was-built">What Was Built</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy1.html#cohort-profiling-and-heterogeneity">Cohort Profiling and Heterogeneity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy1.html#drug-screening-and-response-definition">Drug Screening and Response Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy1.html#expression-signatures-predicting-response">Expression Signatures Predicting Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy1.html#mechanism-of-lenvatinib-resistance-combination-strategy">Mechanism of Lenvatinib Resistance &amp; Combination Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy1.html#ith-aware-somatic-interpretation-recommendations">ITH-aware Somatic Interpretation &amp; Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy1.html#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy2.html">Case Study: WES in Relapsing CLL: RPS15 Mutations and Clonal Evolution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#what-was-built">What Was Built</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#cohort-profiling-and-heterogeneity">Cohort Profiling and Heterogeneity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#genomic-profiling-methods-wes-focus">Genomic Profiling Methods (WES Focus)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#drug-screening-and-response-definition">Drug Screening and Response Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#expression-signatures-predicting-response">Expression Signatures Predicting Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#mechanism-of-relapse-targeted-strategies">Mechanism of Relapse &amp; Targeted Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#clonal-evolution-aware-somatic-interpretation-recommendations">Clonal Evolution-Aware Somatic Interpretation &amp; Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudy2.html#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#primary-study">Primary Study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#supporting-literature">Supporting Literature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#databases-and-resources">Databases and Resources</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WGS/WES Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Run the WGS/WES Pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/run_pipeline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="intro.html" class="btn btn-neutral float-left" title="WGS/WES Variant Calling Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_analysis.html" class="btn btn-neutral float-right" title="Advanced Analysis" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="run-the-wgs-wes-pipeline">
+<h1>Run the WGS/WES Pipeline<a class="headerlink" href="#run-the-wgs-wes-pipeline" title="Link to this heading"></a></h1>
+<p>This section describes an end-to-end, <strong>config-driven</strong> workflow for WGS/WES data. The same pipeline supports <strong>germline</strong> and <strong>somatic</strong> analyses and can be switched via a single YAML configuration file.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#pipeline-inputs-layout" id="id1">Pipeline Inputs &amp; Layout</a></p></li>
+<li><p><a class="reference internal" href="#step-by-step-workflow" id="id2">Step-by-Step Workflow</a></p>
+<ul>
+<li><p><a class="reference internal" href="#raw-read-qc" id="id3">1) Raw Read QC</a></p></li>
+<li><p><a class="reference internal" href="#adapter-quality-trimming-optional-but-recommended-for-wes" id="id4">2) Adapter/Quality Trimming (optional but recommended for WES)</a></p></li>
+<li><p><a class="reference internal" href="#alignment-to-reference" id="id5">3) Alignment to Reference</a></p></li>
+<li><p><a class="reference internal" href="#duplicate-marking-bqsr" id="id6">4) Duplicate Marking &amp; BQSR</a></p></li>
+<li><p><a class="reference internal" href="#variant-calling" id="id7">5) Variant Calling</a></p></li>
+<li><p><a class="reference internal" href="#variant-filtering" id="id8">6) Variant Filtering</a></p></li>
+<li><p><a class="reference internal" href="#annotation" id="id9">7) Annotation</a></p></li>
+<li><p><a class="reference internal" href="#cohort-level-qc-reports" id="id10">8) Cohort-Level QC &amp; Reports</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#parallelization-performance" id="id11">Parallelization &amp; Performance</a></p></li>
+<li><p><a class="reference internal" href="#wes-specific-notes" id="id12">WES-Specific Notes</a></p></li>
+<li><p><a class="reference internal" href="#expected-outputs" id="id13">Expected Outputs</a></p></li>
+<li><p><a class="reference internal" href="#troubleshooting" id="id14">Troubleshooting</a></p></li>
+<li><p><a class="reference internal" href="#next-steps" id="id15">Next Steps</a></p></li>
+</ul>
+</nav>
+<section id="pipeline-inputs-layout">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Pipeline Inputs &amp; Layout</a><a class="headerlink" href="#pipeline-inputs-layout" title="Link to this heading"></a></h2>
+<p>Recommended project layout:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>project/
+├── config/
+│   └── settings.yaml
+├── refs/
+│   ├── GRCh38.fa
+│   ├── GRCh38.fa.fai
+│   ├── GRCh38.dict
+│   ├── dbsnp.vcf.gz
+│   ├── dbsnp.vcf.gz.tbi
+│   ├── Mills_and_1000G_gold_standard.indels.vcf.gz
+│   ├── Mills_and_1000G_gold_standard.indels.vcf.gz.tbi
+│   ├── 1000G_phase1.indels.vcf.gz
+│   ├── 1000G_phase1.indels.vcf.gz.tbi
+│   ├── af-only-gnomad.vcf.gz
+│   ├── af-only-gnomad.vcf.gz.tbi
+│   └── targets_exome.bed  # WES only (+ optional padded BED)
+├── fastq/
+│   ├── SAMPLE1_R1.fastq.gz
+│   ├── SAMPLE1_R2.fastq.gz
+│   └── ...
+├── work/      # intermediate outputs
+└── results/   # final QC, BAM/CRAM, VCF, annotation
+</pre></div>
+</div>
+<p>Example <strong>settings.yaml</strong> (edit to your environment):</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">germline</span><span class="w">  </span><span class="c1"># one of: germline | somatic_tn | somatic_tumor_only</span>
+<span class="nt">reference</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">refs/GRCh38.fa</span>
+<span class="nt">known_sites</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dbsnp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">refs/dbsnp.vcf.gz</span>
+<span class="w">  </span><span class="nt">mills</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">refs/Mills_and_1000G_gold_standard.indels.vcf.gz</span>
+<span class="w">  </span><span class="nt">indels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">refs/1000G_phase1.indels.vcf.gz</span>
+<span class="nt">population_af</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">refs/af-only-gnomad.vcf.gz</span>
+<span class="nt">wes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">targets_bed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">refs/targets_exome.bed</span>
+<span class="w">  </span><span class="nt">padded_bed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">refs/targets_exome.padded100.bed</span><span class="w">  </span><span class="c1"># optional</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span>
+<span class="w">  </span><span class="nt">memory_gb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64</span>
+<span class="nt">containers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">use_apptainer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker://broadinstitute/gatk:latest</span>
+<span class="nt">bams</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">compress_to_cram</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">cram_ref</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">refs/GRCh38.fa</span>
+<span class="nt">scatter</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">intervals</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span><span class="w">  </span><span class="c1"># chromosomes or interval shards for parallelization</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For <strong>WES</strong>, use the vendor-provided BED; consider generating a padded BED (+/- 50–100 bp) to capture near-target indels.</p>
+</div>
+</section>
+<section id="step-by-step-workflow">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Step-by-Step Workflow</a><a class="headerlink" href="#step-by-step-workflow" title="Link to this heading"></a></h2>
+<section id="raw-read-qc">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">1) Raw Read QC</a><a class="headerlink" href="#raw-read-qc" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Run <strong>FastQC</strong> on all FASTQ pairs; aggregate with <strong>MultiQC</strong>.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>results/qc/fastqc
+fastqc<span class="w"> </span>fastq/*_R1.fastq.gz<span class="w"> </span>fastq/*_R2.fastq.gz<span class="w"> </span>-o<span class="w"> </span>results/qc/fastqc
+multiqc<span class="w"> </span>results/qc<span class="w"> </span>-o<span class="w"> </span>results/qc
+</pre></div>
+</div>
+<p><strong>Gate</strong>: No catastrophic adapter content; base qualities reasonable; overrepresented sequences understood (e.g., adapters).</p>
+</section>
+<section id="adapter-quality-trimming-optional-but-recommended-for-wes">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">2) Adapter/Quality Trimming (optional but recommended for WES)</a><a class="headerlink" href="#adapter-quality-trimming-optional-but-recommended-for-wes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use <strong>fastp</strong> (recommended) or <strong>Trimmomatic</strong>. Enable poly-G trimming for NovaSeq data if needed.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fastp<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-i<span class="w"> </span>fastq/SAMPLE_R1.fastq.gz<span class="w"> </span>-I<span class="w"> </span>fastq/SAMPLE_R2.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>work/SAMPLE_R1.trim.fq.gz<span class="w"> </span>-O<span class="w"> </span>work/SAMPLE_R2.trim.fq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--detect_adapter_for_pe<span class="w"> </span>--thread<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--html<span class="w"> </span>results/qc/SAMPLE.fastp.html<span class="w"> </span>--json<span class="w"> </span>results/qc/SAMPLE.fastp.json
+</pre></div>
+</div>
+<p><strong>Outputs</strong>: Trimmed FASTQs + fastp QC reports (included in MultiQC).</p>
+</section>
+<section id="alignment-to-reference">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">3) Alignment to Reference</a><a class="headerlink" href="#alignment-to-reference" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Align with <strong>BWA-MEM2</strong> (or BWA-MEM) against GRCh38/hg38 (ALT-aware). Always set <strong>Read Group (RG)</strong> tags.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">RG</span><span class="o">=</span><span class="s1">&#39;@RG\tID:SAMPLE\tSM:SAMPLE\tPL:ILLUMINA\tLB:LIB1\tPU:FLOWCELL.LANE&#39;</span>
+bwa-mem2<span class="w"> </span>mem<span class="w"> </span>-t<span class="w"> </span><span class="m">16</span><span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>work/SAMPLE_R1.trim.fq.gz<span class="w"> </span>work/SAMPLE_R2.trim.fq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>samtools<span class="w"> </span>view<span class="w"> </span>-b<span class="w"> </span>-<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>samtools<span class="w"> </span>sort<span class="w"> </span>-@<span class="w"> </span><span class="m">8</span><span class="w"> </span>-o<span class="w"> </span>work/SAMPLE.sorted.bam
+samtools<span class="w"> </span>index<span class="w"> </span>work/SAMPLE.sorted.bam
+</pre></div>
+</div>
+<p><strong>QC</strong>:</p>
+<ul class="simple">
+<li><p>Alignment stats: <code class="docutils literal notranslate"><span class="pre">samtools</span> <span class="pre">flagstat</span></code> and (WES) <strong>Picard CollectHsMetrics</strong> / (WGS) <strong>Picard CollectWgsMetrics</strong>.</p></li>
+<li><p>Coverage profiling: <strong>mosdepth</strong> or <strong>bedtools genomecov</strong>.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>samtools<span class="w"> </span>flagstat<span class="w"> </span>work/SAMPLE.sorted.bam<span class="w"> </span>&gt;<span class="w"> </span>results/qc/SAMPLE.flagstat.txt
+<span class="c1"># WES capture metrics</span>
+gatk<span class="w"> </span>CollectHsMetrics<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/SAMPLE.sorted.bam<span class="w"> </span>-O<span class="w"> </span>results/qc/SAMPLE.hs_metrics.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span>--BAIT_INTERVALS<span class="w"> </span>refs/targets_exome.bed<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--TARGET_INTERVALS<span class="w"> </span>refs/targets_exome.bed
+<span class="c1"># WGS metrics</span>
+gatk<span class="w"> </span>CollectWgsMetrics<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/SAMPLE.sorted.bam<span class="w"> </span>-O<span class="w"> </span>results/qc/SAMPLE.wgs_metrics.txt<span class="w"> </span>-R<span class="w"> </span>refs/GRCh38.fa
+</pre></div>
+</div>
+</section>
+<section id="duplicate-marking-bqsr">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">4) Duplicate Marking &amp; BQSR</a><a class="headerlink" href="#duplicate-marking-bqsr" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Mark duplicates (UMI-aware if applicable). Perform <strong>Base Quality Score Recalibration</strong> (BQSR) using known sites.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>MarkDuplicatesSpark<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/SAMPLE.sorted.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/SAMPLE.dedup.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-M<span class="w"> </span>results/qc/SAMPLE.dup_metrics.txt
+samtools<span class="w"> </span>index<span class="w"> </span>work/SAMPLE.dedup.bam
+gatk<span class="w"> </span>BaseRecalibrator<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/SAMPLE.dedup.bam<span class="w"> </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--known-sites<span class="w"> </span>refs/dbsnp.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--known-sites<span class="w"> </span>refs/Mills_and_1000G_gold_standard.indels.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--known-sites<span class="w"> </span>refs/1000G_phase1.indels.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/SAMPLE.recal_data.table
+gatk<span class="w"> </span>ApplyBQSR<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/SAMPLE.dedup.bam<span class="w"> </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bqsr-recal-file<span class="w"> </span>work/SAMPLE.recal_data.table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/SAMPLE.recal.bam
+samtools<span class="w"> </span>index<span class="w"> </span>work/SAMPLE.recal.bam
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>To reduce storage, write <strong>CRAM</strong> instead of BAM:
+<code class="docutils literal notranslate"><span class="pre">gatk</span> <span class="pre">PrintReads</span> <span class="pre">-I</span> <span class="pre">work/SAMPLE.recal.bam</span> <span class="pre">-O</span> <span class="pre">results/bam/SAMPLE.cram</span> <span class="pre">-R</span> <span class="pre">refs/GRCh38.fa</span></code></p>
+</div>
+</section>
+<section id="variant-calling">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">5) Variant Calling</a><a class="headerlink" href="#variant-calling" title="Link to this heading"></a></h3>
+<p><strong>Germline (per-sample GVCF)</strong></p>
+<ul class="simple">
+<li><p>Call each sample in <strong>GVCF</strong> mode for joint genotyping later.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>HaplotypeCaller<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span>-I<span class="w"> </span>work/SAMPLE.recal.bam<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>results/gvcf/SAMPLE.g.vcf.gz<span class="w"> </span>-ERC<span class="w"> </span>GVCF
+</pre></div>
+</div>
+<p><strong>Joint genotyping (cohort)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>GenomicsDBImport<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--genomicsdb-workspace-path<span class="w"> </span>work/cohort_gdb<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sample-name-map<span class="w"> </span>config/gvcf_samples.map<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--reader-threads<span class="w"> </span><span class="m">8</span>
+gatk<span class="w"> </span>GenotypeGVCFs<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>gendb://work/cohort_gdb<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>results/vcf/cohort.unfiltered.vcf.gz
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For small cohorts, you may replace GenomicsDB with <code class="docutils literal notranslate"><span class="pre">CombineGVCFs</span></code> but GenomicsDB scales better.</p>
+</div>
+<p><strong>Somatic (Tumor–Normal)</strong></p>
+<ul class="simple">
+<li><p>Use <strong>Mutect2</strong> with matched normal, a <strong>germline resource</strong> (gnomAD), and a <strong>Panel of Normals (PoN)</strong> if available.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calling</span>
+gatk<span class="w"> </span>Mutect2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/TUMOR.recal.bam<span class="w"> </span>-tumor<span class="w"> </span>TUMOR<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/NORMAL.recal.bam<span class="w"> </span>-normal<span class="w"> </span>NORMAL<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--germline-resource<span class="w"> </span>refs/af-only-gnomad.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--panel-of-normals<span class="w"> </span>refs/pon.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/TUMOR.mutect2.unfiltered.vcf.gz
+<span class="c1"># Orientation bias model (important for FFPE)</span>
+gatk<span class="w"> </span>LearnReadOrientationModel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/TUMOR.f1r2.tar.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/TUMOR.read-orientation-model.tar.gz
+<span class="c1"># Contamination estimation</span>
+gatk<span class="w"> </span>GetPileupSummaries<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/TUMOR.recal.bam<span class="w"> </span>-V<span class="w"> </span>refs/af-only-gnomad.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-L<span class="w"> </span>refs/targets_exome.bed<span class="w"> </span>-O<span class="w"> </span>work/TUMOR.pileups.table
+gatk<span class="w"> </span>GetPileupSummaries<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/NORMAL.recal.bam<span class="w"> </span>-V<span class="w"> </span>refs/af-only-gnomad.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-L<span class="w"> </span>refs/targets_exome.bed<span class="w"> </span>-O<span class="w"> </span>work/NORMAL.pileups.table
+gatk<span class="w"> </span>CalculateContamination<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/TUMOR.pileups.table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-matched<span class="w"> </span>work/NORMAL.pileups.table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/TUMOR.contamination.table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tumor-segmentation<span class="w"> </span>work/TUMOR.segments.table
+<span class="c1"># Filtering</span>
+gatk<span class="w"> </span>FilterMutectCalls<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>work/TUMOR.mutect2.unfiltered.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--contamination-table<span class="w"> </span>work/TUMOR.contamination.table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ob-priors<span class="w"> </span>work/TUMOR.read-orientation-model.tar.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>results/vcf/TUMOR.somatic.filtered.vcf.gz
+</pre></div>
+</div>
+<p><strong>Somatic (Tumor-only)</strong></p>
+<ul class="simple">
+<li><p>Call without a matched normal. Use <strong>PoN</strong> and gnomAD to suppress artifacts and likely germline.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>Mutect2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/TUMOR.recal.bam<span class="w"> </span>-tumor<span class="w"> </span>TUMOR<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--germline-resource<span class="w"> </span>refs/af-only-gnomad.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--panel-of-normals<span class="w"> </span>refs/pon.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/TUMOR.to.unfiltered.vcf.gz
+gatk<span class="w"> </span>LearnReadOrientationModel<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/TUMOR.f1r2.tar.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/TUMOR.read-orientation-model.tar.gz
+gatk<span class="w"> </span>GetPileupSummaries<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/TUMOR.recal.bam<span class="w"> </span>-V<span class="w"> </span>refs/af-only-gnomad.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/TUMOR.pileups.table
+gatk<span class="w"> </span>CalculateContamination<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-I<span class="w"> </span>work/TUMOR.pileups.table<span class="w"> </span>-O<span class="w"> </span>work/TUMOR.contamination.table
+gatk<span class="w"> </span>FilterMutectCalls<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>work/TUMOR.to.unfiltered.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--contamination-table<span class="w"> </span>work/TUMOR.contamination.table<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ob-priors<span class="w"> </span>work/TUMOR.read-orientation-model.tar.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>results/vcf/TUMOR.somatic.filtered.vcf.gz
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Building a PoN</strong>: Run Mutect2 on ≥30 normal samples (as “tumors” without normal), then
+<code class="docutils literal notranslate"><span class="pre">gatk</span> <span class="pre">CreateSomaticPanelOfNormals</span> <span class="pre">-V</span> <span class="pre">normals.list</span> <span class="pre">-O</span> <span class="pre">refs/pon.vcf.gz</span></code></p>
+</div>
+</section>
+<section id="variant-filtering">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">6) Variant Filtering</a><a class="headerlink" href="#variant-filtering" title="Link to this heading"></a></h3>
+<p><strong>Germline</strong></p>
+<ul class="simple">
+<li><p>Prefer <strong>VQSR</strong> for sufficiently large cohorts. Otherwise use <strong>hard filters</strong>.</p></li>
+</ul>
+<p><strong>VQSR (cohort)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># SNP model</span>
+gatk<span class="w"> </span>VariantRecalibrator<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span>-V<span class="w"> </span>results/vcf/cohort.unfiltered.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resource:hapmap,known<span class="o">=</span>false,training<span class="o">=</span>true,truth<span class="o">=</span>true,prior<span class="o">=</span><span class="m">15</span>.0<span class="w"> </span>refs/hapmap.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resource:omni,known<span class="o">=</span>false,training<span class="o">=</span>true,truth<span class="o">=</span>false,prior<span class="o">=</span><span class="m">12</span>.0<span class="w"> </span>refs/1000G_omni.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resource:1000G,known<span class="o">=</span>false,training<span class="o">=</span>true,truth<span class="o">=</span>false,prior<span class="o">=</span><span class="m">10</span>.0<span class="w"> </span>refs/1000G_high_conf.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resource:dbsnp,known<span class="o">=</span>true,training<span class="o">=</span>false,truth<span class="o">=</span>false,prior<span class="o">=</span><span class="m">2</span>.0<span class="w"> </span>refs/dbsnp.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-an<span class="w"> </span>QD<span class="w"> </span>-an<span class="w"> </span>MQ<span class="w"> </span>-an<span class="w"> </span>MQRankSum<span class="w"> </span>-an<span class="w"> </span>ReadPosRankSum<span class="w"> </span>-an<span class="w"> </span>FS<span class="w"> </span>-an<span class="w"> </span>SOR<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-mode<span class="w"> </span>SNP<span class="w"> </span>-O<span class="w"> </span>work/cohort.snp.recal<span class="w"> </span>--tranches-file<span class="w"> </span>work/cohort.snp.tranches
+gatk<span class="w"> </span>ApplyVQSR<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>results/vcf/cohort.unfiltered.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--recal-file<span class="w"> </span>work/cohort.snp.recal<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tranches-file<span class="w"> </span>work/cohort.snp.tranches<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-mode<span class="w"> </span>SNP<span class="w"> </span>-O<span class="w"> </span>work/cohort.snp.recalibrated.vcf.gz
+<span class="c1"># INDEL model</span>
+gatk<span class="w"> </span>VariantRecalibrator<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-R<span class="w"> </span>refs/GRCh38.fa<span class="w"> </span>-V<span class="w"> </span>work/cohort.snp.recalibrated.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resource:mills,known<span class="o">=</span>false,training<span class="o">=</span>true,truth<span class="o">=</span>true,prior<span class="o">=</span><span class="m">12</span>.0<span class="w"> </span>refs/Mills_and_1000G_gold_standard.indels.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resource:dbsnp,known<span class="o">=</span>true,training<span class="o">=</span>false,truth<span class="o">=</span>false,prior<span class="o">=</span><span class="m">2</span>.0<span class="w"> </span>refs/dbsnp.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-an<span class="w"> </span>QD<span class="w"> </span>-an<span class="w"> </span>ReadPosRankSum<span class="w"> </span>-an<span class="w"> </span>FS<span class="w"> </span>-an<span class="w"> </span>SOR<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-mode<span class="w"> </span>INDEL<span class="w"> </span>-O<span class="w"> </span>work/cohort.indel.recal<span class="w"> </span>--tranches-file<span class="w"> </span>work/cohort.indel.tranches
+gatk<span class="w"> </span>ApplyVQSR<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>work/cohort.snp.recalibrated.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--recal-file<span class="w"> </span>work/cohort.indel.recal<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tranches-file<span class="w"> </span>work/cohort.indel.tranches<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-mode<span class="w"> </span>INDEL<span class="w"> </span>-O<span class="w"> </span>results/vcf/cohort.filtered.vcf.gz
+</pre></div>
+</div>
+<p><strong>Hard filters (small cohorts)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># SNPs (example thresholds)</span>
+gatk<span class="w"> </span>VariantFiltration<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>results/vcf/cohort.unfiltered.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;QD &lt; 2.0&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;QD2&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;FS &gt; 60.0&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;FS60&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;MQ &lt; 40.0&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;MQ40&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;MQRankSum &lt; -12.5&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;MQRS-12.5&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;ReadPosRankSum &lt; -8.0&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;RPRS-8&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;SOR &gt; 3.0&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;SOR3&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>work/cohort.snps.hardfiltered.vcf.gz
+<span class="c1"># INDELs (example thresholds)</span>
+gatk<span class="w"> </span>VariantFiltration<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>work/cohort.snps.hardfiltered.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;QD &lt; 2.0&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;QD2&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;FS &gt; 200.0&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;FS200&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;ReadPosRankSum &lt; -20.0&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;RPRS-20&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filter-expression<span class="w"> </span><span class="s2">&quot;SOR &gt; 10.0&quot;</span><span class="w"> </span>--filter-name<span class="w"> </span><span class="s2">&quot;SOR10&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>results/vcf/cohort.filtered.vcf.gz
+</pre></div>
+</div>
+<p><strong>Somatic</strong></p>
+<ul class="simple">
+<li><p>Use <strong>FilterMutectCalls</strong> output; optionally apply <strong>FilterByOrientationBias</strong> for specific FFPE artifacts:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gatk<span class="w"> </span>FilterByOrientationBias<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-V<span class="w"> </span>results/vcf/TUMOR.somatic.filtered.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-P<span class="w"> </span>G/T<span class="w"> </span>-P<span class="w"> </span>C/T<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-O<span class="w"> </span>results/vcf/TUMOR.somatic.ffpe_filtered.vcf.gz
+</pre></div>
+</div>
+</section>
+<section id="annotation">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">7) Annotation</a><a class="headerlink" href="#annotation" title="Link to this heading"></a></h3>
+<p>Annotate for consequence, population frequency, and clinical context.</p>
+<p><strong>VEP (recommended)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vep<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-i<span class="w"> </span>results/vcf/*.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>results/annotation/annotated.vep.vcf.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--vcf<span class="w"> </span>--compress_output<span class="w"> </span>bgzip<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--assembly<span class="w"> </span>GRCh38<span class="w"> </span>--offline<span class="w"> </span>--cache<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--fork<span class="w"> </span><span class="m">8</span><span class="w"> </span>--everything
+</pre></div>
+</div>
+<p><strong>ANNOVAR (alternative)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>table_annovar.pl<span class="w"> </span>results/vcf/*.vcf.gz<span class="w"> </span>humandb/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-buildver<span class="w"> </span>hg38<span class="w"> </span>-out<span class="w"> </span>results/annotation/annovar<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-remove<span class="w"> </span>-protocol<span class="w"> </span>refGene,gnomad211_exome,clinvar_202403<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-operation<span class="w"> </span>g,f,f<span class="w"> </span>-nastring<span class="w"> </span>.<span class="w"> </span>-polish<span class="w"> </span>-vcfinput
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>ClinVar</strong> and cancer knowledge bases are for <strong>interpretation</strong>. Do not use them as hard filters without a defined policy.</p>
+</div>
+</section>
+<section id="cohort-level-qc-reports">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">8) Cohort-Level QC &amp; Reports</a><a class="headerlink" href="#cohort-level-qc-reports" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Aggregate QC with <strong>MultiQC</strong> (FastQC, alignment metrics, coverage, duplication).</p></li>
+<li><p>Confirm sample identity/sex and detect swaps with <strong>Somalier</strong> or <strong>VerifyBamID2</strong>.</p></li>
+<li><p>Summarize callable bases and % bases ≥20×/30× (WES) or ≥30× (WGS).</p></li>
+</ul>
+</section>
+</section>
+<section id="parallelization-performance">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Parallelization &amp; Performance</a><a class="headerlink" href="#parallelization-performance" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Scatter/gather</strong> by chromosomes or interval shards; keep read group boundaries intact.</p></li>
+<li><p>Use <strong>MarkDuplicatesSpark</strong> for speed (ensure adequate I/O).</p></li>
+<li><p>Tune BWA-MEM2 threads to CPU/NUMA; avoid oversubscription.</p></li>
+</ul>
+<p>Example Slurm snippet:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH -J wgswes</span>
+<span class="c1">#SBATCH -N 1</span>
+<span class="c1">#SBATCH -c 16</span>
+<span class="c1">#SBATCH --mem=64G</span>
+<span class="c1">#SBATCH -t 24:00:00</span>
+module<span class="w"> </span>load<span class="w"> </span>apptainer
+apptainer<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>docker://broadinstitute/gatk:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>gatk<span class="w"> </span>--version
+<span class="c1"># run HaplotypeCaller / Mutect2 shards here ...</span>
+</pre></div>
+</div>
+</section>
+<section id="wes-specific-notes">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">WES-Specific Notes</a><a class="headerlink" href="#wes-specific-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Report <strong>on-target %</strong>, <strong>fold-80 base penalty</strong>, <strong>mean target coverage</strong>, and <strong>% targets ≥ 20×/30×</strong>.</p></li>
+<li><p>Use padded BED for calling; revert to strict BED for coverage/QC.</p></li>
+<li><p>Capture-kit updates may change target definitions; pin versions in the repository.</p></li>
+</ul>
+</section>
+<section id="expected-outputs">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Expected Outputs</a><a class="headerlink" href="#expected-outputs" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>BAM/CRAM</strong> + index (post-BQSR), duplication metrics, alignment/coverage metrics.</p></li>
+<li><p><strong>VCF/BCF</strong>: Germline joint genotyped and filtered; or somatic filtered calls.</p></li>
+<li><p><strong>Annotation</strong> files (VEP/ANNOVAR outputs).</p></li>
+<li><p><strong>QC</strong>: MultiQC report, per-sample metrics, contamination estimates.</p></li>
+</ul>
+</section>
+<section id="troubleshooting">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Troubleshooting</a><a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Low on-target (WES)</strong>: Verify BED compatibility, library quality, and adapter trimming.</p></li>
+<li><p><strong>High contamination</strong>: Re-evaluate sample swaps; remove contaminated samples from PoN.</p></li>
+<li><p><strong>Over-filtering (germline)</strong>: Revisit hard-filter thresholds or use VQSR with adequate cohort size.</p></li>
+<li><p><strong>Somatic false positives (tumor-only)</strong>: Ensure PoN is technology-matched; tighten population AF thresholds; apply orientation bias filtering.</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Next Steps</a><a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>See <a class="reference internal" href="advanced_analysis.html"><span class="doc">Advanced Analysis</span></a> for trios, joint calling strategies, CNV/mtDNA modules, and tumor purity considerations.</p></li>
+<li><p>See <a class="reference internal" href="structure_and_containerisation.html"><span class="doc">Pipeline Structure and Containerisation</span></a> for exact containers, pinned versions, and YAML-driven execution wrappers.</p></li>
+<li><p>Consult <a class="reference internal" href="references.html"><span class="doc">References</span></a> for methods papers and best-practice guidance.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="WGS/WES Variant Calling Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_analysis.html" class="btn btn-neutral float-right" title="Advanced Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Akhilesh Kaushal.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

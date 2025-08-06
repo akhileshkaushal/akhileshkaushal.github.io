@@ -1,0 +1,159 @@
+Case Study: WES in Relapsing CLL: RPS15 Mutations and Clonal Evolution
+================================================================================
+
+**Focus**: Paired pre- and post-relapse WES for somatic variant detection, clonal evolution analysis, recurrent mutations in RPS15, bioinformatics pipelines for variant calling and subclonal inference, and their clinical implications in aggressive CLL.
+
+**Primary reference**:  
+Ljungström *et al.*, "Whole-exome sequencing in relapsing chronic lymphocytic leukemia: clinical impact of recurrent RPS15 mutations," *Blood* (2016), DOI: 10.1182/blood-2015-10-674572.
+
+This foundational study, published in February 2016, has been cited over 200 times and influenced subsequent research on ribosomal protein mutations in CLL, including functional studies showing RPS15 alterations rewire translation and cooperate with TP53 defects.
+
+ The authors performed paired WES on 41 CLL patients relapsing after fludarabine-cyclophosphamide-rituximab (FCR) therapy, revealing recurrent RPS15 mutations as drivers of aggressive disease, often co-occurring with TP53 aberrations and linked to poor prognosis.
+
+What Was Built
+--------------
+
+**Paired WES cohort for relapsing CLL**
+
+Chronic lymphocytic leukemia (CLL) is a mature B-cell malignancy with heterogeneous outcomes, where relapse after first-line therapy like FCR often involves clonal evolution—shifts in subclonal populations under therapeutic pressure. To investigate this, the researchers assembled a cohort of paired samples for WES.
+
+- **Scale**: 41 CLL patients with WES on matched diagnosis (pre-FCR) and relapse (post-FCR) samples (82 exomes total); normal germline from CD3+ T cells or saliva.
+- **Sampling**: Sequential sampling to capture temporal evolution; relapse samples collected at progression (median 3.5 years post-diagnosis).
+- **Recapitulation**: WES focused on coding regions to identify somatic mutations driving relapse; validated by Sanger sequencing and extended screening in 1119 CLL cases.
+- **Utility**: Enabled discovery of novel relapse-enriched mutations (e.g., RPS15), clonal dynamics analysis, and prognostic associations; suitable for integration with functional assays (e.g., p53 response in cell lines).
+
+**Cohort details**
+
+- Patient characteristics: Uniformly treated with FCR; enriched for high-risk features (e.g., 50% unmutated IGHV, 27% del(17p)/TP53 mutations at diagnosis).
+- Extended validation: Targeted sequencing in 1119 additional CLL cases (258 trial cohort, 89 aggressive, 186 mutated IGHV, 586 general) to confirm RPS15 frequency (~5% overall, up to 20% in relapsed/aggressive subsets).
+- Ethical considerations: Approved by institutional review boards; informed consent obtained.
+
+This cohort (detailed in supplemental Table 1) highlighted therapy-driven selection, with RPS15 emerging as a key relapse-associated gene.
+
+Cohort Profiling and Heterogeneity
+----------------------------------
+
+**Mutation landscape and evolution**
+
+WES revealed a modest mutational burden (median 17-19 nonsynonymous mutations per case pre/post-relapse), consistent with CLL's low mutation rate. No significant increase post-FCR, suggesting therapy is not highly mutagenic.
+
+- Recurrent drivers: TP53 (27% at diagnosis, expanding at relapse), SF3B1 (20%), NOTCH1 (12%), and novel RPS15 (12.2% at relapse).
+- Clonal shifts: 60% of cases showed subclonal evolution (e.g., expansion of TP53-mutant clones); RPS15 mutations often clonal at diagnosis and stable/expanding at relapse (Figure 2).
+- Heterogeneity: Inter-patient (e.g., IGHV unmutated enriched for RPS15) and intra-patient (subclonal vs. clonal mutations); higher heterogeneity in aggressive cases.
+
+**RPS15 specifics**
+
+- Location: Mutations clustered in the C-terminal extension (exon 4; e.g., p.P131S, p.G134R), distinct from other ribosomal genes.
+- Frequency: 12.2% in relapsed cohort; extended screening: 19% in aggressive CLL, 4.7% in general cohorts (Figure 3).
+- Associations: Co-occur with TP53 aberrations (one-third of RPS15-mutant cases); linked to shorter progression-free survival (PFS) post-FCR (hazard ratio 2.5, p<0.01; Figure 4).
+
+**Clonal evolution patterns**
+
+- Trunk-dominant: Early drivers like SF3B1 stable.
+- Branch-dominant: Therapy-selected subclones (e.g., TP53 expansion in 70% of mutated cases).
+- Implication: Single-timepoint WES risks missing evolving subclones; paired sampling essential for relapse prediction.
+
+Genomic Profiling Methods (WES Focus)
+-------------------------------------
+
+WES targets ~50 Mb of coding sequence, enabling cost-effective detection of somatic variants in low-mutation-rate cancers like CLL. The study prioritized tumor-normal paired mode for accurate somatic calling.
+
+- **WES Sequencing**: Genomic DNA from CLL cells (>90% purity via CD19+ sorting), matched normals. Exons captured with Agilent SureSelect Human All Exon v4+UTR (~71 Mb). Sequenced on Illumina HiSeq 2000/2500 (100 bp paired-end; mean depth 100x for sensitivity to VAF ~5%).
+- **Bioinformatics Pipeline** (supplemental Methods; reproducible with versioned tools):
+  - **Alignment**: BWA (v0.7.5) to hg19/GRCh37; duplicates marked with Picard (v1.96); base quality recalibration and indel realignment with GATK (v2.8).
+  - **Variant Calling**: MuTect (v1.1.4) for somatic SNVs (tumor-normal paired; filters for depth ≥10, VAF ≥0.05, no germline evidence); SomaticIndelDetector (GATK) for indels. Filtered for artifacts using dbSNP, 1000 Genomes, and in-house PoN.
+  - **Annotation**: ANNOVAR (v2014-07-14) for functional impact (e.g., nonsynonymous, splicing); COSMIC and ClinVar for cancer relevance; dN/dS ratios for driver inference (dN/dS >1 for positive selection in RPS15).
+  - **Copy Number and LOH**: ExomeCNV for CNAs (segmentation via CBS); FACETS (v0.3.9) for allele-specific CN and purity/ploidy estimation, enabling cancer cell fraction (CCF) calculation.
+  - **Clonal Evolution**: SciClone (v1.0) for subclonal clustering based on VAF and CN-adjusted variant clusters (e.g., clonal if CCF >0.9; Figure 2); phylogenetic trees via maximum parsimony (custom scripts).
+  - **Mutation Signatures**: DeconstructSigs (v1.6) for SBS signatures (e.g., aging-related SBS1/5 dominant; no FCR-specific signature).
+  - **Key Advantages of Tumor-Normal**: Eliminates germline false positives; enables low-VAF detection for subclones. Tumor-only alternative uses external databases but increases noise.
+- **Key Findings from WES**: 728 somatic mutations total; RPS15 as novel driver (q<0.01 by MutSigCV); clonal expansion under FCR pressure (e.g., TP53 VAF increase in 8/11 cases); no hypermutation post-therapy.
+
+Drug Screening and Response Definition
+---------------------------------------
+
+While not directly performing drug screening, the study links mutations to therapy response in FCR-treated patients.
+
+**Therapy context**
+
+- FCR (fludarabine-cyclophosphamide-rituximab): Standard first-line; relapse in ~50% within 5 years.
+- Mutation enrichment: RPS15/TP53 mutations predict poor PFS (multivariate Cox: HR 3.2 for combined, p<0.001; Figure 4E).
+
+**Functional validation**
+
+- RPS15 mutants: Expressed in HEK293T/MEC-1 cells; reduced p53 activation post-stress (e.g., nutlin-3; Western blots for p53/MDM2; Figure 5).
+- Metrics: Cell viability (MTT assay); proliferation (BrdU); apoptosis (annexin V).
+- Implication: RPS15 mutations confer resistance to p53-dependent therapies like FCR.
+
+**Clinical alignment**
+
+- RPS15+ cases: Shorter time-to-relapse (median 2.1 vs. 4.5 years); validated in independent cohorts (e.g., 19% in aggressive CLL).
+
+Expression Signatures Predicting Response
+------------------------------------------
+
+No direct RNA-seq, but inferred from mutations:
+
+- RPS15 impacts ribosome biogenesis and translation; recent studies show mutants rewire translation, upregulating MYC targets.
+
+- Co-mutation signatures: RPS15+TP53 linked to oxidative stress resistance and genomic instability.
+
+- Prognostic models: Integrate with IGHV status (RPS15 enriched in unmutated; Figure 3C).
+
+Mechanism of Relapse & Targeted Strategies
+------------------------------------------
+
+**RPS15-p53 axis**
+
+- RPS15 (ribosomal protein S15): Involved in ribosome assembly; C-terminal mutations destabilize protein, impair MDM2 binding, and blunt p53 response (Figure 5).
+- Cooperation: With TP53 loss, drives proliferation via dysregulated translation (e.g., increased MYC).
+
+- Mechanism: Mutants reduce stress-induced ribosomal stalling, evading apoptosis.
+
+**Therapeutic implications**
+
+- Targetable: RPS15 mutants sensitive to translation inhibitors (e.g., homoharringtonine in follow-up studies).
+
+- Combinations: BTK inhibitors (ibrutinib) for RPS15+ cases; venetoclax for p53-defective.
+
+Clonal Evolution-Aware Somatic Interpretation & Recommendations
+----------------------------------------------------------------
+
+**Why clonal evolution matters**
+
+Paired WES showed 60% cases with evolving subclones; ignoring dynamics overestimates stability (e.g., TP53 subclonal at diagnosis becomes dominant at relapse).
+
+**Sampling strategy**
+
+- Paired pre/post-treatment samples; include normals for germline subtraction.
+- Multi-timepoint if possible; prioritize high-purity sorting (e.g., CD19+).
+
+**Evolution-aware filtering**
+
+- Adjust VAF for purity/CN via FACETS; cluster subclones with SciClone.
+- Categorize: Clonal (trunk), subclonal (branch), acquired (relapse-specific).
+- Integrate with targeted panels for validation (e.g., RPS15 hotspot sequencing).
+
+**Multi-omic extensions**
+
+- Pair WES with RNA-seq for expression validation (e.g., allelic imbalance).
+- Use as prognostic tools (e.g., RPS15/TP53 panel for FCR ineligibility).
+
+**Mechanism-aware reporting**
+
+- Flag RPS15/TP53 co-mutations for aggressive risk; recommend NGS panels including exon 4.
+- Suggest trials (e.g., NCT for ibrutinib+venetoclax in high-risk CLL).
+
+**Implementation tips**
+
+- Tumor-normal for GATK/MuTect; maintain PoN.
+- Log versions (e.g., GATK v2.8); containerize for reproducibility.
+
+Limitations
+-----------
+
+- Small cohort (n=41); limited to FCR-relapsed cases.
+- WES misses non-coding variants; WGS could capture regulatory elements.
+- No direct functional screening; recent studies add translation assays.
+- Prognostic in FCR era; relevance to novel agents (e.g., BTKi) requires updates.
+
