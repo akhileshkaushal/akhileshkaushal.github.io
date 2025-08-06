@@ -166,16 +166,11 @@
              
   <section id="whole-exome-sequencing-in-relapsing-cll">
 <h1>Whole-Exome Sequencing in Relapsing CLL<a class="headerlink" href="#whole-exome-sequencing-in-relapsing-cll" title="Link to this heading"></a></h1>
-<p>This documentation covers the bioinformatics workflow, modernized pipeline recommendations, and key genomic findings from <strong>Ljungström et al., Blood (2016)</strong>, focusing on whole-exome sequencing (WES) of chronic lymphocytic leukemia (CLL) in pre-treatment and relapse settings.</p>
-<p>The case study provides:
-- Scientific context and study hypothesis
-- Original bioinformatics methodology
-- Modernized WES pipeline recommendations
-- Key genomic findings and interpretation guidelines
-- Diagrammatic overview of historical vs modern workflows</p>
+<p>This documentation summarizes the bioinformatics workflow, updated WGS/WES pipeline recommendations, and key findings from Yang et al. (2024) on pharmacogenomic profiling of intra-tumor heterogeneity in liver cancer. It includes study context, major results, and interpretation guidelines.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>While the original study used a legacy pipeline (BWA-MEM to hg19, GATK3, VarScan2 with 10% VAF cutoff), this documentation updates all methods to current best practices (BWA-MEM2, GRCh38, GATK4 Mutect2, lower VAF thresholds).</p>
+<p>The original study by Yang <em>et al.</em> (2024) focused primarily on experimental pharmacogenomic profiling using multi-region organoid models, with sequencing and analysis tailored to that context.
+In this documentation, the workflow has been adapted and modernized for general-purpose WGS/WES bioinformatics — replacing the original methods with current best practices such as BWA-MEM2 alignment to GRCh38, GATK4 Mutect2 for somatic calling, and lower VAF thresholds to enhance sensitivity and reproducibility.</p>
 </div>
 <section id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
